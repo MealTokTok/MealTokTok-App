@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hankkitoktok/screen/2_home/0_home_screen.dart';
+import 'package:hankkitoktok/screen/3_menu_choice/0_menu_choice_screen.dart';
 
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'const/strings.dart';
@@ -27,6 +29,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
+        bottomAppBarTheme: BottomAppBarTheme(color: Colors.white),
       ),
       getPages: [
         // 스크린 지정
@@ -39,7 +42,7 @@ class MyApp extends StatelessWidget {
         //   page: () => CommunityScreen(),
         // ),
       ],
-      home: LoginScreen(),
+      home: HomeScreen(),
     );
   }
 }
