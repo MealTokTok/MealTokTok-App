@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hankkitoktok/screen/2_home/0_home_screen.dart';
-import 'package:hankkitoktok/screen/3_menu_choice/0_menu_choice_screen.dart';
+import 'package:hankkitoktok/screen/3_menu_choice/0_set_meal_name_screen.dart';
+import 'package:hankkitoktok/screen/3_menu_choice/1_choice_menu_screen.dart';
 
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'const/strings.dart';
@@ -42,7 +43,7 @@ class MyApp extends StatelessWidget {
         //   page: () => CommunityScreen(),
         // ),
       ],
-      home: HomeScreen(),
+      home: SetMealNameScreen(),
     );
   }
 }
