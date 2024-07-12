@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
         //   page: () => CommunityScreen(),
         // ),
       ],
-      home: SetMealNameScreen(),
+      home: ChoiceMenuScreen(),
     );
   }
 }
