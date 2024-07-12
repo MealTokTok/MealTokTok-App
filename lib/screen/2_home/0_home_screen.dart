@@ -122,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
 
                   SizedBox(height: 20),
-                  _buildMenuBox(userName, mealMenuListEmpty),
+                  _buildMenuBox(userName, mealMenuList),
                   SizedBox(height: 20),
                   //도시락 메뉴 설정하기 버튼
                 ],
