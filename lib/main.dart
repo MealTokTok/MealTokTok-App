@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hankkitoktok/screen/2_home/0_home_screen.dart';
+import 'package:hankkitoktok/const/color.dart';
+import 'package:hankkitoktok/screen/2_home/0_home.dart';
+import 'package:hankkitoktok/screen/2_home/1_home_screen.dart';
 import 'package:hankkitoktok/screen/3_menu_choice/0_set_meal_name_screen.dart';
 import 'package:hankkitoktok/screen/3_menu_choice/1_choice_menu_screen.dart';
 import 'package:hankkitoktok/screen/3_menu_choice/2_order_screen.dart';
@@ -29,7 +31,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: PRIMARY_COLOR),
         useMaterial3: true,
         bottomAppBarTheme: BottomAppBarTheme(color: Colors.white),
       ),
@@ -44,7 +46,7 @@ class MyApp extends StatelessWidget {
         //   page: () => CommunityScreen(),
         // ),
       ],
-      home: OrderScreen(),
+      home: Home(),
     );
   }
 }
