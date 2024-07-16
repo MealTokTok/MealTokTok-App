@@ -21,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<MealMenu> mealMenuListEmpty = [];
   late String _buttonState;
   void _checkAddress() {
-    if (true) {
+    if (addressList.isEmpty) {
       WidgetsBinding.instance?.addPostFrameCallback((_) {
         _showAddressDialog();
       });
@@ -121,13 +121,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Image.asset('assets/images/2_home/app_bar_place.png'),
                     const SizedBox(width: 8),
-                    Text(
+                    addressList.isNotEmpty ?Text(
                       value,
                       style: const TextStyle(
                           color: Colors.black,
                           fontSize: 16,
                           fontWeight: FontWeight.bold),
-                    ),
+                    ) : const Text(''),
                   ],
                 ));
           }).toList(),
@@ -277,7 +277,9 @@ class _HomeScreenState extends State<HomeScreen> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Column(children: [
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
               Row(
                 children: [
                   ClipRRect(
@@ -328,10 +330,14 @@ class _HomeScreenState extends State<HomeScreen> {
               )
             ])),
         const SizedBox(height: 8),
-        Text(
-          '${mealMenu.name} \n ${mealMenu.price}원',
-          style: const TextStyle(fontSize: 12),
-        )
+        SizedBox(
+          width: 120,
+          child: Text(
+            '${mealMenu.name}\n6000원',
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
       ],
     );
   }
