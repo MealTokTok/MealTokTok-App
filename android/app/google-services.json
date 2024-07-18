@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "884971505642",
+    "project_id": "fcm-test-476a5",
+    "storage_bucket": "fcm-test-476a5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:884971505642:android:5c376fe1880b943a865493",
+        "android_client_info": {
+          "package_name": "com.example.hankkitoktok.hankkitoktok"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7joT7aG-X1FtvoNuR8W94pwGipW9zimM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
