@@ -17,8 +17,13 @@ class _OrderScreenState extends State<OrderScreen> {
   bool isTomorrowEveningSelected = false;
   DateTime? currentTime;
 
+  late DateTime now;
+  late DateTime todayLunch;
+  late DateTime todayEvening;
+  late DateTime tomorrowLunch;
+  late DateTime tomorrowEvening;
   void _setSubscription(String subscription) {
-    if(isButtonActivated) {
+    if (isButtonActivated) {
       setState(() {
         selectedSubscription = subscription;
       });
@@ -29,6 +34,11 @@ class _OrderScreenState extends State<OrderScreen> {
   void initState() {
     super.initState();
     _getCurrentTime();
+    now = currentTime!;
+    todayLunch = DateTime(now.year, now.month, now.day, 12, 0);
+    todayEvening = DateTime(now.year, now.month, now.day, 18, 0);
+    tomorrowLunch = DateTime(now.year, now.month, now.day + 1, 12, 0);
+    tomorrowEvening = DateTime(now.year, now.month, now.day + 1, 18, 0);
   }
 
   void _getCurrentTime() async {
@@ -88,7 +98,8 @@ class _OrderScreenState extends State<OrderScreen> {
                 ),
                 child: Text(
                   '다음',
-                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      color: Colors.black, fontWeight: FontWeight.bold),
                 ),
               ),
             ),
@@ -100,7 +111,7 @@ class _OrderScreenState extends State<OrderScreen> {
 
   Widget _buildSubscriptionButton(String text) {
     bool isSelected = false;
-    if(isButtonActivated) {
+    if (isButtonActivated) {
       isSelected = selectedSubscription == text;
     }
 
@@ -120,7 +131,9 @@ class _OrderScreenState extends State<OrderScreen> {
         ),
         child: Text(text,
             style: TextStyle(
-                fontSize: 16, color: isSelected ? Colors.black : Colors.grey, fontWeight: isSelected ? FontWeight.bold : FontWeight.normal)),
+                fontSize: 16,
+                color: isSelected ? Colors.black : Colors.grey,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal)),
       ),
     );
   }
@@ -133,7 +146,7 @@ class _OrderScreenState extends State<OrderScreen> {
         : _buildOrderGuide();
   }
 
-  Widget _buildOrderGuide(){
+  Widget _buildOrderGuide() {
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
@@ -165,9 +178,9 @@ class _OrderScreenState extends State<OrderScreen> {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           const Text(
             '12시 배달을 원하실 경우에는 10시까지,\n'
-                '6시 배달을 원하실 경우에는 4시까지\n'
-                '결제를 완료해 주세요!\n\n'
-                '결제 시간이 지나면 상품이 ‘내일’ 배달돼요.',
+            '6시 배달을 원하실 경우에는 4시까지\n'
+            '결제를 완료해 주세요!\n\n'
+            '결제 시간이 지나면 상품이 ‘내일’ 배달돼요.',
             style: TextStyle(fontSize: 16),
           ),
           SizedBox(height: 30),
@@ -175,11 +188,11 @@ class _OrderScreenState extends State<OrderScreen> {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           const Text(
             '지정하신 날짜와 메뉴대로 배달이 진행돼요.\n\n'
-                '지정하신 날짜에 메뉴를 변경하고 싶다면,\n'
-                '배달 받는 시간 2시간 전까지 수정해 주세요!\n'
-                '(12시 -> 10시, 6시 -> 4시)\n\n'
-                '2시간 이후 결제되면 수정이 불가능하다는 점 꼭 유\n'
-                '의해 주세요!',
+            '지정하신 날짜에 메뉴를 변경하고 싶다면,\n'
+            '배달 받는 시간 2시간 전까지 수정해 주세요!\n'
+            '(12시 -> 10시, 6시 -> 4시)\n\n'
+            '2시간 이후 결제되면 수정이 불가능하다는 점 꼭 유\n'
+            '의해 주세요!',
             style: TextStyle(fontSize: 16),
           ),
         ],
@@ -188,11 +201,7 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   Widget _buildDayOrder() {
-    DateTime now = currentTime!;
-    DateTime todayLunch = DateTime(now.year, now.month, now.day, 12, 0);
-    DateTime todayEvening = DateTime(now.year, now.month, now.day, 18, 0);
-    DateTime tomorrowLunch = todayEvening.add(Duration(hours: 18));
-    DateTime tomorrowEvening = tomorrowLunch.add(Duration(hours: 6));
+
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -207,43 +216,49 @@ class _OrderScreenState extends State<OrderScreen> {
           height: 50,
           color: Colors.grey[200],
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Center(
-              child: Text(
-                '도시락을 받고 싶은 시간대를 선택해 주세요.',
-                style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-            )
-          ),
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Center(
+                child: Text(
+                  '도시락을 받고 싶은 시간대를 선택해 주세요.',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold),
+                ),
+              )),
         ),
         SizedBox(height: 20),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '오늘 (${DateFormat('MM/dd').format(now)})',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              now.isBefore(todayLunch.subtract(Duration(hours: 2))) ? CheckboxListTile(
-                title: Text('점심 (12시 ~ 1시)'),
-                value: isTodayLunchSelected,
-                onChanged: (bool? value) {
-                  setState(() {
-                    isTodayLunchSelected = value!;
-                  });
-                },
-              ):SizedBox(),
-              now.isBefore(todayEvening.subtract(Duration(hours: 2))) ?CheckboxListTile(
-                title: Text('저녁 (6시 ~ 7시)'),
-                value: isTodayEveningSelected,
-                onChanged: (bool? value) {
-                  setState(() {
-                    isTodayEveningSelected = value!;
-                  });
-                },
-              ) : SizedBox(),
-            ],
-          ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '오늘 (${DateFormat('MM/dd').format(now)})',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            now.isBefore(todayLunch.subtract(Duration(hours: 2)))
+                ? CheckboxListTile(
+                    title: Text('점심 (12시 ~ 1시)'),
+                    value: isTodayLunchSelected,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        isTodayLunchSelected = value!;
+                      });
+                    },
+                  )
+                : SizedBox(),
+            now.isBefore(todayEvening.subtract(Duration(hours: 2)))
+                ? CheckboxListTile(
+                    title: Text('저녁 (6시 ~ 7시)'),
+                    value: isTodayEveningSelected,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        isTodayEveningSelected = value!;
+                      });
+                    },
+                  )
+                : SizedBox(),
+          ],
+        ),
         SizedBox(height: 20),
         Text(
           '내일 (${DateFormat('MM/dd').format(tomorrowLunch)})',
@@ -267,10 +282,64 @@ class _OrderScreenState extends State<OrderScreen> {
             });
           },
         ),
+        _buildSelectMenu(),
       ],
     );
   }
-  Widget _buildWeekOrder(){
+
+  Widget _buildSelectMenu() {
+
+    return (isTodayLunchSelected ||
+        isTodayEveningSelected ||
+        isTomorrowLunchSelected ||
+        isTomorrowEveningSelected)
+        ? Column(
+      children: [
+        Container(
+                width: double.infinity,
+                height: 50,
+                color: Colors.grey[200],
+                child: const Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Center(
+                      child: Text(
+                        '선택하신 날짜에 받고싶은 도시락을 정해주세요',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    )),
+              ),
+        Text(
+          '오늘 (${DateFormat('MM/dd').format(now)})',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        isTodayLunchSelected
+            ? Column(
+          children: [
+            CheckboxListTile(
+              title: Text('점심 (12시 ~ 1시)'),
+              value: isTodayLunchSelected,
+              onChanged: (bool? value) {
+                setState(() {
+                  isTodayLunchSelected = value!;
+                });
+              },
+            ),
+            //_buildMenuList(),
+          ],
+        )
+            : SizedBox(),
+        Text(
+          '내일 (${DateFormat('MM/dd').format(tomorrowLunch)})',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+      ],
+    ) : SizedBox();
+  }
+
+  Widget _buildWeekOrder() {
     return SizedBox();
   }
 }
