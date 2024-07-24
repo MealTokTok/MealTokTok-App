@@ -1,8 +1,9 @@
+import 'dart:math';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hankkitoktok/screen/0_login_and_set_address/0_login_screen.dart';
-import 'package:hankkitoktok/screen/2_home/0_home_screen.dart';
 import 'package:hankkitoktok/const/color.dart';
 import 'package:hankkitoktok/screen/2_home/0_home.dart';
 import 'package:hankkitoktok/screen/2_home/1_home_screen.dart';
@@ -112,6 +113,25 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
+  //logout카카오 로그아웃
+  Future<void> logout() async {
+    bool logoutSuccessful = false;
+
+    try {
+      await UserApi.instance.logout();
+      logoutSuccessful = true;
+      print('로그아웃 성공, SDK에서 토큰 삭제');
+    } catch (error) {
+      print('로그아웃 실패, SDK에서 토큰 삭제 $error');
+    }
+
+    // if(logoutSuccessful){
+    //   Navigator.of(context).pushReplacement(MaterialPageRoute(
+    //       builder: (context)=>const LoginPage(),));
+    // }
+
+  }
 
   // This widget is the root of your application.
   @override

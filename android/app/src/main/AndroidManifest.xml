@@ -10,7 +10,7 @@
 
     <application
         android:label="hankkitoktok"
-        android:name="${applicationName}"
+        android:name="hankkitoktok"
         android:icon="@mipmap/ic_launcher">
 
         <activity
