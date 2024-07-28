@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
 class NotificationScreen extends StatefulWidget {
@@ -10,28 +9,97 @@ class NotificationScreen extends StatefulWidget {
 }
 
 class _NotificationScreenState extends State<NotificationScreen> {
+  List<Notification> notifications = [];
+  int count = 1;
+
+  @override
+  void initState() {
+    addNotify();
+    super.initState();
+  }
+
+  void addNotify() {
+    debugPrint('addNotify');
+    notifications.addAll(getTestData(count));
+    count++;
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SizedBox();
+    return Scaffold(
+        appBar: AppBar(
+          surfaceTintColor: Colors.transparent,
+          title: const Text('알림'),
+        ),
+        body: SafeArea(
+            child: Column(
+          children: [
+            _buildNotificationList(),
+            _buildButton(),
+          ],
+        )));
+  }
+
+  Widget _buildNotificationList() {
+    return Expanded(
+      child: ListView.builder(
+        itemCount: notifications.length,
+        itemBuilder: (context, index) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(notifications[index].title,
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 5),
+                      Text(notifications[index].body, maxLines: 3),
+                      const SizedBox(height: 5),
+                      Text(notifications[index].formatEntireDateTime(),
+                          style: const TextStyle(color: Colors.grey)),
+                    ],
+                  )),
+              Divider(color: Colors.grey[300]),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildButton() {
+    return SizedBox(
+      height: 50,
+      child: Center(
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            maximumSize: const Size(double.infinity, 40),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            backgroundColor: Colors.grey[300],
+            elevation: 0,
+          ),
+          focusNode: FocusNode(),
+          onPressed: addNotify,
+          child: const Text('이전 알림 더보기', style: TextStyle(color: Colors.black)),
+        ),
+      ),
+    );
   }
 }
 
-enum Type {
-  onDelivery, // 7월 3일(수) 점심식사가 12시에 배달되어요!
-  successDelivery, // 7월 3일(수) 점심식사가 배달 완료 되었어요!
-  washingService, //7월 3일(수) 저녁 6시 전까지수거함에 용기를 넣어주세요! (풀대접 서비스)
-  successedPay, // 결제가 확인되었습니다.
-  canceledPay, // 결제가 취소되었습니다.
-}
-
 class Notification {
-  final Type type;
   final String title;
   final String body;
   final DateTime time;
 
   Notification({
-    required this.type,
     required this.title,
     required this.body,
     required this.time,
@@ -39,120 +107,50 @@ class Notification {
 
   factory Notification.fromJson(Map<String, dynamic> json) {
     return Notification(
-      type: json['type'],
       title: json['title'],
       body: json['body'],
       time: DateTime.parse(json['time']),
     );
   }
 
-  String formatDateTime(DateTime dateTime) {
-    return DateFormat('M월 d일(E)', 'ko_KR').format(dateTime);
+  String formatEntireDateTime() {
+    return DateFormat('MM월 dd일 hh:mm', 'ko_KR').format(time);
   }
-  String formatEntireDateTime(DateTime dateTime) {
-    return DateFormat('MM월 dd일 hh:mm', 'ko_KR').format(dateTime);
-  }
+}
 
-  Widget getList() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: Colors.black.withOpacity(0.2),
-          ),
-          top: BorderSide(
-            color: Colors.black.withOpacity(0.2),
-          ),
-          left: BorderSide(
-            color: Colors.black.withOpacity(0.2),
-          ),
-          right: BorderSide(
-            color: Colors.black.withOpacity(0.2),
-          ),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _getText(),
-          const SizedBox(height: 8),
-          Text(
-            formatEntireDateTime(time),
-            style: const TextStyle(
-              fontSize: 12,
-              color: Colors.grey,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _getText() {
-    String date = formatDateTime(time);
-    String meal = time.hour == 12 ? "점심식사" : "저녁식사";
-    String hour = time.hour == 12 ? "12시" : "19시";
-
-    switch (type) {
-      case Type.onDelivery:
-        return RichText(
-          text: TextSpan(
-            children: <TextSpan>[
-              TextSpan(text: '$date $meal가 '),
-              TextSpan(
-                  text: hour, style: TextStyle(fontWeight: FontWeight.bold)),
-              TextSpan(text: '에 배달되어요!'),
-            ],
-          ),
-        );
-      case Type.successDelivery:
-        return RichText(
-          text: TextSpan(
-            children: <TextSpan>[
-              TextSpan(text: '$date $meal가 '),
-              TextSpan(
-                  text: '배달 완료', style: TextStyle(fontWeight: FontWeight.bold)),
-              TextSpan(text: ' 되었어요!'),
-            ],
-          ),
-        );
-      case Type.washingService:
-        return RichText(
-          text: TextSpan(
-            children: <TextSpan>[
-              TextSpan(text: '$date 저녁 '),
-              TextSpan(
-                  text: '$time 전 ',
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-              TextSpan(text: '까지 수거함에 용기를 넣어주세요! (풀대접 서비스)'),
-            ],
-          ),
-        );
-      case Type.successedPay:
-        return RichText(
-          text: TextSpan(
-            children: <TextSpan>[
-              TextSpan(text: ''),
-              TextSpan(
-                  text: '결제가 확인',
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-              TextSpan(text: '되었습니다.'),
-            ],
-          ),
-        );
-      case Type.canceledPay:
-        return RichText(
-          text: TextSpan(
-            children: <TextSpan>[
-              TextSpan(text: ''),
-              TextSpan(
-                  text: '결제가 취소',
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-              TextSpan(text: '되었습니다.'),
-            ],
-          ),
-        );
+List<Notification> getTestData(int suffix) {
+  List<Map<String, dynamic>> testData = [
+    {
+      "title": "회의 알림 $suffix",
+      "body": "오전 10시에 회의가 있습니다. $suffix",
+      "time": "2024-07-18T11:00:00Z"
+    },
+    {
+      "title": "회의 알림 $suffix",
+      "body": "오전 10시에 회의가 있습니다. $suffix",
+      "time": "2024-07-18T11:00:00Z"
+    },
+    {
+      "title": "회의 알림 $suffix",
+      "body": "오전 10시에 회의가 있습니다. $suffix",
+      "time": "2024-07-18T11:00:00Z"
+    },
+    {
+      "title": "점심 시간 $suffix",
+      "body": "점심 시간이 시작되었습니다. $suffix",
+      "time": "2024-07-18T12:33:00Z"
+    },
+    {
+      "title": "운동 시간 $suffix",
+      "body": "오후 4시에 운동 시간이 있습니다. $suffix",
+      "time": "2024-07-18T16:00:00Z"
+    },
+    {
+      "title": "운동 시간 $suffix",
+      "body": "오후 4시에 운동 시간이 있습니다. $suffix",
+      "time": "2024-07-18T16:00:00Z"
     }
-  }
+  ];
+
+  return testData.map((data) => Notification.fromJson(data)).toList();
 }
