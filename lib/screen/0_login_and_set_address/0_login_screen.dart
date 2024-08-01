@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hankkitoktok/screen/0_login_and_set_address/temporary_adress.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 
 class LoginPage extends StatelessWidget {
@@ -37,9 +38,9 @@ class LoginPage extends StatelessWidget {
                     //   ),
                     // ),
                     InkWell(
-                  onTap: () {
-                    signInKaKao();
-                  },
+                      onTap: () async {
+                        await signInKaKao(context);
+                      },
                   child: Image.asset(
                     'assets/images/kakao_login.png',
                     fit: BoxFit.cover,
@@ -83,7 +84,7 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Future<void> signInKaKao() async {
+  Future<void> signInKaKao(BuildContext context) async {
 // 카카오 로그인 구현 예제
 
 // 카카오톡 실행 가능 여부 확인
@@ -92,7 +93,21 @@ class LoginPage extends StatelessWidget {
       try {
         await UserApi.instance.loginWithKakaoTalk().then((value){
           print('value from kakao $value');
-          //여기에 페이지 이동 넣기
+          print("access token: ${value.accessToken}");
+          print("expires_at: ${value.expiresAt}");
+          print("refresh token: ${value.refreshToken}");
+          print("refresh token expires at: ${value.refreshTokenExpiresAt}");
+          print("scopes: ${value.scopes}");
+          print("-------idToken-------");
+          print("id_token: ${value.idToken}");
+          print("---------------------");
+
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //       builder: (context) =>
+          //           TemporaryAdress(token: value)),
+          // );
         });
         print('카카오톡으로 로그인 성공');
       } catch (error) {
