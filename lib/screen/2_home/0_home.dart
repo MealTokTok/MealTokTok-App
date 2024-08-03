@@ -24,6 +24,7 @@ class _HomeState extends State<Home> {
     String? fcmToken = await FirebaseMessaging.instance.getToken();
     debugPrint(fcmToken ?? 'null');
   }
+
   @override
   void initState() {
     // TODO: 처음 들어갔을 때, 사용자 정보 가져오기
@@ -34,10 +35,10 @@ class _HomeState extends State<Home> {
 
       //Todo: 페이지 추가
       const Text(
-        'Index 1: 메뉴담기',
+        'Index 1: 반찬구성',
       ),
       const Text(
-        'Index 2: 한끼 풀대접',
+        'Index 2: 도시락 주문',
       ),
       const Text(
         'Index 1: 주문내역',
@@ -66,41 +67,58 @@ class _HomeState extends State<Home> {
   }
 
   Widget _buildBottomNavigationBar(int selectedIndex) {
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: ImageIcon(
-              AssetImage('assets/images/2_home/bot_nav_home.png')),
-          label: '홈',
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
         ),
-        BottomNavigationBarItem(
-          icon: ImageIcon(
-              AssetImage('assets/images/2_home/bot_nav_menu.png')),
-          label: '메뉴담기',
-        ),
-        BottomNavigationBarItem(
-          icon: ImageIcon(
-              AssetImage('assets/images/2_home/bot_nav_menu.png')),
-          label: '한끼 풀대접',
-        ),
-        BottomNavigationBarItem(
-          icon: ImageIcon(
-              AssetImage('assets/images/2_home/bot_nav_order.png')),
-          label: '주문내역',
-        ),
-        BottomNavigationBarItem(
-          icon: ImageIcon(AssetImage('assets/images/2_home/bot_nav_my.png')),
-          label: '마이페이지',
-        ),
-      ],
-      currentIndex: selectedIndex,
-      onTap: _onItemTapped,
-      selectedItemColor: Colors.black,
-      unselectedItemColor: Colors.grey,
-      selectedLabelStyle: const TextStyle(color: Colors.black),
-      unselectedLabelStyle: const TextStyle(color: Colors.grey),
-      showUnselectedLabels: true,
+      ),
+      child: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon:
+                ImageIcon(AssetImage('assets/images/2_home/bot_nav_home.png')),
+            label: '홈',
+            activeIcon: ImageIcon(
+                AssetImage('assets/images/2_home/bot_nav_home_selected.png')),
+          ),
+          BottomNavigationBarItem(
+            icon:
+                ImageIcon(AssetImage('assets/images/2_home/bot_nav_menu.png')),
+            label: '반찬구성',
+            activeIcon: ImageIcon(
+                AssetImage('assets/images/2_home/bot_nav_menu_selected.png')),
+          ),
+          BottomNavigationBarItem(
+            icon:
+                ImageIcon(AssetImage('assets/images/2_home/bot_nav_order.png')),
+            label: '도시락주문',
+            activeIcon: ImageIcon(
+                AssetImage('assets/images/2_home/bot_nav_order_selected.png')),
+          ),
+          BottomNavigationBarItem(
+            icon: ImageIcon(
+                AssetImage('assets/images/2_home/bot_nav_details.png')),
+            label: '주문내역',
+            activeIcon: ImageIcon(AssetImage(
+                'assets/images/2_home/bot_nav_details_selected.png')),
+          ),
+          BottomNavigationBarItem(
+            icon: ImageIcon(AssetImage('assets/images/2_home/bot_nav_my.png')),
+            label: 'my',
+            activeIcon: ImageIcon(
+                AssetImage('assets/images/2_home/bot_nav_my_selected.png')),
+          ),
+        ],
+        currentIndex: selectedIndex,
+        onTap: _onItemTapped,
+        selectedLabelStyle: const TextStyle(color: Colors.black),
+        unselectedLabelStyle: const TextStyle(color: Colors.grey),
+        showUnselectedLabels: true,
+      ),
     );
   }
 }

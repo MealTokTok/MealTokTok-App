@@ -96,17 +96,18 @@ class LoginPage extends StatelessWidget {
         await UserApi.instance.loginWithKakaoTalk().then((value){
 
           print('value from kakao $value');
+          String accessToken = value.accessToken;
+          String? idToken = value.idToken;
 
+          if(idToken == null){
+            throw('null token');
+          }
 
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(
-          //       builder: (context) =>
-          //           TemporaryAdress(token: value)),
-          // );
-
+          Navigator.push(context, MaterialPageRoute(builder: (context) => TemporaryAddress(socialAccessToken: accessToken, socialIdToken: idToken)));
+          print('카카오톡으로 로그인 성공');
         });
-        print('카카오톡으로 로그인 성공');
+
+
       } catch (error) {
         print('카카오톡으로 로그인 실패 $error');
 
@@ -119,17 +120,35 @@ class LoginPage extends StatelessWidget {
         try {
           await UserApi.instance.loginWithKakaoAccount().then((value){
             print('value from kakao $value');
-            //여기에 이동 경로 넣기
+            String accessToken = value.accessToken;
+            String? idToken = value.idToken;
+
+            if(idToken == null){
+              throw('null token');
+            }
+            Navigator.push(context, MaterialPageRoute(builder: (context) => TemporaryAddress(socialAccessToken: accessToken, socialIdToken: idToken)));
+            print('카카오계정으로 로그인 성공');
           });
-          print('카카오계정으로 로그인 성공');
+
         } catch (error) {
           print('카카오계정으로 로그인 실패 $error');
         }
       }
     } else {
       try {
-        await UserApi.instance.loginWithKakaoAccount();
-        print('카카오계정으로 로그인 성공');
+        await UserApi.instance.loginWithKakaoAccount().then((value){
+          print('value from kakao $value');
+          String accessToken = value.accessToken;
+          String? idToken = value.idToken;
+
+          if(idToken == null){
+            throw('null token');
+          }
+
+          Navigator.push(context, MaterialPageRoute(builder: (context) => TemporaryAddress(socialAccessToken: accessToken, socialIdToken: idToken)));
+          print('카카오계정으로 로그인 성공');
+        });
+
       } catch (error) {
         print('카카오계정으로 로그인 실패 $error');
       }

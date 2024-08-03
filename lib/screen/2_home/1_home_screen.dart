@@ -30,49 +30,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void _showAddressDialog() {
-    showDialog<String>(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        surfaceTintColor: Colors.white,
-        title: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('배달 주소를\n설정하지 않았어요!', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            Text('배달 주소를 설정하고\n반찬도시락을 주문해보세요!', style: TextStyle(fontSize: 16)),
-            SizedBox(height: 10),
-            Center(
-              child: Image(
-                image: AssetImage('assets/images/2_home/alert_dialog_delivery.png'),
-              ),
-            )
-          ],
-        ),
-        actions: <Widget>[
-          ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size(double.infinity, 50),
-                backgroundColor: PRIMARY_COLOR,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              onPressed: (){
-                debugPrint("배달 주소 설정 버튼 클릭");
-                //Todo: 배달주소 설정 페이지 이동
-              },
-              child: const Center(
-                child: Text(
-                  '주소 설정하기',
-                  style: TextStyle(fontSize: 12, color: Colors.white),
-                ),
-              )
-          )
-        ],
-      ),
-    );
-  }
-
   @override
   void initState() {
     // TODO: 처음 들어갔을 때, 사용자 정보 가져오기
@@ -153,6 +110,48 @@ class _HomeScreenState extends State<HomeScreen> {
           },
         ),
       ],
+    );
+  }
+  void _showAddressDialog() {
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        surfaceTintColor: Colors.white,
+        title: const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('배달 주소를\n설정하지 않았어요!', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            Text('배달 주소를 설정하고\n반찬도시락을 주문해보세요!', style: TextStyle(fontSize: 16)),
+            SizedBox(height: 10),
+            Center(
+              child: Image(
+                image: AssetImage('assets/images/2_home/alert_dialog_delivery.png'),
+              ),
+            )
+          ],
+        ),
+        actions: <Widget>[
+          ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size(double.infinity, 50),
+                backgroundColor: PRIMARY_COLOR,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              onPressed: (){
+                debugPrint("배달 주소 설정 버튼 클릭");
+                //Todo: 배달주소 설정 페이지 이동
+              },
+              child: const Center(
+                child: Text(
+                  '주소 설정하기',
+                  style: TextStyle(fontSize: 12, color: Colors.white),
+                ),
+              )
+          )
+        ],
+      ),
     );
   }
 

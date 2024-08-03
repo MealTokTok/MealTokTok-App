@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 //회원가입
-Future<void> signUp(String address, double latitude, double longitude,
+Future<bool> signUp(String address, double latitude, double longitude,
     String accessToken, String idToken, String deviceToken) async {
   try {
     Uri uri = Uri.parse('$BASE_URL/api/v1/auth/oauth/sign-up');
@@ -31,64 +31,37 @@ Future<void> signUp(String address, double latitude, double longitude,
       SharedPreferences prefs = await SharedPreferences.getInstance();
       var responseBody = jsonDecode(utf8.decode(response.bodyBytes));
 
-      //prefs.setString("access_token", responseBody['token']['access']);
-      //prefs.setString("refresh_token", responseBody['token']['refresh']);
-
+      //응답 예외처리
+      if(responseBody['responseCode']!="SUCCESS"){
+        throw Exception('회원가입 실패: ${responseBody['responseCode']}');
+      }
+      debugPrint(response.headers.toString());
       debugPrint(responseBody.toString());
+      await prefs.setString("access_token", response.headers['access-token']??"");
+      await prefs.setString("refresh_token", response.headers['refresh-token']??"");
+
+      return true;
+
 
       //회원가입 성공하면 로그인 진행
-      await login(accessToken, idToken, deviceToken);
+      //await login(accessToken, idToken, deviceToken);
 
     } else {
       // 에러 처리
-      debugPrint('인증 실패: ${response.body}');
-      debugPrint('Error: ${response.statusCode}');
+      throw Exception('회원가입 실패: ${response.statusCode}');
+
     }
   } catch (e) {
     // 네트워크 요청 실패 시 처리
     debugPrint('네트워크 요청 실패: $e');
+    return false;
   }
 }
 
-// Future<bool> getIsUser(String idToken) async {
-//   SharedPreferences prefs = await SharedPreferences.getInstance(); // 저장소
-//
-//   String accessToken = prefs.getString('access_token') ?? '';
-//   Uri uri = Uri.parse('$BASE_URL/api/v1/auth/oauth/can-sign-up');
-//   http.Response response;
-//   Map<String, String> header = {
-//     'Content-Type': 'application/json',
-//     'idToken': '$idToken',
-//   };
-//   response = await http.get(uri, headers: header);
-//
-//   if (response.statusCode == 401) {
-//     // access token이 만료되었을 경우,
-//     await tokenRefresh(prefs); // refresh token으로 token을 refresh한 후 다시 요청
-//     bool serviceUser = await getIsUser(idToken);
-//     debugPrint('401111111111111');
-//
-//     return serviceUser;
-//   } else if (response.statusCode == 400) {
-//     // access token이 invalid할 경우
-//     debugPrint(response.body);
-//     debugPrint('400000000000');
-//   }
-//   //401: 토큰 만료, 400: 인증 에러, 200: 성공, else: 나머지 에러
-//   if (response.statusCode == 200) {
-//     var responseBody = jsonDecode(utf8.decode(response.bodyBytes));
-//     return responseBody.result;
-//   } else {
-//     debugPrint(response.statusCode.toString());
-//     debugPrint('2222222222200');
-//     return false;
-//   }
-// }
 
 //등록된 유저인지 확인
 Future<bool> getIsUser(String idToken) async {
   SharedPreferences prefs = await SharedPreferences.getInstance(); // 저장소
-  String accessToken = prefs.getString('access_token') ?? '';
 
   Uri uri =
       Uri.parse('$BASE_URL/api/v1/auth/oauth/can-sign-up?idToken=$idToken');
@@ -114,11 +87,11 @@ Future<bool> getIsUser(String idToken) async {
     //401: 토큰 만료, 400: 인증 에러, 200: 성공, else: 나머지 에러
     else if (response.statusCode == 200) {
       var responseBody = jsonDecode(utf8.decode(response.bodyBytes));
+      debugPrint(responseBody.toString());
       debugPrint('200');
       return true;
     } else {
-      debugPrint('Error: ${response.statusCode}');
-      return false;
+      throw('Error: ${response.statusCode}');
     }
   } catch (e) {
       debugPrint('Request failed: $e');
@@ -127,29 +100,12 @@ Future<bool> getIsUser(String idToken) async {
 }
 
 
-// Future<void> tokenRefresh(SharedPreferences prefs) async {
-//   Uri uri = Uri.parse('$BASE_URL/api/token/refresh/');
-//   String refreshToken = prefs.getString('refresh_token') ?? '';
-//   // {
-//   //   "refresh": "enskagharktjaslkyhrselkygjdslkures;atawekjrhlsrj;egahejorv"
-//   // }
-//   var data = jsonEncode({
-//     'refresh': refreshToken,
-//   });
-//
-//   http.Response refreshResponse = await http.post(uri, headers: {
-//     'Content-Type': 'application/json',
-//   });
-//   var responseBody = jsonDecode(refreshResponse.body);
-//   await prefs.setString("access_token", responseBody['token']['access']);
-//   await prefs.setString("refresh_token", responseBody['token']['refresh']);
-// }
-
-
 //로그인
-Future<void> login(String accessToken, String idToken, String deviceToken) async {
+Future<bool> login(String accessToken, String idToken, String deviceToken) async {
   Uri authUri = Uri.parse('$BASE_URL/api/v1/auth/oauth/login'); // HTTPS 사용 권장
-  var queryParams = {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  Map<String, dynamic> queryParams = {
     'oAuthTokens': jsonEncode({
       'accessToken': accessToken,
       'idToken': idToken,
@@ -158,44 +114,50 @@ Future<void> login(String accessToken, String idToken, String deviceToken) async
   };
 
   try {
-    http.Response authResponse = await http.post(
+    http.Response authResponse = await http.get(
       authUri.replace(queryParameters: queryParams),
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+      },
     );
 
     if (authResponse.statusCode == 200) {
-      //SharedPreferences prefs = await SharedPreferences.getInstance();
-      var responseBody = jsonDecode(authResponse.body);
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var responseHeader = authResponse.headers;
+      var responseBody = jsonDecode(utf8.decode(authResponse.bodyBytes));
       debugPrint('성공');
-      // json web token를 활용하여 access_token, refresh_token을 로컬 스토리지에 저장
-      //prefs.setString("access_token", responseBody['token']['access']);
-      //prefs.setString("refresh_token", responseBody['token']['refresh']);
+      debugPrint("서비스 데이터: ${mapToString(responseBody)}");
 
-      //String? accessToken = prefs.getString("access_token");
-      // 유저 데이터 맵을 클래스로 변환
-      // ServiceUser serviceUser = await getServiceUser();
-      // MyInfo myInfo = Get.find();
-      // myInfo.setMyInfo(serviceUser);
+      if(responseHeader['access-token']==null || responseHeader['refresh-token']==null){
+        throw Exception('토큰이 없습니다.');
+      }
 
-      // if(serviceUser.user_name==''){ // 유저네임이 없을 경우 랜덤 생성
-      //   Uri uri = Uri.parse('https://nickname.hwanmoo.kr/?format=json&count=15');
-      //   http.Response response = await http.get(uri); //TODO: 랜덤 이름 생성기. 추후 자체서버 구현 필요
-      //   String username = 'invalid user';
-      //   for (String word in jsonDecode(response.body)['words']) {
-      //     if (word.length < 10) username = word;
-      //   }
-      //   DateTime now = await NTP.now();
-      //   String nowString = now.toIso8601String();
-      //   http.Response patchUser = await http.patch(uri,body:{"user_name":username, "updated_at": nowString});
-      //   if(patchUser.statusCode == 400);
-      // }
+      prefs.setString("access_token", responseHeader['access-token']!);
+      prefs.setString("refresh_token", responseHeader['refresh-token']!);
+
+      return true;
+
+
     } else {
       // 에러 처리
-      debugPrint('Authentication failed: ${authResponse.body}');
-      debugPrint('${authResponse.statusCode}');
+      var errorResponse = jsonDecode(utf8.decode(authResponse.bodyBytes));
+      throw Exception('로그인 실패: ${errorResponse['responseCode']}');
+
+
     }
   } catch (e) {
     // 네트워크 요청 실패 시 처리
     debugPrint('Error making authentication request: $e');
+    return false;
   }
+}
+
+//Map을 String으로 변환
+//테스트에만 사용
+String mapToString(Map<String, String> map) {
+  StringBuffer buffer = StringBuffer();
+  map.forEach((key, value) {
+    buffer.write('$key: $value\n');
+  });
+  return buffer.toString();
 }
