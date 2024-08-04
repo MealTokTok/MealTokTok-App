@@ -38,9 +38,11 @@ class LoginPage extends StatelessWidget {
                     //   ),
                     // ),
                     InkWell(
+
                       onTap: () async {
                         await signInKaKao(context);
                       },
+
                   child: Image.asset(
                     'assets/images/kakao_login.png',
                     fit: BoxFit.cover,
@@ -92,15 +94,9 @@ class LoginPage extends StatelessWidget {
     if (await isKakaoTalkInstalled()) {
       try {
         await UserApi.instance.loginWithKakaoTalk().then((value){
+
           print('value from kakao $value');
-          print("access token: ${value.accessToken}");
-          print("expires_at: ${value.expiresAt}");
-          print("refresh token: ${value.refreshToken}");
-          print("refresh token expires at: ${value.refreshTokenExpiresAt}");
-          print("scopes: ${value.scopes}");
-          print("-------idToken-------");
-          print("id_token: ${value.idToken}");
-          print("---------------------");
+
 
           // Navigator.push(
           //   context,
@@ -108,6 +104,7 @@ class LoginPage extends StatelessWidget {
           //       builder: (context) =>
           //           TemporaryAdress(token: value)),
           // );
+
         });
         print('카카오톡으로 로그인 성공');
       } catch (error) {

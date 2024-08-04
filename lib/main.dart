@@ -12,6 +12,8 @@ import 'package:hankkitoktok/screen/3_menu_choice/0_meal_menu_screen.dart';
 import 'package:hankkitoktok/screen/3_menu_choice/0_set_meal_name_screen.dart';
 import 'package:hankkitoktok/screen/3_menu_choice/1_choice_menu_screen.dart';
 import 'package:hankkitoktok/screen/3_menu_choice/2_order_screen.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -100,6 +102,7 @@ void _notificationSetting(){
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting("ar_SA", null);
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );

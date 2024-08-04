@@ -2,8 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hankkitoktok/controller/tmpdata.dart';
+import 'package:get/get.dart';
 
 import '../../const/color.dart';
+import '2_notification_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -147,6 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
           icon: Image.asset('assets/images/2_home/app_bar_alarm.png'),
           onPressed: () {
             // Todo: 두번째 버튼 눌렀을 때 로직
+            Get.to(() => NotificationScreen());
           },
         ),
       ],
