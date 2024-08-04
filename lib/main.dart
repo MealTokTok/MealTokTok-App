@@ -8,6 +8,7 @@ import 'package:hankkitoktok/const/color.dart';
 import 'package:hankkitoktok/screen/0_login_and_set_address/temporary_adress.dart';
 import 'package:hankkitoktok/screen/2_home/0_home.dart';
 import 'package:hankkitoktok/screen/2_home/1_home_screen.dart';
+import 'package:hankkitoktok/screen/3_menu_choice/0_meal_menu_screen.dart';
 import 'package:hankkitoktok/screen/3_menu_choice/0_set_meal_name_screen.dart';
 import 'package:hankkitoktok/screen/3_menu_choice/1_choice_menu_screen.dart';
 import 'package:hankkitoktok/screen/3_menu_choice/2_order_screen.dart';
@@ -155,7 +156,7 @@ class MyApp extends StatelessWidget {
         //   page: () => CommunityScreen(),
         // ),
       ],
-      home: TemporaryAddress(),
+      home: MealMenuScreen(),
     );
   }
 }
