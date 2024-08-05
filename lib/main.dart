@@ -158,7 +158,7 @@ class MyApp extends StatelessWidget {
         //   page: () => CommunityScreen(),
         // ),
       ],
-      home: LoginPage(),
+      home: Home(),
     );
   }
 }

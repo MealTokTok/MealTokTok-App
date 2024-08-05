@@ -1,11 +1,5 @@
-class MealMenu {
-  String name;
-  int price;
-  List<String> memuList;
-  List<String> menuUrlList;
-
-  MealMenu(this.name, this.price, this.memuList, this.menuUrlList);
-}
+import 'package:hankkitoktok/models/meal_menu/delivered_meal_menu.dart';
+import 'package:hankkitoktok/models/meal_menu/meal_menu.dart';
 
 
 List<MealMenu> mealMenuList = [
@@ -54,3 +48,16 @@ List<MealMenu> mealMenuList = [
     'https://picsum.photos/80/80'
   ])
 ];
+
+DeliveredMealMenu deliveredMealMenu = DeliveredMealMenu(
+    '아침 콤보',
+    6000,
+    ['팬케이크', '베이컨', '계란', '커피'],
+    [
+      'https://picsum.photos/80/80',
+      'https://picsum.photos/80/80',
+      'https://picsum.photos/80/80',
+      'https://picsum.photos/80/80'
+    ],
+    203,
+    DateTime.now());

@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:hankkitoktok/models/user/user_data.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 
+import '../2_home/0_home.dart';
+
 class TemporaryAddress extends StatefulWidget {
   // OAuthToken token;
   // TemporaryAdress({required this.token, super.key});
@@ -81,7 +83,15 @@ class _TemporaryAdressState extends State<TemporaryAddress> {
             ElevatedButton(onPressed: () async{
               bool signUpStatus = await signUp(address, latitude, longitude, accessToken, idToken, deviceToken);
               if(signUpStatus){
-                MaterialPageRoute(builder: (context) => HomeScreen());
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return  Home();
+                    },
+                  ),
+                      (route) => false,
+                );
               }
               else{
                 debugPrint('회원가입 실패');
@@ -91,10 +101,18 @@ class _TemporaryAdressState extends State<TemporaryAddress> {
             ElevatedButton(onPressed: () async{
               bool loginStatus = await login(accessToken, idToken, deviceToken);
               if(loginStatus){
-                MaterialPageRoute(builder: (context) => HomeScreen());
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return Home();
+                    },
+                  ),
+                      (route) => false,
+                );
               }
               else{
-                debugPrint('로그인 실패');
+                debugPrint('실패');
               }
             }, child: Text('로그인')),
           ],

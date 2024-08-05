@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/base_model.dart';
@@ -40,6 +40,11 @@ Future<bool> networkRequest(String detailUri,RequestType requestType, Map<String
       var responseBody = jsonDecode(utf8.decode(response.bodyBytes));
 
       //슬라이딩 토큰
+
+      if(response.headers['access-token'] == null || response.headers['refresh-token'] == null){
+        throw Exception('토큰이 없습니다.');
+      }
+
       await prefs.setString("access_token", responseBody['access']);
       await prefs.setString("refresh_token", responseBody['refresh']);
 

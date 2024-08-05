@@ -1,7 +1,7 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:hankkitoktok/const/strings.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 //회원가입
@@ -105,11 +105,9 @@ Future<bool> login(String accessToken, String idToken, String deviceToken) async
   Uri authUri = Uri.parse('$BASE_URL/api/v1/auth/oauth/login'); // HTTPS 사용 권장
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
-  Map<String, dynamic> queryParams = {
-    'oAuthTokens': jsonEncode({
-      'accessToken': accessToken,
-      'idToken': idToken,
-    }),
+  Map<String, String> queryParams = {
+    'accessToken': accessToken,
+    'idToken': idToken,
     'device-token': deviceToken,
   };
 
@@ -117,8 +115,10 @@ Future<bool> login(String accessToken, String idToken, String deviceToken) async
     http.Response authResponse = await http.get(
       authUri.replace(queryParameters: queryParams),
       headers: {
+        'accept': '*/*',
         'Content-Type': 'application/json',
       },
+
     );
 
     if (authResponse.statusCode == 200) {
@@ -126,7 +126,7 @@ Future<bool> login(String accessToken, String idToken, String deviceToken) async
       var responseHeader = authResponse.headers;
       var responseBody = jsonDecode(utf8.decode(authResponse.bodyBytes));
       debugPrint('성공');
-      debugPrint("서비스 데이터: ${mapToString(responseBody)}");
+      debugPrint(responseBody.toString());
 
       if(responseHeader['access-token']==null || responseHeader['refresh-token']==null){
         throw Exception('토큰이 없습니다.');
