@@ -4,20 +4,14 @@ import 'package:get/get.dart';
 import 'package:hankkitoktok/component/four_image.dart';
 import 'package:hankkitoktok/const/color.dart';
 import 'package:hankkitoktok/controller/tmpdata.dart';
-import 'package:hankkitoktok/models/meal_menu/delivered_meal_menu.dart';
+import 'package:hankkitoktok/const/style.dart';
+import 'package:hankkitoktok/models/meal_menu/ordered_meal_menu.dart';
 import 'package:hankkitoktok/models/meal_menu/meal_menu.dart';
 import 'package:hankkitoktok/screen/2_home/2_notification_screen.dart';
 
-enum ScreenStatus {
-  AFTER_DELIVERY,
-  MENU_EMPTY,
-  MENU_SELECTED,
-  ON_DELIVERY
-}
-enum TimeStatus {
-  LUNCH,
-  DINNER
-}
+enum ScreenStatus { AFTER_DELIVERY, MENU_EMPTY, MENU_SELECTED, ON_DELIVERY }
+
+enum TimeStatus { LUNCH, DINNER }
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -39,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int containerCount = 30;
 
   int testStatus = 1;
+
   //--------sampleData----------
 
   List<MealMenu> mealMenuListEmpty = [];
@@ -52,7 +47,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _checkMenu() {
-    if (testStatus == 1) { //Todo 조건: menu empty
+    if (testStatus == 1) {
+      //Todo 조건: menu empty
       setState(() {
         screenStatus = ScreenStatus.MENU_EMPTY;
         _mainTitle = '반찬도시락\n메뉴를 선택해볼까요?';
@@ -60,7 +56,8 @@ class _HomeScreenState extends State<HomeScreen> {
         _buttonString = '반찬도시락 메뉴담기';
       });
     }
-    if (testStatus == 2) { //Todo 조건: mealmenu is not empty
+    if (testStatus == 2) {
+      //Todo 조건: mealmenu is not empty
       setState(() {
         screenStatus = ScreenStatus.MENU_SELECTED;
         _mainTitle = '반찬도시락을\n주문해볼까요?';
@@ -68,7 +65,8 @@ class _HomeScreenState extends State<HomeScreen> {
         _buttonString = '주문하기';
       });
     }
-    if (testStatus == 3) {// Todo 조건: 배송 중, 점심
+    if (testStatus == 3) {
+      // Todo 조건: 배송 중, 점심
 
       setState(() {
         screenStatus = ScreenStatus.ON_DELIVERY;
@@ -148,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     screenStatus == ScreenStatus.ON_DELIVERY
                         ? _buildOnDelivery()
                         : screenStatus == ScreenStatus.AFTER_DELIVERY
-                            ? _buildAfterDelivery(deliveredMealMenu)
+                            ? _buildAfterDelivery(orderedMealMenu)
                             : screenStatus == ScreenStatus.MENU_EMPTY
                                 ? _buildMenuEmpty()
                                 : _buildMenuList(mealMenuList),
@@ -183,10 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     addressList.isNotEmpty
                         ? Text(
                             value,
-                            style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold),
+                            style: addressStyle,
                           )
                         : const Text(''),
                   ],
@@ -225,10 +220,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         child: Text(
                           cartCount.toString(),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 10,
-                          ),
+                          style: badgeStyle,
                         ),
                       ),
                     )
@@ -266,10 +258,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         child: Text(
                           alarmCount.toString(),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 10,
-                          ),
+                          style: badgeStyle,
                         ),
                       ),
                     )
@@ -290,13 +279,13 @@ class _HomeScreenState extends State<HomeScreen> {
       context: context,
       builder: (BuildContext context) => AlertDialog(
         surfaceTintColor: Colors.white,
-        title: const Column(
+        title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('배달 주소를\n설정하지 않았어요!',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-            Text('배달 주소를 설정하고\n반찬도시락을 주문해보세요!', style: TextStyle(fontSize: 20)),
-            SizedBox(height: 10),
+                style: dialogTitleStyle),
+            Text('배달 주소를 설정하고\n반찬도시락을 주문해보세요!', style: dialogContentStyle),
+            const SizedBox(height: 10),
             Center(
               child: Image(
                 image: AssetImage(
@@ -318,10 +307,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 debugPrint("배달 주소 설정 버튼 클릭");
                 //Todo: 배달주소 설정 페이지 이동
               },
-              child: const Center(
+              child: Center(
                 child: Text(
                   '주소 설정하기',
-                  style: TextStyle(fontSize: 12, color: Colors.white),
+                  style: buttonTextStyle,
                 ),
               ))
         ],
@@ -347,50 +336,32 @@ class _HomeScreenState extends State<HomeScreen> {
                     ? Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
+                          Text(
                             '다회용기를 보냉백에 넣어\n문앞에 놔주세요',
-                            style: TextStyle(fontSize: 20),
+                            style: bannerStyle1,
                           ),
                           const SizedBox(height: 10),
                           RichText(
                               text: TextSpan(children: [
-                            const TextSpan(
-                                text: '반납할 ',
-                                style: TextStyle(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black)),
+                            TextSpan(text: '반납할 ', style: bannerStyle4),
                             TextSpan(
                                 text: '다회용기 $containerCount개',
-                                style: const TextStyle(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                    color: PRIMARY_COLOR)),
+                                style: bannerStyle5),
                           ]))
                         ],
                       )
                     : Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
+                          Text(
                             '식사 후 귀찮은 설거지까지\n한끼톡톡에서 다!',
-                            style: TextStyle(fontSize: 20),
+                            style: bannerStyle1,
                           ),
                           const SizedBox(height: 10),
                           RichText(
-                              text: const TextSpan(children: [
-                            TextSpan(
-                                text: '한끼 풀대접',
-                                style: TextStyle(
-                                    fontSize: 32,
-                                    fontWeight: FontWeight.bold,
-                                    color: PRIMARY_COLOR)),
-                            TextSpan(
-                                text: ' 오픈!',
-                                style: TextStyle(
-                                    fontSize: 24,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold)),
+                              text: TextSpan(children: [
+                            TextSpan(text: '한끼 풀대접', style: bannerStyle2),
+                            TextSpan(text: ' 오픈!', style: bannerStyle3),
                           ]))
                         ],
                       ),
@@ -444,7 +415,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Center(
             child: Text(
           _buttonString,
-          style: const TextStyle(fontSize: 20, color: Colors.white),
+          style: buttonTextStyle,
         )));
   }
 
@@ -455,18 +426,21 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Text(
             _mainTitle,
-            style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+            style: mainTitleStyle,
           ),
           const SizedBox(height: 16),
           Text(
             _subTitle,
-            style: const TextStyle(fontSize: 20),
+            style: mainSubtitleStyle,
           ),
         ],
       ),
       const Expanded(
-        child: Padding(padding: EdgeInsets.only(top:32), child: Image(
-            image: AssetImage('assets/images/2_home/main_on_delivery.png')),),
+        child: Padding(
+          padding: EdgeInsets.only(top: 32),
+          child: Image(
+              image: AssetImage('assets/images/2_home/main_on_delivery.png')),
+        ),
       )
     ]);
   }
@@ -477,12 +451,12 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         Text(
           _mainTitle,
-          style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+          style: mainTitleStyle,
         ),
         const SizedBox(height: 16),
         Text(
           _subTitle,
-          style: const TextStyle(fontSize: 20),
+          style: mainSubtitleStyle,
         ),
         //_buildMenuList(mealMenuList),
       ],
@@ -499,49 +473,43 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildAfterDelivery(DeliveredMealMenu deliveredMealMenu) {
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text("배송된 반찬도시락", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black)),
-            Text("주문번호 ${deliveredMealMenu.orderNumber}", style: const TextStyle(fontSize: 20, color: Colors.grey)),
-          ]
-        ),
-        const SizedBox(height: 16),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            buildFourImage(deliveredMealMenu.menuUrlList, 80, 80),
-            const SizedBox(width: 16), //
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+  Widget _buildAfterDelivery(OrderedMealMenu orderedMealMenu) {
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        Text("배송된 반찬도시락", style: menuListTitleStyle),
+        Text("주문번호 ${orderedMealMenu.orderID}",
+            style: menuListTextButtonStyle),
+      ]),
+      const SizedBox(height: 16),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          buildFourImage(orderedMealMenu.menuUrlList, 80, 80),
+          const SizedBox(width: 16), //
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                orderedMealMenu.name,
+                style: orderMenuTitleStyle,
+                overflow: TextOverflow.ellipsis,
+              ),
+              Text(
+                "${orderedMealMenu.price}원",
+                style: orderPriceStyle,
+              ),
+              //객체 안에있는 리스트 수 만큼 메뉴 텍스트 추가
+              for (int i = 0; i < orderedMealMenu.menuList.length; i++)
                 Text(
-                  deliveredMealMenu.name,
-                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  overflow: TextOverflow.ellipsis,
+                  orderedMealMenu.menuList[i],
+                  style: orderMenuStyle,
                 ),
-                Text(
-                  "${deliveredMealMenu.price}원",
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: Colors.grey),
-                ),
-                //객체 안에있는 리스트 수 만큼 메뉴 텍스트 추가
-                for (int i = 0; i < deliveredMealMenu.menuList.length; i++)
-                  Text(
-                    deliveredMealMenu.menuList[i],
-                    style: const TextStyle(fontSize: 20, color: Colors.grey),
-                  ),
-              ],
-            ),
-          ],
-        ),
-        const SizedBox(height: 32),
-      ]
-    );
+            ],
+          ),
+        ],
+      ),
+      const SizedBox(height: 32),
+    ]);
   }
 
   Widget _buildMenuEmpty() {
@@ -558,7 +526,7 @@ class _HomeScreenState extends State<HomeScreen> {
     List<String> imageList = mealMenu.menuUrlList;
     return Column(
       children: [
-       buildFourImage(imageList, 60, 60),
+        buildFourImage(imageList, 60, 60),
         const SizedBox(height: 8),
         SizedBox(
           width: 120,
@@ -566,12 +534,12 @@ class _HomeScreenState extends State<HomeScreen> {
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(
               mealMenu.name,
-              style: const TextStyle(fontSize: 20),
+              style: orderMenuStyle,
               overflow: TextOverflow.ellipsis,
             ),
             Text(
               "${mealMenu.price}원",
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+              style: menuPriceStyle,
             ),
           ]),
         ),
@@ -586,17 +554,15 @@ class _HomeScreenState extends State<HomeScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text("내가 담은 반찬 도시락",
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+              Text("내가 담은 반찬 도시락", style: menuListTitleStyle),
               InkWell(
                   onTap: () {
                     //Todo: 메뉴 수정 페이지로 이동
                   },
-                  child: const Row(
+                  child: Row(
                     children: [
-                      Text("수정",
-                          style: TextStyle(fontSize: 20, color: Colors.grey)),
-                      Image(
+                      Text("수정", style: menuListTextButtonStyle),
+                      const Image(
                         image:
                             AssetImage('assets/images/2_home/arrow_right.png'),
                         height: 24,

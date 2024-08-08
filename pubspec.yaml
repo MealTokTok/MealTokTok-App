@@ -212,6 +212,7 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
+      - assets/images/1_my_page/
       - assets/images/2_home/
       - assets/images/kakao_login.png
       - assets/images/splash.png

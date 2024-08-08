@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:hankkitoktok/screen/0_login_and_set_address/0_login_screen.dart';
 import 'package:hankkitoktok/const/color.dart';
 import 'package:hankkitoktok/screen/0_login_and_set_address/temporary_adress.dart';
+import 'package:hankkitoktok/screen/1_my_page/1_order_histories_screen.dart';
 import 'package:hankkitoktok/screen/2_home/0_home.dart';
 import 'package:hankkitoktok/screen/2_home/1_home_screen.dart';
 import 'package:hankkitoktok/screen/3_menu_choice/0_set_meal_name_screen.dart';
@@ -158,7 +159,7 @@ class MyApp extends StatelessWidget {
         //   page: () => CommunityScreen(),
         // ),
       ],
-      home: Home(),
+      home: OrderHistoriesScreen(),
     );
   }
 }

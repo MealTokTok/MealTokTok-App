@@ -1,8 +1,7 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hankkitoktok/controller/tmpdata.dart';
+import 'package:hankkitoktok/const/style.dart';
 import 'package:hankkitoktok/models/meal_menu/meal_menu.dart';
 
 import '1_home_screen.dart';
@@ -168,10 +167,7 @@ class _HomeState extends State<Home> {
               color: Colors.grey[300],
               fontSize: 14,
             ),
-            selectedLabelStyle: const TextStyle(
-              color: Colors.black,
-              fontSize: 14,
-            ),
+            selectedLabelStyle: navBarStyle,
             showUnselectedLabels: true,
             backgroundColor: Colors.white,
           ),
