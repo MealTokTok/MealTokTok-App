@@ -3,6 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hankkitoktok/controller/tmpdata.dart';
+import 'package:hankkitoktok/models/meal_menu/meal_menu.dart';
 
 import '1_home_screen.dart';
 
@@ -24,6 +25,7 @@ class _HomeState extends State<Home> {
     String? fcmToken = await FirebaseMessaging.instance.getToken();
     debugPrint(fcmToken ?? 'null');
   }
+
   @override
   void initState() {
     // TODO: 처음 들어갔을 때, 사용자 정보 가져오기
@@ -34,10 +36,10 @@ class _HomeState extends State<Home> {
 
       //Todo: 페이지 추가
       const Text(
-        'Index 1: 메뉴담기',
+        'Index 1: 반찬구성',
       ),
       const Text(
-        'Index 2: 한끼 풀대접',
+        'Index 2: 도시락 주문',
       ),
       const Text(
         'Index 1: 주문내역',
@@ -66,41 +68,116 @@ class _HomeState extends State<Home> {
   }
 
   Widget _buildBottomNavigationBar(int selectedIndex) {
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: ImageIcon(
-              AssetImage('assets/images/2_home/bot_nav_home.png')),
-          label: '홈',
+    return Container(
+      padding: const EdgeInsets.only(top: 5),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
         ),
-        BottomNavigationBarItem(
-          icon: ImageIcon(
-              AssetImage('assets/images/2_home/bot_nav_menu.png')),
-          label: '메뉴담기',
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey[300]!,
+            blurRadius: 5.0,
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
         ),
-        BottomNavigationBarItem(
-          icon: ImageIcon(
-              AssetImage('assets/images/2_home/bot_nav_menu.png')),
-          label: '한끼 풀대접',
-        ),
-        BottomNavigationBarItem(
-          icon: ImageIcon(
-              AssetImage('assets/images/2_home/bot_nav_order.png')),
-          label: '주문내역',
-        ),
-        BottomNavigationBarItem(
-          icon: ImageIcon(AssetImage('assets/images/2_home/bot_nav_my.png')),
-          label: '마이페이지',
-        ),
-      ],
-      currentIndex: selectedIndex,
-      onTap: _onItemTapped,
-      selectedItemColor: Colors.black,
-      unselectedItemColor: Colors.grey,
-      selectedLabelStyle: const TextStyle(color: Colors.black),
-      unselectedLabelStyle: const TextStyle(color: Colors.grey),
-      showUnselectedLabels: true,
+        child: Theme(
+          data: Theme.of(context).copyWith(
+            canvasColor: Colors.white,
+          ),
+          child: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            items: <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Image.asset(
+                  'assets/images/2_home/bot_nav_home.png',
+                  width: 24.0, // 원하는 크기로 조정
+                  height: 24.0, // 원하는 크기로 조정
+                ),
+                label: '홈',
+                activeIcon: Image.asset(
+                  'assets/images/2_home/bot_nav_home_selected.png',
+                  width: 24.0, // 원하는 크기로 조정
+                  height: 24.0, // 원하는 크기로 조정
+                ),
+              ),
+              BottomNavigationBarItem(
+                icon: Image.asset(
+                  'assets/images/2_home/bot_nav_menu.png',
+                  width: 24.0, // 원하는 크기로 조정
+                  height: 24.0, // 원하는 크기로 조정
+                ),
+                label: '반찬구성',
+                activeIcon: Image.asset(
+                  'assets/images/2_home/bot_nav_menu_selected.png',
+                  width: 24.0, // 원하는 크기로 조정
+                  height: 24.0, // 원하는 크기로 조정
+                ),
+              ),
+              BottomNavigationBarItem(
+                icon: Image.asset(
+                  'assets/images/2_home/bot_nav_order.png',
+                  width: 24.0, // 원하는 크기로 조정
+                  height: 24.0, // 원하는 크기로 조정
+                ),
+                label: '도시락주문',
+                activeIcon: Image.asset(
+                  'assets/images/2_home/bot_nav_order_selected.png',
+                  width: 24.0, // 원하는 크기로 조정
+                  height: 24.0, // 원하는 크기로 조정
+                ),
+              ),
+              BottomNavigationBarItem(
+                icon: Image.asset(
+                  'assets/images/2_home/bot_nav_details.png',
+                  width: 24.0, // 원하는 크기로 조정
+                  height: 24.0, // 원하는 크기로 조정
+                ),
+                label: '주문내역',
+                activeIcon: Image.asset(
+                  'assets/images/2_home/bot_nav_details_selected.png',
+                  width: 24.0, // 원하는 크기로 조정
+                  height: 24.0, // 원하는 크기로 조정
+                ),
+              ),
+              BottomNavigationBarItem(
+                icon: Image.asset(
+                  'assets/images/2_home/bot_nav_my.png',
+                  width: 24.0, // 원하는 크기로 조정
+                  height: 24.0, // 원하는 크기로 조정
+                ),
+                label: 'my',
+                activeIcon: Image.asset(
+                  'assets/images/2_home/bot_nav_my_selected.png',
+                  width: 24.0, // 원하는 크기로 조정
+                  height: 24.0, // 원하는 크기로 조정
+                ),
+              ),
+            ],
+            currentIndex: selectedIndex,
+            onTap: _onItemTapped,
+
+            unselectedLabelStyle:  TextStyle(
+              color: Colors.grey[300],
+              fontSize: 14,
+            ),
+            selectedLabelStyle: const TextStyle(
+              color: Colors.black,
+              fontSize: 14,
+            ),
+            showUnselectedLabels: true,
+            backgroundColor: Colors.white,
+          ),
+        )
+
+      )
     );
   }
 }

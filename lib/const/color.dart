@@ -9,3 +9,4 @@ const Color GRAY3= Color(0xFF999999);
 const Color GRAY4= Color(0xFF686868);
 
 
+const Color BANNER_COLOR = Color(0xFFFFF9F0);
