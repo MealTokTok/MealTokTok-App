@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:hankkitoktok/component/four_image.dart';
 import 'package:hankkitoktok/const/color.dart';
 import 'package:hankkitoktok/controller/tmpdata.dart';
-import 'package:hankkitoktok/models/meal_menu/delivered_meal_menu.dart';
+//import 'package:hankkitoktok/models/meal_menu/delivered_meal_menu.dart';
 import 'package:hankkitoktok/models/meal_menu/meal_menu.dart';
 import 'package:hankkitoktok/screen/2_home/2_notification_screen.dart';
 
@@ -141,19 +141,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    screenStatus == ScreenStatus.AFTER_DELIVERY
-                        ? _buildAfterDeliveryTitle()
-                        : _buildMainTitle(),
-                    const SizedBox(height: 32),
-                    screenStatus == ScreenStatus.ON_DELIVERY
-                        ? _buildOnDelivery()
-                        : screenStatus == ScreenStatus.AFTER_DELIVERY
-                            ? _buildAfterDelivery(deliveredMealMenu)
-                            : screenStatus == ScreenStatus.MENU_EMPTY
-                                ? _buildMenuEmpty()
-                                : _buildMenuList(mealMenuList),
-                    const SizedBox(height: 10),
-                    _buildSelectedMenuButton(screenStatus),
+                    // screenStatus == ScreenStatus.AFTER_DELIVERY
+                    //     ? _buildAfterDeliveryTitle()
+                    //     : _buildMainTitle(),
+                    // const SizedBox(height: 32),
+                    // screenStatus == ScreenStatus.ON_DELIVERY
+                    //     ? _buildOnDelivery()
+                    //     : screenStatus == ScreenStatus.AFTER_DELIVERY
+                    //         ? _buildAfterDelivery(deliveredMealMenu)
+                    //         : screenStatus == ScreenStatus.MENU_EMPTY
+                    //             ? _buildMenuEmpty()
+                    //             : _buildMenuList(mealMenuList),
+                    // const SizedBox(height: 10),
+                    // _buildSelectedMenuButton(screenStatus),
                   ],
                 ),
               ),
@@ -499,50 +499,50 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildAfterDelivery(DeliveredMealMenu deliveredMealMenu) {
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text("배송된 반찬도시락", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black)),
-            Text("주문번호 ${deliveredMealMenu.orderNumber}", style: const TextStyle(fontSize: 20, color: Colors.grey)),
-          ]
-        ),
-        const SizedBox(height: 16),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            buildFourImage(deliveredMealMenu.menuUrlList, 80, 80),
-            const SizedBox(width: 16), //
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  deliveredMealMenu.name,
-                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Text(
-                  "${deliveredMealMenu.price}원",
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: Colors.grey),
-                ),
-                //객체 안에있는 리스트 수 만큼 메뉴 텍스트 추가
-                for (int i = 0; i < deliveredMealMenu.menuList.length; i++)
-                  Text(
-                    deliveredMealMenu.menuList[i],
-                    style: const TextStyle(fontSize: 20, color: Colors.grey),
-                  ),
-              ],
-            ),
-          ],
-        ),
-        const SizedBox(height: 32),
-      ]
-    );
-  }
+  // Widget _buildAfterDelivery(DeliveredMealMenu deliveredMealMenu) {
+  //
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       Row(
+  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //         children: [
+  //           const Text("배송된 반찬도시락", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black)),
+  //           Text("주문번호 ${deliveredMealMenu.orderNumber}", style: const TextStyle(fontSize: 20, color: Colors.grey)),
+  //         ]
+  //       ),
+  //       const SizedBox(height: 16),
+  //       Row(
+  //         mainAxisAlignment: MainAxisAlignment.start,
+  //         children: [
+  //           buildFourImage(deliveredMealMenu.menuUrlList, 80, 80),
+  //           const SizedBox(width: 16), //
+  //           Column(
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: [
+  //               Text(
+  //                 deliveredMealMenu.name,
+  //                 style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+  //                 overflow: TextOverflow.ellipsis,
+  //               ),
+  //               Text(
+  //                 "${deliveredMealMenu.price}원",
+  //                 style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: Colors.grey),
+  //               ),
+  //               //객체 안에있는 리스트 수 만큼 메뉴 텍스트 추가
+  //               for (int i = 0; i < deliveredMealMenu.menuList.length; i++)
+  //                 Text(
+  //                   deliveredMealMenu.menuList[i],
+  //                   style: const TextStyle(fontSize: 20, color: Colors.grey),
+  //                 ),
+  //             ],
+  //           ),
+  //         ],
+  //       ),
+  //       const SizedBox(height: 32),
+  //     ]
+  //   );
+  // }
 
   Widget _buildMenuEmpty() {
     return const SizedBox(
