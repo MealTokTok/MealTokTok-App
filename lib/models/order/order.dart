@@ -1,160 +1,174 @@
 import 'package:hankkitoktok/models/base_model.dart';
-import 'package:hankkitoktok/models/meal_menu/ordered_meal_menu.dart';
+import 'package:hankkitoktok/models/meal/meal_delivery.dart';
+import 'package:hankkitoktok/models/meal/ordered_meal.dart';
+import 'package:hankkitoktok/models/enums.dart';
 
-class Order extends BaseModel {
+class Order extends BaseModel{
   int orderID; //주문번호
-  DateTime orderDate; // 주문닐짜
-  String orderStatus; // 주문상태 (주문완료, 배송중, 배송완료)
-  String orderType; // 주문타입 (일 결제, 주간 결제)
-  int orderNumberDay; //주문횟수
-  int orderNumberWeek;
+  OrderType orderType; // 주문타입 (일 결제, 주간 결제)
+  OrderState? orderState; // 주문상태 (주문완료, 배송중, 배송완료)
+  String specialInstruction; //요청사항
 
-  String orderAddress; // 주문주소
-  String orderDetailAddress; // 상세주소
-  String customerName; // 주문자 이름
-  String customerPhoneNumber; // 주문자 전화번호
+  int userId;
 
-  String requestMessage; // 요청사항
+  int mealPrice;
+  int deliveryPrice;
+  int fullServicePrice;
+  int totalPrice;
 
+  DateTime orderTime; // 주문닐짜
+  String address; // 배송주소
 
-  List<OrderedMealMenu> orderedMealMenuList; // 주문한 도시락 리스트(주간 결제일 경우 2개이상, 일 결제일 경우 1개이상)
-  int washingService; // 세척서비스 횟수 (orderNumber 이하의 횟수)
-  int washingServicePrice; // 세척서비스 가격
-  int menuPrice; // 주문가격
-  int deliveryPrice; // 배송비
-  int totalPrice; // 총 가격
+  List<MealDelivery> mealDeliveries; // 주문한 도시락 리스트(주간 결제일 경우 2개이상, 일 결제일 경우 1개이상)
 
-  Order(
-      this.orderID,
-      this.orderDate,
-      this.orderStatus,
-      this.orderType,
-      this.orderNumberDay,
-      this.orderNumberWeek,
-      this.orderAddress,
-      this.orderDetailAddress,
-      this.customerName,
-      this.customerPhoneNumber,
-      this.requestMessage,
-      this.orderedMealMenuList,
-      this.washingService,
-      this.washingServicePrice,
-      this.menuPrice,
-      this.deliveryPrice,
-      this.totalPrice);
+  Order.init({
+    this.orderID = 0,
+    this.orderType = OrderType.DAY_ORDER,
+    this.orderState = OrderState.ORDERED,
+    this.specialInstruction = '',
+    this.userId = 0,
+    this.mealPrice = 0,
+    this.deliveryPrice = 0,
+    this.fullServicePrice = 0,
+    this.totalPrice = 0,
+    required this.orderTime,
+    this.address = '',
+    this.mealDeliveries = const [],
+  });
+
 
   @override
   BaseModel fromMap(Map<String, dynamic> map) {
-    return Order(
-        map['orderID'],
-        DateTime.parse(map['orderDate']),
-        map['orderStatus'],
-        map['orderType'],
-        map['orderNumberDay'],
-        map['orderNumberWeek'],
-        map['orderAddress'],
-        map['orderDetailAddress'],
-        map['customerName'],
-        map['customerPhoneNumber'],
-        map['requestMessage'],
-        List<OrderedMealMenu>.from(map['orderedMealMenuList']),
-        map['washingService'],
-        map['washingServicePrice'],
-        map['menuPrice'],
-        map['deliveryPrice'],
-        map['totalPrice'])
-    ;
+    List<MealDelivery> mealDeliveries = [];
+    OrderedMeal orderedMeal = OrderedMeal.init(reservedDate: DateTime(0));
+    for(var item in map['mealDeliveries']){
+      mealDeliveries.add(MealDelivery.init(orderedMeal: orderedMeal).fromMap(item));
+    }
+    return Order.init(
+      orderID: map['order']['orderID'],
+      orderType: OrderType.values.firstWhere(
+          (e) => e.toString().split('.').last == map['order']['orderType']),
+      orderState: OrderState.values.firstWhere(
+          (e) => e.toString().split('.').last == map['order']['orderState']),
+      specialInstruction: map['order']['specialInstruction'],
+      userId: map['order']['orderer']['userId'],
+      mealPrice: map['order']['orderPrice']['mealPrice']['amount'],
+      deliveryPrice: map['order']['orderPrice']['deliveryPrice']['amount'],
+      fullServicePrice: map['order']['orderPrice']['fullServicePrice']['amount'],
+      totalPrice: map['order']['orderPrice']['totalPrice']['amount'],
+      orderTime: DateTime.parse(map['order']['orderTime']),
+      mealDeliveries: mealDeliveries,
+    );
+
   }
 
   @override
   Map<String, dynamic> toJson() {
     return {
-      'orderID': orderID,
-      'orderDate': orderDate.toIso8601String(),
-      'orderStatus': orderStatus,
-      'orderType': orderType,
-      'orderNumberDay': orderNumberDay,
-      'orderNumberWeek': orderNumberWeek,
-      'orderAddress': orderAddress,
-      'orderDetailAddress': orderDetailAddress,
-      'customerName': customerName,
-      'customerPhoneNumber': customerPhoneNumber,
-      'requestMessage': requestMessage,
-      'orderedMealMenuList': orderedMealMenuList.map((item) => item.toJson()).toList(),
-      'washingService': washingService,
-      'washingServicePrice': washingServicePrice,
-      'menuPrice': menuPrice,
-      'deliveryPrice': deliveryPrice,
-      'totalPrice': totalPrice
+        'orderType': orderType.toString().split('.').last,
+        'orderedMeals' : mealDeliveries.map((e) => e.toJson()).toList(),
+
+        'specialInstruction': specialInstruction,
+        'orderPrice': {
+          'mealPrice': {'amount': mealPrice},
+          'deliveryPrice': {'amount': deliveryPrice},
+          'fullServicePrice': {'amount': fullServicePrice},
+          'totalPrice': {'amount': totalPrice},
+        },
+      'orderTime': orderTime.toString(),
+      'mealDeliveries': mealDeliveries.map((e) => e.toJson()).toList(),
     };
   }
 
+
+  List<MealDetail> get orderedMealList {
+    List<MealDetail> mealDetails = [];
+    for (var item in mealDeliveries) {
+      mealDetails.add(MealDetail.init(
+          title: item.orderedMeal.getMealString(), subTitle: item.orderedMeal.getMenuString()));
+    }
+
+    mealDetails.sort((a, b) => a.title.compareTo(b.title));
+
+    return mealDetails;
+  }
   //수, 금, 토
   String get dayOfWeekInitial {
-    List<String> dayOfWeekList = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
+    List<String> dayOfWeekList = ['일', '월', '화', '수', '목', '금', '토'];
 
-    var initialsSet = Set<String>();
+    Set<String> initialsSet = Set<String>();
 
-    for (var item in orderedMealMenuList) {
-      initialsSet.add(item.deliveryDayOfWeek[0]);
+    for (var item in orderedMealList) {
+      initialsSet.add(dayOfWeekList[(item.priority)~/2]);
     }
-    List<String> sortedInitials = [];
-    for (var dayOfWeek in dayOfWeekList) {
-      String initial = dayOfWeek[0];
-      if (initialsSet.contains(initial)) {
-        sortedInitials.add(initial);
-      }
-    }
-
+    List<String> sortedInitials = initialsSet.toList()..sort();
     return sortedInitials.join(', ');
+  }
+
+  List<MealDetail> getCombinedMenuList() {
+    List<MealDetail> mealDetails = [];
+    for (var item in mealDeliveries) {
+      mealDetails.add(MealDetail.init(
+          title: item.orderedMeal.getMealString(), subTitle: item.orderedMeal.getMenuString()));
+    }
+
+    mealDetails.sort((a, b) => a.priority.compareTo(b.priority));
+
+    return mealDetails;
   }
 
   //2024년 06월 29일 오후 14:20
   String get orderDateString {
-    return '${orderDate.year}년 ${orderDate.month}월 ${orderDate.day}일 ${orderDate.hour}:${orderDate.minute}';
+    return '${orderTime.year}년 ${orderTime.month}월 ${orderTime.day}일 ${orderTime.hour}:${orderTime.minute}';
   }
 
 
-  List<List<dynamic>> get combinedMenuList {
-    //수 - 저녁(메뉴이름) 형식으로 반환
-    List<String> menuTitles = orderedMealMenuList.map((item) => '${item.deliveryDayOfWeek[0]}-${item.deliveryTimeOfDay}(${item.name})').toList();
-    // 두부조림, 김치볶음밥, 김치, 된장국
-    List<String> mealItems = orderedMealMenuList.map((item) => item.menuList.join(', ')).toList();
 
 
-    List<List<dynamic>> combinedList = [];
-    for (int i = 0; i < menuTitles.length; i++) {
-      combinedList.add([menuTitles[i],orderedMealMenuList[i].price,mealItems[i]]);
-    }
 
-    return combinedList;
-  }
 
+  // 월요일 - 저녁
+  //수요일 - 점심, 저녁
   List<String> get getOrderTimeList {
-    var map = Map<String, Set<String>>();
-    List<String> dayOfWeekList = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
 
-    for (var item in orderedMealMenuList) {
-      if (map[item.deliveryDayOfWeek] == null) {
-        map[item.deliveryDayOfWeek] = Set<String>();
+    List<String> dayOfWeekList = [
+      '월요일',
+      '화요일',
+      '수요일',
+      '목요일',
+      '금요일',
+      '토요일',
+      '일요일'
+    ];
+
+    List<int> dayOfWeekIndexList = [0,0,0,0,0,0,0];
+    for (var item in orderedMealList) {
+      dayOfWeekIndexList[(item.priority)~/2] += 1;
+      if(item.priority % 2 == 0){
+        dayOfWeekIndexList[(item.priority)~/2] += 1;
       }
-      map[item.deliveryDayOfWeek]!.add(item.deliveryTimeOfDay);
-    }
-
-    List<String> result = [];
-    for (var dayOfWeek in dayOfWeekList) {
-      if (map[dayOfWeek] != null) {
-        // 시간 순서로 정렬: "점심" 먼저, "저녁" 다음
-        var sortedTimes = map[dayOfWeek]!.toList()..sort((a, b) {
-          if (a == b) return 0;
-          if (a == '점심') return -1;
-          if (b == '점심') return 1;
-          return 0;
-        });
-        result.add('$dayOfWeek ${sortedTimes.join(', ')}');
+      else{
+        dayOfWeekIndexList[(item.priority)~/2] += 2;
       }
     }
-    return result;
+
+    List<String> dayOfWeekStringList = [];
+    for(int i = 0; i < dayOfWeekIndexList.length; i++){
+      if(dayOfWeekIndexList[i] == 0){
+        continue;
+      }
+      String dayOfWeekString = dayOfWeekList[i];
+      if(dayOfWeekIndexList[i] == 2){
+        dayOfWeekString += ' 점심';
+      }
+      else if(dayOfWeekIndexList[i] == 3){
+        dayOfWeekString += ' 저녁';
+      }
+      else{
+        dayOfWeekString += ' 점심, 저녁';
+      }
+      dayOfWeekStringList.add(dayOfWeekString);
+    }
+    return dayOfWeekStringList;
   }
-
 }

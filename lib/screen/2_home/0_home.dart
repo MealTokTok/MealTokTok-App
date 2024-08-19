@@ -2,7 +2,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hankkitoktok/const/style.dart';
-import 'package:hankkitoktok/models/meal_menu/meal_menu.dart';
+import 'package:hankkitoktok/models/meal/meal.dart';
 
 import '1_home_screen.dart';
 
@@ -16,7 +16,7 @@ class _HomeState extends State<Home> {
   List<String> addressList = ['충북대학교 충대로1', '충북대학교 충대로2', '충북대학교 충대로3'];
   String dropdownValue = '충북대학교 충대로1';
 
-  List<MealMenu> mealMenuListEmpty = [];
+  List<Meal> mealMenuListEmpty = [];
   int _selectedIndex = 0;
   List<Widget> pages = [];
 

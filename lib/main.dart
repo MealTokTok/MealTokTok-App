@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hankkitoktok/component/calendar.dart';
+import 'package:hankkitoktok/controller/ordered_meal_controller.dart';
 import 'package:hankkitoktok/screen/0_login_and_set_address/0_login_screen.dart';
 import 'package:hankkitoktok/const/color.dart';
 import 'package:hankkitoktok/screen/0_login_and_set_address/temporary_adress.dart';
@@ -17,11 +19,15 @@ import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'component/meal_card.dart';
 import 'const/strings.dart';
+import 'component/time_checkbox.dart';
+import 'controller/tmpdata.dart';
 import 'convention.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:hankkitoktok/controller/meal_controller.dart';
 // ...
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("백그라운드 메시지 처리.. ${message.notification!.body!}");
@@ -100,6 +106,10 @@ void _notificationSetting(){
   });
 }
 
+void _getControllerSetting(){
+  Get.put(OrderedMealController());
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting("ar_SA", null);
@@ -113,6 +123,7 @@ void main() async {
     nativeAppKey:'c1eda5ec75bb843acef283b8b4a297f1',
     javaScriptAppKey: 'e0247dc88e43a60751fd39f8fc18459a',
  );
+  _getControllerSetting();
   runApp(const MyApp());
 }
 
@@ -141,6 +152,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    MealController mealController = Get.put(MealController());
+
     return GetMaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -154,13 +167,19 @@ class MyApp extends StatelessWidget {
           name: '/',
           page: () => Home(),
         ),
+        GetPage(
+          name: '/order',
+          page: () => OrderScreen(menus: mealMenuList),
+        )
+
         // GetPage(
         //   name: '/community',
         //   page: () => CommunityScreen(),
         // ),
       ],
-      home: OrderHistoriesScreen(),
+      home: OrderScreen(menus: mealMenuList),
     );
   }
 }
+
 

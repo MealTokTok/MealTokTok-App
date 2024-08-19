@@ -14,4 +14,8 @@ const Color GREY_COLOR_3 = Color(0xFF999999);
 const Color GREY_COLOR_4 = Color(0xFFE9E9E9);
 const Color GREY_COLOR_5 = Color(0xFFD5D5D5);
 const Color WHITE_COLOR = Color(0xFFFFFFFF);
-const Color SECONDARY_COLOR = Color(0xFFFF714E);
+
+const Color SECONDARY_1 = Color(0xFF99BA00);
+const Color SECONDARY_1_LIGHT = Color(0xFFF6FAE5);
+
+const Color SECONDARY_2 = Color(0xFFFF714E);

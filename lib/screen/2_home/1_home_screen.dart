@@ -5,8 +5,10 @@ import 'package:hankkitoktok/component/four_image.dart';
 import 'package:hankkitoktok/const/color.dart';
 import 'package:hankkitoktok/controller/tmpdata.dart';
 import 'package:hankkitoktok/const/style.dart';
-import 'package:hankkitoktok/models/meal_menu/ordered_meal_menu.dart';
-import 'package:hankkitoktok/models/meal_menu/meal_menu.dart';
+import 'package:hankkitoktok/functions/httpRequest.dart';
+import 'package:hankkitoktok/models/meal/meal_delivery.dart';
+import 'package:hankkitoktok/models/meal/ordered_meal.dart';
+import 'package:hankkitoktok/models/meal/meal.dart';
 import 'package:hankkitoktok/screen/2_home/2_notification_screen.dart';
 
 enum ScreenStatus { AFTER_DELIVERY, MENU_EMPTY, MENU_SELECTED, ON_DELIVERY }
@@ -36,7 +38,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   //--------sampleData----------
 
-  List<MealMenu> mealMenuListEmpty = [];
+  List<Meal> mealMenuListEmpty = [];
+  late MealDelivery mealDelivery;
+
+  void getMealDelivery() async {
+    mealDelivery = await networkGetRequest(
+        MealDelivery.init(
+            orderedMeal: OrderedMeal.init(reservedDate: DateTime(0))),
+        "detail",
+        null);
+  }
 
   void _checkAddress() {
     if (addressList.isEmpty) {
@@ -111,8 +122,11 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     // TODO: 처음 들어갔을 때, 사용자 정보 가져오기
+
+    //TODO: MealDelivery로 화면 Status 결정
     _checkAddress();
     _checkMenu();
+    getMealDelivery();
     super.initState();
   }
 
@@ -146,7 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     screenStatus == ScreenStatus.ON_DELIVERY
                         ? _buildOnDelivery()
                         : screenStatus == ScreenStatus.AFTER_DELIVERY
-                            ? _buildAfterDelivery(orderedMealMenu)
+                            ? _buildAfterDelivery(mealDelivery)
                             : screenStatus == ScreenStatus.MENU_EMPTY
                                 ? _buildMenuEmpty()
                                 : _buildMenuList(mealMenuList),
@@ -282,8 +296,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('배달 주소를\n설정하지 않았어요!',
-                style: dialogTitleStyle),
+            Text('배달 주소를\n설정하지 않았어요!', style: dialogTitleStyle),
             Text('배달 주소를 설정하고\n반찬도시락을 주문해보세요!', style: dialogContentStyle),
             const SizedBox(height: 10),
             Center(
@@ -473,35 +486,36 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildAfterDelivery(OrderedMealMenu orderedMealMenu) {
+  Widget _buildAfterDelivery(MealDelivery mealDelivery) {
+    Meal meal = mealDelivery.orderedMeal.meal;
+
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         Text("배송된 반찬도시락", style: menuListTitleStyle),
-        Text("주문번호 ${orderedMealMenu.orderID}",
-            style: menuListTextButtonStyle),
+        Text("주문번호 ${mealDelivery.orderId}", style: menuListTextButtonStyle),
       ]),
       const SizedBox(height: 16),
       Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          buildFourImage(orderedMealMenu.menuUrlList, 80, 80),
+          buildFourImage(meal.getDishUrls(), 80, 80),
           const SizedBox(width: 16), //
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                orderedMealMenu.name,
+                meal.name,
                 style: orderMenuTitleStyle,
                 overflow: TextOverflow.ellipsis,
               ),
               Text(
-                "${orderedMealMenu.price}원",
+                "${meal.price}원",
                 style: orderPriceStyle,
               ),
               //객체 안에있는 리스트 수 만큼 메뉴 텍스트 추가
-              for (int i = 0; i < orderedMealMenu.menuList.length; i++)
+              for (int i = 0; i < meal.getDishNames().length; i++)
                 Text(
-                  orderedMealMenu.menuList[i],
+                  meal.getDishNames()[i],
                   style: orderMenuStyle,
                 ),
             ],
@@ -522,8 +536,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildMenuCard(MealMenu mealMenu) {
-    List<String> imageList = mealMenu.menuUrlList;
+  Widget _buildMenuCard(Meal meal) {
+    List<String> imageList = meal.getDishUrls();
     return Column(
       children: [
         buildFourImage(imageList, 60, 60),
@@ -533,12 +547,12 @@ class _HomeScreenState extends State<HomeScreen> {
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(
-              mealMenu.name,
+              meal.name,
               style: orderMenuStyle,
               overflow: TextOverflow.ellipsis,
             ),
             Text(
-              "${mealMenu.price}원",
+              "${meal.price}원",
               style: menuPriceStyle,
             ),
           ]),
@@ -547,7 +561,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildMenuList(List<MealMenu> mealMenuList) {
+  Widget _buildMenuList(List<Meal> mealList) {
     return SizedBox(
         height: 304,
         child: Column(children: [
@@ -576,11 +590,11 @@ class _HomeScreenState extends State<HomeScreen> {
           Expanded(
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: mealMenuList.length,
+              itemCount: mealList.length,
               itemBuilder: (BuildContext context, int index) {
                 return Padding(
                     padding: const EdgeInsets.only(right: 10),
-                    child: _buildMenuCard(mealMenuList[index]));
+                    child: _buildMenuCard(mealList[index]));
               },
             ),
           ),

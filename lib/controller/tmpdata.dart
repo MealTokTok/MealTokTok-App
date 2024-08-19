@@ -1,72 +1,190 @@
-import 'package:hankkitoktok/models/meal_menu/ordered_meal_menu.dart';
-import 'package:hankkitoktok/models/meal_menu/meal_menu.dart';
+import 'package:hankkitoktok/models/meal/meal_delivery.dart';
+import 'package:hankkitoktok/models/meal/ordered_meal.dart';
+import 'package:hankkitoktok/models/meal/meal.dart';
 import 'package:hankkitoktok/models/order/order_mini.dart';
 import 'package:hankkitoktok/models/sidedish/sidedish.dart';
 
+import '../models/enums.dart';
+import '../models/meal/dish.dart';
 import '../models/order/order.dart';
 
-List<MealMenu> mealMenuList = [
-  MealMenu('아침 콤보', 6000, [
-    '팬케이크',
-    '베이컨',
-    '계란',
-    '커피'
-  ], [
-    'https://picsum.photos/80/80',
-    'https://picsum.photos/80/80',
-    'https://picsum.photos/80/80',
-    'https://picsum.photos/80/80'
-  ]),
-  MealMenu('점심 스페셜', 6000, [
-    '버거',
-    '감자튀김',
-    '샐러드',
-    '탄산음료'
-  ], [
-    'https://picsum.photos/80/80',
-    'https://picsum.photos/80/80',
-    'https://picsum.photos/80/80',
-    'https://picsum.photos/80/80'
-  ]),
-  MealMenu('저녁 특선', 6000, [
-    '스테이크',
-    '매쉬드 포테이토',
-    '구운 야채',
-    '와인'
-  ], [
-    'https://picsum.photos/80/80',
-    'https://picsum.photos/80/80',
-    'https://picsum.photos/80/80',
-    'https://picsum.photos/80/80'
-  ]),
-  MealMenu('채식주의자 잔치', 6000, [
-    '샐러드',
-    '야채 수프',
-    '구운 두부',
-    '주스'
-  ], [
-    'https://picsum.photos/80/80',
-    'https://picsum.photos/80/80',
-    'https://picsum.photos/80/80',
-    'https://picsum.photos/80/80'
-  ])
+int _dishIdCounter = 1;
+int _mealIdCounter = 1;
+int _orderIdCounter = 1;
+int _requestIdCounter = 1;
+
+List<Meal> mealMenuList = [
+  Meal.init(
+    mealId: _mealIdCounter++,
+    name: '아침 콤보',
+    price: 6000,
+    dishList: [
+      Dish.init(dishId: _dishIdCounter++, dishName: '팬케이크', imgUrl: 'https://picsum.photos/80/80'),
+      Dish.init(dishId: _dishIdCounter++, dishName: '베이컨', imgUrl: 'https://picsum.photos/80/80'),
+      Dish.init(dishId: _dishIdCounter++, dishName: '계란', imgUrl: 'https://picsum.photos/80/80'),
+      Dish.init(dishId: _dishIdCounter++, dishName: '커피', imgUrl: 'https://picsum.photos/80/80'),
+    ],
+  ),
+  Meal.init(
+    mealId: _mealIdCounter++,
+    name: '점심 스페셜',
+    price: 6000,
+    dishList: [
+      Dish.init(dishId: _dishIdCounter++, dishName: '버거', imgUrl: 'https://picsum.photos/80/80'),
+      Dish.init(dishId: _dishIdCounter++, dishName: '감자튀김', imgUrl: 'https://picsum.photos/80/80'),
+      Dish.init(dishId: _dishIdCounter++, dishName: '샐러드', imgUrl: 'https://picsum.photos/80/80'),
+      Dish.init(dishId: _dishIdCounter++, dishName: '탄산음료', imgUrl: 'https://picsum.photos/80/80'),
+    ],
+  ),
+  Meal.init(
+    mealId: _mealIdCounter++,
+    name: '저녁 특선',
+    price: 6000,
+    dishList: [
+      Dish.init(dishId: _dishIdCounter++, dishName: '스테이크', imgUrl: 'https://picsum.photos/80/80'),
+      Dish.init(dishId: _dishIdCounter++, dishName: '매쉬드 포테이토', imgUrl: 'https://picsum.photos/80/80'),
+      Dish.init(dishId: _dishIdCounter++, dishName: '구운 야채', imgUrl: 'https://picsum.photos/80/80'),
+      Dish.init(dishId: _dishIdCounter++, dishName: '와인', imgUrl: 'https://picsum.photos/80/80'),
+    ],
+  ),
+  Meal.init(
+    mealId: _mealIdCounter++,
+    name: '채식주의자 잔치',
+    price: 6000,
+    dishList: [
+      Dish.init(dishId: _dishIdCounter++, dishName: '샐러드', imgUrl: 'https://picsum.photos/80/80'),
+      Dish.init(dishId: _dishIdCounter++, dishName: '야채 수프', imgUrl: 'https://picsum.photos/80/80'),
+      Dish.init(dishId: _dishIdCounter++, dishName: '구운 두부', imgUrl: 'https://picsum.photos/80/80'),
+      Dish.init(dishId: _dishIdCounter++, dishName: '주스', imgUrl: 'https://picsum.photos/80/80'),
+    ],
+  ),
 ];
 
-OrderedMealMenu orderedMealMenu = OrderedMealMenu(
-    '아침 콤보',
-    6000,
-    ['팬케이크', '베이컨', '계란', '커피'],
-    [
-      'https://picsum.photos/80/80',
-      'https://picsum.photos/80/80',
-      'https://picsum.photos/80/80',
-      'https://picsum.photos/80/80'
-    ],
-    203,
-    DateTime.now(),
-    '수',
-    '점심',
-    );
+
+List<OrderedMeal> orderedMeals = [
+  OrderedMeal.init(
+    mealId: _orderIdCounter++,
+    reservedDate: DateTime(2024, 8, 15), // 특정 날짜로 설정
+    reservedTime: Time.LUNCH, // 점심 시간
+    includeRice: true, // 밥 포함
+    hasFullDiningOption: false, // 전체 다이닝 옵션 제외
+  ),
+  OrderedMeal.init(
+    mealId: _orderIdCounter++,
+    reservedDate: DateTime(2024, 8, 16),
+    reservedTime: Time.DINNER, // 저녁 시간
+    includeRice: false,
+    hasFullDiningOption: true,
+  ),
+  OrderedMeal.init(
+    mealId: _orderIdCounter++,
+    reservedDate: DateTime(2024, 8, 17),
+    reservedTime: Time.LUNCH,
+    includeRice: true,
+    hasFullDiningOption: true,
+  ),
+  OrderedMeal.init(
+    mealId: _orderIdCounter++,
+    reservedDate: DateTime(2024, 8, 17),
+    reservedTime: Time.DINNER,
+    includeRice: false,
+    hasFullDiningOption: false,
+  ),
+];
+
+List<MealDelivery> mealDeliveries = [
+  MealDelivery.init(
+    mealDeliveryId: _requestIdCounter++,
+    orderId: 1,
+    orderedMeal: orderedMeals[0],
+    orderState: OrderState.ORDERED,
+    deliveryStartTime: DateTime(2024, 8, 15, 12, 30),
+    deliveryCompleteTime: null,
+  ),
+  MealDelivery.init(
+    mealDeliveryId: _requestIdCounter++,
+    orderId: 2,
+    orderedMeal: orderedMeals[1],
+    orderState: OrderState.PENDING,
+    deliveryStartTime: null,
+    deliveryCompleteTime: null,
+  ),
+  MealDelivery.init(
+    mealDeliveryId: _requestIdCounter++,
+    orderId: 3,
+    orderedMeal: orderedMeals[2],
+    orderState: OrderState.DELIVERED,
+    deliveryStartTime: DateTime(2024, 8, 17, 12, 30),
+    deliveryCompleteTime: DateTime(2024, 8, 17, 12, 45),
+  ),
+  MealDelivery.init(
+    mealDeliveryId: _requestIdCounter++,
+    orderId: 4,
+    orderedMeal: orderedMeals[3],
+    orderState: OrderState.DELIVERED,
+    deliveryStartTime: null,
+    deliveryCompleteTime: null,
+  ),
+];
+
+List<List<MealDelivery>> orderedMealsExamples = [
+  [mealDeliveries[0]],
+  [mealDeliveries[1], mealDeliveries[2]],
+  [mealDeliveries[3], mealDeliveries[0], mealDeliveries[1]],
+  [mealDeliveries[2], mealDeliveries[3], mealDeliveries[0], mealDeliveries[1]],
+];
+
+Order exampleOrder = Order.init(
+  orderID: _orderIdCounter++,
+  orderType: OrderType.WEEK_ORDER, // 주간 결제로 설정
+  orderState: OrderState.ORDERED, // 주문 상태 설정
+  specialInstruction: '배송 시 문 앞에 두세요.', // 요청 사항
+  userId: 12345,
+
+  mealPrice: 18000,
+  deliveryPrice: 3000,
+  fullServicePrice: 5000,
+  totalPrice: 26000,
+  orderTime: DateTime(2024, 8, 14, 14, 20), // 주문 시간 설정
+  mealDeliveries: orderedMealsExamples[0], // OrderedMeal 리스트 추가
+);
+
+Order exampleOrder2 = Order.init(
+  orderID: _orderIdCounter++,
+  orderType: OrderType.DAY_ORDER,
+  orderState: OrderState.PENDING,
+  specialInstruction: '배송 시 연락주세요.',
+  userId: 54321,
+
+  mealPrice: 12000,
+  deliveryPrice: 2000,
+  fullServicePrice: 3000,
+  totalPrice: 17000,
+  orderTime: DateTime(2024, 8, 15, 12, 30),
+  mealDeliveries: orderedMealsExamples[1],
+);
+
+Order exampleOrder3 = Order.init(
+  orderID: _orderIdCounter++,
+  orderType: OrderType.WEEK_ORDER,
+  orderState: OrderState.DELIVERED,
+  specialInstruction: '부재 시 경비실에 맡겨주세요.',
+  userId: 98765,
+
+  mealPrice: 24000,
+  deliveryPrice: 4000,
+  fullServicePrice: 7000,
+  totalPrice: 35000,
+  orderTime: DateTime(2024, 8, 16, 11, 45),
+  mealDeliveries: orderedMealsExamples[2],
+);
+
+
+
+
+
+
+
 
 List<SideDish> sideDishList = [
   SideDish('무침', '베이컨', 'https://picsum.photos/80/80'),
@@ -110,186 +228,3 @@ List<SideDish> sideDishList = [
   SideDish('김치/젓갈', '구운 두부', 'https://picsum.photos/80/80'),
   SideDish('김치/젓갈', '주스', 'https://picsum.photos/80/80'),
 ];
-
-OrderedMealMenu orderedMeal1 = OrderedMealMenu(
-  '아침 콤보',
-  6000,
-  ['팬케이크', '베이컨', '계란', '커피'],
-  [
-    'https://picsum.photos/80/80',
-    'https://picsum.photos/80/80',
-    'https://picsum.photos/80/80',
-    'https://picsum.photos/80/80'
-  ],
-  1,
-  DateTime.now(),
-  '수요일',
-  '점심',
-);
-
-OrderedMealMenu orderedMeal2 = OrderedMealMenu(
-  '점심 콤보',
-  8000,
-  ['샌드위치', '샐러드', '주스', '과일'],
-  [
-    'https://picsum.photos/80/80',
-    'https://picsum.photos/80/80',
-    'https://picsum.photos/80/80',
-    'https://picsum.photos/80/80'
-  ],
-  2,
-  DateTime.now(),
-  '목요일',
-  '저녁',
-);
-
-OrderedMealMenu orderedMeal3 = OrderedMealMenu(
-  '저녁 콤보',
-  7000,
-  ['스테이크', '감자', '야채', '음료'],
-  [
-    'https://picsum.photos/80/80',
-    'https://picsum.photos/80/80',
-    'https://picsum.photos/80/80',
-    'https://picsum.photos/80/80'
-  ],
-  3,
-  DateTime.now(),
-  '목요일',
-  '저녁',
-);
-
-OrderedMealMenu orderedMeal4 = OrderedMealMenu(
-  '스페셜 콤보',
-  10000,
-  ['랍스터', '샐러드', '와인', '디저트'],
-  [
-    'https://picsum.photos/80/80',
-    'https://picsum.photos/80/80',
-    'https://picsum.photos/80/80',
-    'https://picsum.photos/80/80'
-  ],
-  4,
-  DateTime.now(),
-  '목요일',
-  '저녁',
-);
-
-// Order 테스트 데이터 생성
-Order order1 = Order(
-  111,
-  DateTime.now(),
-  '배송 중',
-  '일 결제',
-  1,
-  0,
-  '서울특별시 강남구',
-  '101동 101호',
-  '홍길동',
-  '010-1234-5678',
-  '문 앞에 놓아주세요.',
-  [orderedMeal1],
-  1,
-  3000,
-  6000,
-  3000,
-  9000,
-);
-
-Order order2 = Order(
-  222,
-  DateTime.now(),
-  '배송 완료',
-  '주간 결제',
-  0,
-  2,
-  '서울특별시 서초구',
-  '202동 202호',
-  '김철수',
-  '010-8765-4321',
-  '배송 완료 후 전화주세요.',
-  [orderedMeal1, orderedMeal2],
-  2,
-  5000,
-  14000,
-  3000,
-  22000,
-);
-
-Order order3 = Order(
-  333,
-  DateTime.now(),
-  '배송 대기',
-  '주간 결제',
-  0,
-  3,
-  '서울특별시 송파구',
-  '303동 303호',
-  '박영희',
-  '010-1234-4321',
-  '배송 전 미리 연락 바랍니다.',
-  [orderedMeal1, orderedMeal2, orderedMeal3],
-  0,
-  7000,
-  21000,
-  5000,
-  33000,
-);
-
-Order order4 = Order(
-  444,
-  DateTime.now(),
-  '배송 중',
-  '일 결제',
-  1,
-  0,
-  '서울특별시 강동구',
-  '404동 404호',
-  '최미나',
-  '010-5678-8765',
-  '부재 시 경비실에 맡겨주세요.',
-  [orderedMeal3],
-  1,
-  3000,
-  7000,
-  3000,
-  10000,
-);
-
-Order order5 = Order(
-  555,
-  DateTime.now(),
-  '배송 완료',
-  '주간 결제',
-  0,
-  4,
-  '서울특별시 중구',
-  '505동 505호',
-  '이민호',
-  '010-8765-1234',
-  '특별 요청 사항 없음.',
-  [orderedMeal1, orderedMeal2, orderedMeal3, orderedMeal4],
-  4,
-  9000,
-  31000,
-  7000,
-  47000,
-);
-
-List<Order> orderList = [order1, order2, order3, order4, order5];
-
-List<OrderMini> orderMiniList = orderList.map((order) => OrderMini(
-  order.orderID,
-  order.orderDate,
-  order.orderStatus,
-  order.orderType,
-  order.orderNumberDay,
-  order.orderNumberWeek,
-  order.washingService,
-  order.washingServicePrice,
-  order.menuPrice,
-  order.deliveryPrice,
-)).toList();
-
-
-

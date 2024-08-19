@@ -1,65 +1,57 @@
 import 'package:hankkitoktok/models/base_model.dart';
+import 'package:hankkitoktok/models/enums.dart';
 
 class OrderMini extends BaseModel{
+  int orderId;
+  OrderType orderType;
+  OrderState orderState;
+  DateTime orderTime;
+  int mealPrice;
+  int deliveryPrice;
+  int fullServicePrice;
+  int totalPrice;
 
-  int orderID; //주문번호
-  DateTime orderDate; // 주문닐짜
-  String orderStatus; // 주문상태 (주문완료, 배송중, 배송완료)
-  String orderType; // 주문타입 (일 결제, 주간 결제)
-  int orderNumberDay; //주문횟수
-  int orderNumberWeek; //주문횟수
+  OrderMini.init({
+    this.orderId = 0,
+    this.orderType = OrderType.DAY_ORDER,
+    this.orderState = OrderState.ORDERED,
+    required this.orderTime,
+    this.mealPrice = 0,
+    this.deliveryPrice = 0,
+    this.fullServicePrice = 0,
+    this.totalPrice = 0,
+  });
 
-  int washingService; // 세척서비스 횟수 (orderNumber 이하의 횟수)
-  int washingServicePrice; // 세척서비스 가격
-  int menuPrice; // 주문가격
-  int deliveryPrice; // 배송비
-
-  OrderMini(
-      this.orderID,
-      this.orderDate,
-      this.orderStatus,
-      this.orderType,
-      this.orderNumberDay,
-      this.orderNumberWeek,
-
-      this.washingService,
-      this.washingServicePrice,
-      this.menuPrice,
-      this.deliveryPrice,
-      );
   @override
   BaseModel fromMap(Map<String, dynamic> map) {
-    return OrderMini(
-        map['orderID'],
-        DateTime.parse(map['orderDate']),
-        map['orderStatus'],
-        map['orderType'],
-        map['orderNumberDay'],
-        map['orderNumberWeek'],
-
-        map['washingService'],
-        map['washingServicePrice'],
-        map['menuPrice'],
-        map['deliveryPrice'],
+    return OrderMini.init(
+      orderId: map['orderId'],
+      orderType: OrderType.values.firstWhere(
+          (e) => e.toString().split('.').last == map['orderType']),
+      orderState: OrderState.values.firstWhere(
+          (e) => e.toString().split('.').last == map['orderState']),
+      orderTime: DateTime.parse(map['orderTime']),
+      mealPrice: map['mealPrice'],
+      deliveryPrice: map['deliveryPrice'],
+      fullServicePrice: map['fullServicePrice'],
+      totalPrice: map['totalPrice'],
     );
   }
 
   @override
   Map<String, dynamic> toJson() {
     return {
-      'orderID': orderID,
-      'orderDate': orderDate.toIso8601String(),
-      'orderStatus': orderStatus,
-      'orderType': orderType,
-      'orderNumberDay': orderNumberDay,
-      'orderNumberWeek': orderNumberWeek,
-
-      'washingService': washingService,
-      'washingServicePrice': washingServicePrice,
-      'menuPrice': menuPrice,
+      'orderId': orderId,
+      'orderType': orderType.toString().split('.').last,
+      'orderState': orderState.toString().split('.').last,
+      'orderTime': orderTime.toString(),
+      'mealPrice': mealPrice,
       'deliveryPrice': deliveryPrice,
+      'fullServicePrice': fullServicePrice,
+      'totalPrice': totalPrice,
     };
   }
 
-}
 
+
+}
