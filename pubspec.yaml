@@ -45,6 +45,7 @@ dependencies:
   firebase_messaging: ^15.0.4
   permission_handler: ^11.3.1
   flutter_local_notifications: ^17.2.1+2
+  table_calendar: ^3.1.2
   #생성
   #flutter pub run flutter_native_splash:create
   #삭제
@@ -212,7 +213,9 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
+      - assets/images/1_my_page/
       - assets/images/2_home/
+      - assets/images/3_menu_choice/
       - assets/images/kakao_login.png
       - assets/images/kakao_mini.png
       - assets/images/splash.png
