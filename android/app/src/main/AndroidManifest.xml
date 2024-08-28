@@ -6,13 +6,17 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
 
     <application
         android:label="hankkitoktok"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
-
+        <meta-data
+            android:name="com.kakao.sdk.AppKey"
+            android:value="Native app key" /> <!-- 카카오 네이티브 앱 키 등록-->
         <activity
             android:name="com.kakao.sdk.flutter.AuthCodeCustomTabsActivity"
             android:exported="true">

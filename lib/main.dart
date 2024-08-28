@@ -7,6 +7,7 @@ import 'package:hankkitoktok/component/calendar.dart';
 import 'package:hankkitoktok/controller/ordered_meal_controller.dart';
 import 'package:hankkitoktok/screen/0_login_and_set_address/0_login_screen.dart';
 import 'package:hankkitoktok/const/color.dart';
+import 'package:hankkitoktok/screen/0_login_and_set_address/1_address_setting.dart';
 import 'package:hankkitoktok/screen/0_login_and_set_address/temporary_adress.dart';
 import 'package:hankkitoktok/screen/1_my_page/1_order_histories_screen.dart';
 import 'package:hankkitoktok/screen/2_home/0_home.dart';
@@ -117,6 +118,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  //앱 인증 초기화
+  await AuthRepository.initialize(appKey: '<javascript apikey>');
   await _initializeNotification();
   _notificationSetting();
   // runApp() 호출 전 Flutter SDK 초기화
