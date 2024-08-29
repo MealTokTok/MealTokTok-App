@@ -2,6 +2,11 @@ import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:hankkitoktok/const/color.dart";
 import "package:hankkitoktok/const/style.dart";
+import "package:hankkitoktok/functions/httpRequest.dart";
+import "package:hankkitoktok/models/delivery/delivery_status.dart";
+import "package:hankkitoktok/models/user/user.dart";
+import "package:hankkitoktok/models/user/user_data.dart";
+import "package:hankkitoktok/screen/4_my_page/1_my_information_editing.dart";
 
 class MyPageHome extends StatefulWidget {
   const MyPageHome({super.key});
@@ -11,6 +16,46 @@ class MyPageHome extends StatefulWidget {
 }
 
 class _MyPageHomeState extends State<MyPageHome> {
+  //int userId;
+  User? _user;
+  Pending? _pending;
+  DeliveryRequested? _deliveryRequested;
+  Delivering? _delivering;
+  Delivered? _delivered;
+
+  // User _user = User(
+  //   userId: 0,
+  //   username: '',
+  //   nickname: '',
+  //   email: '',
+  //   phoneNumber: '',
+  //   profileImageUrl: '',
+  //   birth: '',
+  // );
+
+  Map<String, dynamic>? queryParams;
+
+  Map<String, dynamic> _queryParams(String query) {
+    return queryParams={
+      'deliveryState': query,
+    };
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    _user = await networkGetRequest111(User(userId: 0, username: '', nickname: '', email: '', phoneNumber: '', profileImageUrl: '', birth: ''), 'api/v1/user/my',null );
+   //  _pending=await networkGetRequest111(Pending(pending: 0), 'api/v1/meal-deliveries/count',_queryParams('PENDING') );
+   // _deliveryRequested=await networkGetRequest111(DeliveryRequested(deliveryRequested: 0), 'api/v1/meal-deliveries/count',_queryParams('DELIVERY_REQUESTED') );
+   // _delivering=await networkGetRequest111(Delivering(delivering: 0), 'api/v1/meal-deliveries/count',_queryParams('DELIVERING') );
+   //  _delivered=await networkGetRequest111(Delivered(delivered: 0), 'api/v1/meal-deliveries/count',_queryParams('DELIVERED') );
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +67,7 @@ class _MyPageHomeState extends State<MyPageHome> {
               Row(
                 children: [
                   Text(
-                    "닉네임닉네임닉네임 ",
+                    "${_user!.nickname} ",
                     style: TextStyle(
                       color: Color(0xFF131313),
                       fontSize: 18,
@@ -40,7 +85,14 @@ class _MyPageHomeState extends State<MyPageHome> {
                   IconButton(
                       padding: EdgeInsets.zero, // 패딩 설정
                       constraints: BoxConstraints(),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MyInformationEditng(user: _user,),
+                          ),
+                        );
+                      },
                       icon: const Icon(
                         Icons.arrow_forward_ios,
                         color: GRAY4,
