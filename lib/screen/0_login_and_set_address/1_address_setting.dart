@@ -8,12 +8,12 @@ import 'package:geolocator/geolocator.dart';
 
 TextStyle normalgrey14 = TextStyle(color: Color(0xff999999),fontSize: 16.0,fontWeight: FontWeight.normal,letterSpacing: -1.0);
 TextStyle appBarMain = TextStyle(color: Colors.black,fontSize: 18.0, fontWeight: FontWeight.normal);
-//Address variable
+//마지막 변수들
 String faddressName = '';
 String fplaceName = '';
 String fdetailedAddressName = '';
-double flatitude =0.0;
-double flongitude =0.0;
+double flatitude = 0.0;
+double flongitude = 0.0;
 int distance = 300;//meter, 충북대 중앙으로부터 허용거리
 
 class addressDocuments{
@@ -22,21 +22,6 @@ class addressDocuments{
   String addressName = '';
   double latitude = 0.0;
   double longitude = 0.0;
-}
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await AuthRepository.initialize(appKey: '<javascript apikey>');
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: DeliveryAddressSettingScreen(),
-    );
-  }
 }
 
 class DeliveryAddressSettingScreen extends StatefulWidget {
@@ -358,7 +343,7 @@ class _AddressDetailPageState extends State<AddressDetailPage> {
                         }
                       },
                       backgroundColor: Colors.white,
-                      child: Icon(Icons.my_location, color: Color(0xff999999)),//아이콘이 조금 다름. 수정 필요
+                      child: Icon(Icons.my_location, color: Color(0xff999999)),//아이콘이 다름. 수정 필요
                     ),
                   ),
                 ),
