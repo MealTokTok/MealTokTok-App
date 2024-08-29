@@ -23,6 +23,7 @@ class Tile extends StatelessWidget {
         subtitle != null ?
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              width: double.infinity,
               decoration: BoxDecoration(
                 color: SECONDARY_1_LIGHT,
                 borderRadius: BorderRadius.circular(8)

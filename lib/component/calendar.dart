@@ -11,6 +11,7 @@ import '../models/meal/ordered_meal.dart';
 class Calendar extends StatefulWidget {
   final void Function(DateTime selectedDay) onDaySelected;
   final DateTime currentDate = DateTime.now();
+
   Calendar({
     super.key,
     required this.onDaySelected,
@@ -38,7 +39,6 @@ class _CalendarState extends State<Calendar> {
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       decoration: BoxDecoration(
@@ -61,7 +61,7 @@ class _CalendarState extends State<Calendar> {
           defaultTextStyle:
               TextStyles.getTextStyle(TextType.BODY_2, BLACK_COLOR_2),
           selectedTextStyle:
-              TextStyles.getTextStyle(TextType.BODY_2, BLACK_COLOR_2),
+              TextStyles.getTextStyle(TextType.BUTTON, BLACK_COLOR_2),
           selectedDecoration: BoxDecoration(
             color: PRIMARY_COLOR,
             borderRadius: BorderRadius.circular(8),
@@ -92,7 +92,8 @@ class _CalendarState extends State<Calendar> {
           });
         },
         selectedDayPredicate: (day) {
-          OrderedMealController mealController = Get.find<OrderedMealController>();
+          OrderedMealController mealController =
+              Get.find<OrderedMealController>();
 
           return mealController.orderedWeekMeals[
                       day.subtract(const Duration(hours: 9)).toLocal()] !=

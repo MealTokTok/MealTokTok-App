@@ -47,9 +47,6 @@ class OrderedMealController extends GetxController {
     return keys;
   }
 
-
-
-
   void setMeals(){
     MealController mealController = Get.find();
     int defaultMealId = mealController.getMeals[0].mealId;
@@ -82,6 +79,8 @@ class OrderedMealController extends GetxController {
       DateTime.now().year,
       DateTime.now().month,
       DateTime.now().day,
+      0,
+      0
     );
 
     orderedDayMeals[currentDay] = [];
@@ -89,32 +88,48 @@ class OrderedMealController extends GetxController {
         reservedDate: DateTime(
             currentDay.year, currentDay.month, currentDay.day, 0, 0),
         reservedTime: Time.LUNCH,
-        isVisible: true,
+        isVisible: (DateTime.now().hour < 10) ? true : false,
         mealId: defaultMealId
     ));
     orderedDayMeals[currentDay]!.add(OrderedMeal.init(
         reservedDate: DateTime(
             currentDay.year, currentDay.month, currentDay.day, 0, 0),
         reservedTime: Time.DINNER,
-        isVisible: true,
+        isVisible: (DateTime.now().hour < 16) ? true : false,
         mealId: defaultMealId
     ));
 
     currentDay = currentDay.add(const Duration(days: 1));
     orderedDayMeals[currentDay] = [];
     orderedDayMeals[currentDay]!.add(OrderedMeal.init(
-      reservedDate: DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day + 1, 0, 0),
+      reservedDate: DateTime(currentDay.year, currentDay.month,
+          currentDay.day + 1, 0, 0),
       reservedTime: Time.LUNCH,
       isVisible: true,
       mealId: defaultMealId
     ));
     orderedDayMeals[currentDay]!.add(OrderedMeal.init(
-      reservedDate: DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day + 1, 0, 0),
+      reservedDate: DateTime(currentDay.year, currentDay.month,
+          currentDay.day, 0, 0),
       reservedTime: Time.DINNER,
       isVisible: true,
       mealId: defaultMealId
+    ));
+    currentDay = currentDay.add(const Duration(days: 1));
+    orderedDayMeals[currentDay] = [];
+    orderedDayMeals[currentDay]!.add(OrderedMeal.init(
+        reservedDate: DateTime(currentDay.year, currentDay.month,
+            currentDay.day, 0, 0),
+        reservedTime: Time.LUNCH,
+        isVisible: (DateTime.now().hour < 16) ? false : true,
+        mealId: defaultMealId
+    ));
+    orderedDayMeals[currentDay]!.add(OrderedMeal.init(
+        reservedDate: DateTime(currentDay.year, currentDay.month,
+            currentDay.day, 0, 0),
+        reservedTime: Time.DINNER,
+        isVisible: (DateTime.now().hour < 16) ? false : true,
+        mealId: defaultMealId
     ));
     update();
 
@@ -166,7 +181,6 @@ class OrderedMealController extends GetxController {
     update();
   }
 
-
   void updateMealById(OrderType orderType, DateTime dateTime, Time time, int mealId){
     MealController mealController = Get.find();
     if(orderType == OrderType.DAY_ORDER){
@@ -186,5 +200,28 @@ class OrderedMealController extends GetxController {
       }
     }
     update();
+  }
+
+  List<OrderedMeal> getOrderedMealsSelected(OrderType orderType){
+    List<OrderedMeal> result = [];
+    if(orderType == OrderType.DAY_ORDER){
+      for (var orderedMeals in orderedDayMeals.values) {
+        for (var orderedMeal in orderedMeals) {
+          if(orderedMeal.isChecked == true && orderedMeal.isVisible == true){
+            result.add(orderedMeal);
+          }
+        }
+      }
+    }
+    else{
+      for (var orderedMeals in orderedWeekMeals.values) {
+        for (var orderedMeal in orderedMeals) {
+          if(orderedMeal.isChecked == true && orderedMeal.isVisible == true){
+            result.add(orderedMeal);
+          }
+        }
+      }
+    }
+    return result;
   }
 }

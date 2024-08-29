@@ -149,11 +149,19 @@ class _OrderScreenState extends State<OrderScreen> {
             IconButton(
               onPressed: () => showDialog<String>(
                 context: context,
+                barrierDismissible: true,
+                barrierColor: Colors.black.withOpacity(0),
                 builder: (BuildContext context) => Dialog(
-                  child: Padding(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  backgroundColor: GREY_COLOR_0,
+                  surfaceTintColor: Colors.transparent,
+                  child: Container(
+                    width: 335,
                     padding: const EdgeInsets.all(20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -170,7 +178,77 @@ class _OrderScreenState extends State<OrderScreen> {
                             ),
                           ],
                         ),
+                        const SizedBox(height: 40),
+                        Text('일 결제',
+                            style: TextStyles.getTextStyle(
+                                TextType.SUBTITLE_1, PRIMARY_COLOR)),
+                        const SizedBox(height: 8),
+                        RichText(text: TextSpan(
+                          children: [
+                            TextSpan(
+                                text: '점심 배달을 원하실 경우에는 ',
+                                style: TextStyles.getTextStyle(
+                                    TextType.BODY_2, BLACK_COLOR)),
+                            TextSpan(
+                                text: '오전 10시까지,',
+                                style: TextStyles.getTextStyle(
+                                    TextType.SUBTITLE_2, BLACK_COLOR)),
+                          ],
+                        )),
+                        RichText(text: TextSpan(
+                          children: [
+                            TextSpan(
+                                text: '저녁 배달을 원하실 경우에는 ',
+                                style: TextStyles.getTextStyle(
+                                    TextType.BODY_2, BLACK_COLOR)),
+                            TextSpan(
+                                text: '오후 4시까지,',
+                                style: TextStyles.getTextStyle(
+                                    TextType.SUBTITLE_2, BLACK_COLOR)),
+                          ],
+                        )),
+                        Text('결제를 완료해주셔야해요! ',
+                            style: TextStyles.getTextStyle(
+                                TextType.BODY_2, BLACK_COLOR)),
+                        const SizedBox(height: 8),
+                        Text("*결제 시간이 지나면 상품이 '내일' 배달돼요.",
+                            style: TextStyles.getTextStyle(
+                                TextType.SUBTITLE_2, SECONDARY_2)),
+                        const SizedBox(height: 40),
 
+                        Text('주간 결제',
+                            style: TextStyles.getTextStyle(
+                                TextType.SUBTITLE_1, PRIMARY_COLOR)),
+                        const SizedBox(height: 8),
+                        Text('지정한 날짜와 메뉴대로 배달이 진행돼요.',
+                            style: TextStyles.getTextStyle(
+                                TextType.BODY_2, BLACK_COLOR)),
+                        RichText(text: TextSpan(
+                          children: [
+                            TextSpan(
+                                text: '지정한 날짜에 메뉴를 변경하고 싶다면, ',
+                                style: TextStyles.getTextStyle(
+                                    TextType.BODY_2, BLACK_COLOR)),
+                            TextSpan(
+                                text: '배달 받는 시간 2시간 전에',
+                                style: TextStyles.getTextStyle(
+                                    TextType.SUBTITLE_2, BLACK_COLOR)),
+                            TextSpan(
+                                text: '수정해주세요!',
+                                style: TextStyles.getTextStyle(
+                                    TextType.BODY_2, BLACK_COLOR)),
+                          ],
+                        ), maxLines: 3,),
+                        Text('ex) 12시 -> 10시, 6시 -> 4시',
+                            style: TextStyles.getTextStyle(
+                                TextType.BODY_2, GREY_COLOR_3)),
+
+
+                        const SizedBox(height: 8),
+                        Text('* 2시간 이후 결제되 수정이 불가능하다는 점 꼭 유의해주세요!',
+                            maxLines: 2,
+                            style: TextStyles.getTextStyle(
+                                TextType.SUBTITLE_2, SECONDARY_2)),
 
                       ]
                     )
@@ -394,6 +472,12 @@ class _OrderScreenState extends State<OrderScreen> {
           onPressed: () {
             if((_orderType == OrderType.DAY_ORDER ? _orderedMealController.menuPriceDay() : _orderedMealController.menuPriceWeek()) > 0){
               showModalBottomSheet<void>(
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  ),
+                ),
                 context: context,
                 builder: (BuildContext context) {
                   return SizedBox(
@@ -404,7 +488,15 @@ class _OrderScreenState extends State<OrderScreen> {
                           Padding(
                           padding: const EdgeInsets.symmetric(
                              horizontal: 20, vertical: 8),
-                              child: SizedBox(
+                              child: Container(
+                                decoration: const BoxDecoration(
+                                  border: Border(
+                                    bottom: BorderSide(
+                                      color: GREY_COLOR_0,
+                                      width: 1,
+                                    ),
+                                  ),
+                                ),
                                   height: 60,
                                   child: Align(
                                       alignment: Alignment.centerLeft,
@@ -429,32 +521,30 @@ class _OrderScreenState extends State<OrderScreen> {
                                               style: TextStyles.getTextStyle(
                                                   TextType.TITLE_2, BLACK_COLOR)),
                                         ])),
+                                    const SizedBox(height: 12),
                                     Text(
                                       '저희 한끼톡톡이\n모든 것을 청결하게 정리해드려요!',
                                       style: TextStyles.getTextStyle(
                                           TextType.BODY_2, GREY_COLOR_2),
                                     ),
-                                    const SizedBox(height: 4),
-                                    SizedBox(
-                                      width: 170,
-                                      child: OutlinedButton(
-                                          onPressed: () {},
-                                          style: OutlinedButton.styleFrom(
-                                            backgroundColor: WHITE_COLOR,
-                                            //parent color
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                              BorderRadius.circular(8),
-                                            ),
-                                            side: const BorderSide(
+                                    const SizedBox(height: 12),
+                                    InkWell(
+                                      onTap: () {},
+
+                                      child: Container(
+                                          decoration:  BoxDecoration(
+                                            color: WHITE_COLOR,
+                                            borderRadius: BorderRadius.circular(8),
+                                            border: Border.all(
                                                 color: SECONDARY_1, width: 1),
                                           ),
                                           child: Padding(
                                               padding: const EdgeInsets.fromLTRB(
-                                                  2, 4, 10, 4),
+                                                  10, 4, 2, 4),
                                               child: Row(
                                                 mainAxisAlignment:
                                                 MainAxisAlignment.start,
+                                                mainAxisSize: MainAxisSize.min,
                                                 children: [
                                                   Text('풀대접 서비스란',
                                                       style:
@@ -488,6 +578,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(8),
                                         ),
+                                        elevation: 0,
                                       ),
                                       child: Padding(
                                           padding: const EdgeInsets.all(12),
@@ -495,7 +586,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                               child: Text('장바구니 보기',
                                                   style: TextStyles.getTextStyle(
                                                       TextType.BUTTON,
-                                                      WHITE_COLOR))))),
+                                                      GREY_COLOR_2))))),
                                 ),
                                 const SizedBox(width: 12),
                                 Flexible(
@@ -505,6 +596,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                           //TODO: 풀대접 서비스 페이지 보기
                                         },
                                         style: ElevatedButton.styleFrom(
+                                          elevation: 0,
                                           minimumSize: const Size(0, 48),
                                           backgroundColor: PRIMARY_COLOR,
                                           shape: RoundedRectangleBorder(
