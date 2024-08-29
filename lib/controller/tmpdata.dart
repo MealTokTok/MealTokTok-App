@@ -72,6 +72,7 @@ import 'package:hankkitoktok/models/sidedish/sidedish.dart';
 import '../models/enums.dart';
 import '../models/meal/dish.dart';
 import '../models/order/order.dart';
+import '../models/user/user.dart';
 
 int _dishIdCounter = 1;
 int _mealIdCounter = 1;
@@ -125,31 +126,40 @@ List<Meal> mealMenuList = [
   ),
 ];
 
+Meal getMealById(int mealId) {
+  for(Meal meal in mealMenuList){
+    if(meal.mealId == mealId){
+      return meal;
+    }
+  }
+  return mealMenuList[1];
+}
+
 
 List<OrderedMeal> orderedMeals = [
   OrderedMeal.init(
-    mealId: _orderIdCounter++,
+    mealId: 1,
     reservedDate: DateTime(2024, 8, 15), // 특정 날짜로 설정
     reservedTime: Time.LUNCH, // 점심 시간
     includeRice: true, // 밥 포함
     hasFullDiningOption: false, // 전체 다이닝 옵션 제외
   ),
   OrderedMeal.init(
-    mealId: _orderIdCounter++,
+    mealId: 2,
     reservedDate: DateTime(2024, 8, 16),
     reservedTime: Time.DINNER, // 저녁 시간
     includeRice: false,
     hasFullDiningOption: true,
   ),
   OrderedMeal.init(
-    mealId: _orderIdCounter++,
+    mealId: 3,
     reservedDate: DateTime(2024, 8, 17),
     reservedTime: Time.LUNCH,
     includeRice: true,
     hasFullDiningOption: true,
   ),
   OrderedMeal.init(
-    mealId: _orderIdCounter++,
+    mealId: 4,
     reservedDate: DateTime(2024, 8, 17),
     reservedTime: Time.DINNER,
     includeRice: false,
@@ -157,12 +167,16 @@ List<OrderedMeal> orderedMeals = [
   ),
 ];
 
+
 List<MealDelivery> mealDeliveries = [
   MealDelivery.init(
     mealDeliveryId: _requestIdCounter++,
     orderId: 1,
     orderedMeal: orderedMeals[0],
-    orderState: OrderState.ORDERED,
+    orderState: OrderState.DELIVERING,
+    deliveryState: DeliveryState.DELIVERED,
+    deliveryRequestTime: DateTime(2024, 8, 15, 12, 30),
+    orderTime: DateTime(2024, 8, 14, 14, 20),
     deliveryStartTime: DateTime(2024, 8, 15, 12, 30),
     deliveryCompleteTime: null,
   ),
@@ -171,6 +185,9 @@ List<MealDelivery> mealDeliveries = [
     orderId: 2,
     orderedMeal: orderedMeals[1],
     orderState: OrderState.PENDING,
+    deliveryState: DeliveryState.INDELIVERING,
+    deliveryRequestTime: DateTime(2024, 8, 15, 12, 30),
+    orderTime: DateTime(2024, 8, 14, 14, 20),
     deliveryStartTime: null,
     deliveryCompleteTime: null,
   ),
@@ -178,19 +195,38 @@ List<MealDelivery> mealDeliveries = [
     mealDeliveryId: _requestIdCounter++,
     orderId: 3,
     orderedMeal: orderedMeals[2],
-    orderState: OrderState.DELIVERED,
+    orderState: OrderState.DELIVERING,
+    deliveryState: DeliveryState.PENDING,
+    deliveryRequestTime: DateTime(2024, 8, 15, 12, 30),
+    orderTime: DateTime(2024, 8, 14, 14, 20),
     deliveryStartTime: DateTime(2024, 8, 17, 12, 30),
-    deliveryCompleteTime: DateTime(2024, 8, 17, 12, 45),
+    deliveryCompleteTime: null,
   ),
   MealDelivery.init(
     mealDeliveryId: _requestIdCounter++,
     orderId: 4,
     orderedMeal: orderedMeals[3],
-    orderState: OrderState.DELIVERED,
+    orderState: OrderState.ORDERED,
+    deliveryState: DeliveryState.PENDING,
+    deliveryRequestTime: DateTime(2024, 8, 15, 12, 30),
+    orderTime: DateTime(2024, 8, 14, 14, 20),
     deliveryStartTime: null,
     deliveryCompleteTime: null,
   ),
 ];
+
+MealDelivery getMealDeliveryById(int mealDeliveryId) {
+  for(MealDelivery mealDelivery in mealDeliveries){
+    if(mealDelivery.mealDeliveryId == mealDeliveryId){
+      return mealDelivery;
+    }
+  }
+  return mealDeliveries[0];
+}
+
+MealDelivery getNextMealDelivery(int orderId) {
+  return mealDeliveries[1];
+}
 
 List<List<MealDelivery>> orderedMealsExamples = [
   [mealDeliveries[0]],
@@ -202,9 +238,9 @@ List<List<MealDelivery>> orderedMealsExamples = [
 Order exampleOrder = Order.init(
   orderID: _orderIdCounter++,
   orderType: OrderType.WEEK_ORDER, // 주간 결제로 설정
-  orderState: OrderState.ORDERED, // 주문 상태 설정
+  orderState: OrderState.DELIVERING, // 주문 상태 설정
   specialInstruction: '배송 시 문 앞에 두세요.', // 요청 사항
-  userId: 12345,
+  userId: 1,
 
   mealPrice: 18000,
   deliveryPrice: 3000,
@@ -219,7 +255,7 @@ Order exampleOrder2 = Order.init(
   orderType: OrderType.DAY_ORDER,
   orderState: OrderState.PENDING,
   specialInstruction: '배송 시 연락주세요.',
-  userId: 54321,
+  userId: 1,
 
   mealPrice: 12000,
   deliveryPrice: 2000,
@@ -234,7 +270,7 @@ Order exampleOrder3 = Order.init(
   orderType: OrderType.WEEK_ORDER,
   orderState: OrderState.DELIVERED,
   specialInstruction: '부재 시 경비실에 맡겨주세요.',
-  userId: 98765,
+  userId: 1,
 
   mealPrice: 24000,
   deliveryPrice: 4000,
@@ -244,10 +280,30 @@ Order exampleOrder3 = Order.init(
   mealDeliveries: orderedMealsExamples[2],
 );
 
+List<Order> orders = [exampleOrder, exampleOrder2, exampleOrder3];
 
+Order getOrderById(int orderId) {
+  for(Order order in orders){
+    if(order.orderID == orderId){
+      return order;
+    }
+  }
+  return orders[0];
+}
 
+User exampleUser = User.init(
+  userId: 1,
+  username: 'testuser',
+  nickname: '테스트유저',
+  email: 'email@google.com',
+  phoneNumber: '010-1234-5678',
+  profileImageUrl: 'https://picsum.photos/80/80',
+  birth: DateTime(1990, 1, 1),
+);
 
-
+User getUserById(int userId) {
+  return exampleUser;
+}
 
 
 
@@ -294,3 +350,6 @@ List<SideDish> sideDishList = [
   SideDish('김치/젓갈', '주스', 'https://picsum.photos/80/80'),
 ];
 
+String getAddressById(int addressId) {
+  return '서울시 강남구 테헤란로 123';
+}

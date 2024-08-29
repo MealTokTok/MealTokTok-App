@@ -1,15 +1,17 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
-
-import 'package:hankkitoktok/models/order/order.dart';
-import 'package:hankkitoktok/functions/httpRequest.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:hankkitoktok/models/address/address.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:hankkitoktok/functions/httpRequest.dart';
 
-Future<List<Order>> orderGetList(Map<String,dynamic>? query) async {
+enum RequestType { POST, PATCH, DELETE }
+
+
+Future<List<Address>> addressGetList(Map<String,dynamic>? query) async {
   SharedPreferences prefs = await SharedPreferences.getInstance(); // 저장소
   String accessToken = prefs.getString('access_token') ?? '';
-  Uri uri = Uri.parse('$BASE_URL/api/v1/orders');
+  Uri uri = Uri.parse('$BASE_URL/api/v1/user/my/addresses');
 
   if (query != null) {
     uri = uri.replace(queryParameters: query);
@@ -40,10 +42,10 @@ Future<List<Order>> orderGetList(Map<String,dynamic>? query) async {
     }
     if(response.statusCode == 200){
       var responseBody = jsonDecode(utf8.decode(response.bodyBytes));
-      List<Order> result = [];
+      List<Address> result = [];
       for(var data in responseBody['result']){
-        Order order = Order.init();
-        result.add(order.fromMap(data));
+        Address address = Address.init();
+        result.add(address.fromMap(data));
       }
       // await prefs.setString("access_token", responseBody['access']); //Todo: 데이터 보고 교체
       // await prefs.setString("refresh_token", responseBody['refresh']); //Todo: 데이터 보고 교체

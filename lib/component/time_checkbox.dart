@@ -4,6 +4,7 @@ import 'package:hankkitoktok/controller/ordered_meal_controller.dart';
 import 'package:intl/intl.dart';
 import '../const/style2.dart';
 import '../const/color.dart';
+import '../controller/meal_controller.dart';
 import '../models/enums.dart';
 import '../models/meal/ordered_meal.dart';
 
@@ -52,6 +53,7 @@ class TimeCheckbox extends StatelessWidget {
 
   bool _getValue(OrderedMealController controller, DateTime key, int index){
     if(mode == Mode.MEAL){
+
       if(orderType == OrderType.DAY_ORDER){
         return controller.orderedDayMeals[key]![index].isChecked;
       }
@@ -71,9 +73,14 @@ class TimeCheckbox extends StatelessWidget {
 
   void _getOnChanged(OrderedMealController controller, DateTime key, int index){
     if(mode == Mode.MEAL){
+      MealController mealController = Get.find();
+      int defaultMealId = mealController.getMeals[0].mealId;
       controller.updateChecked(orderType, key, index == 0 ? Time.LUNCH : Time.DINNER);
+      controller.updateMealById(
+          orderType, key, index == 0 ? Time.LUNCH : Time.DINNER, defaultMealId);
     } else if(mode == Mode.RICE){
       controller.updateRice(orderType, key, index == 0 ? Time.LUNCH : Time.DINNER);
+
     } else if(mode == Mode.WASHING){
 
     }

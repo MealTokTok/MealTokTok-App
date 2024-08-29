@@ -39,9 +39,14 @@ class Meal extends BaseModel {
   String getDishString() {
     String dishString = '';
     for (Dish dish in dishList) {
-      dishString += dish.dishName + ', ';
+      dishString += '${dish.dishName}, ';
     }
-    return dishString.substring(0, dishString.length - 2);
+    if(dishString.length > 2){
+      return dishString.substring(0, dishString.length - 2);
+    }
+    else {
+      return '';
+    }
   }
 
   List<String> getDishNames(){

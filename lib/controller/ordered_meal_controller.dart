@@ -1,12 +1,39 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:hankkitoktok/controller/meal_controller.dart';
 import 'package:hankkitoktok/models/meal/ordered_meal.dart';
 import 'package:hankkitoktok/models/enums.dart';
+
+import '../models/meal/meal.dart';
 class OrderedMealController extends GetxController {
 
 
   Map<DateTime, List<OrderedMeal>> orderedDayMeals = <DateTime, List<OrderedMeal>>{};
   Map<DateTime, List<OrderedMeal>> orderedWeekMeals = <DateTime, List<OrderedMeal>>{};
+
+  int menuPriceDay() {
+    int sum = 0;
+    for (var orderedMeals in orderedDayMeals.values) {
+      for (var orderedMeal in orderedMeals) {
+        if(orderedMeal.isChecked == false) continue;
+
+        sum += orderedMeal.meal.price;
+        if(orderedMeal.includeRice) sum += 1000;
+      }
+    }
+    return sum;
+  }
+  int menuPriceWeek(){
+    int sum = 0;
+    for (var orderedMeals in orderedWeekMeals.values) {
+      for (var orderedMeal in orderedMeals) {
+        if(orderedMeal.isChecked == false) continue;
+        sum += orderedMeal.meal.price;
+        if(orderedMeal.includeRice) sum += 1000;
+      }
+    }
+    return sum;
+  }
 
   List<DateTime> get orderedDayKeys{
     List<DateTime> keys = orderedDayMeals.keys.toList();
@@ -20,14 +47,12 @@ class OrderedMealController extends GetxController {
     return keys;
   }
 
-  @override
-  void onInit() {
-    setMeals();
-    super.onInit();
-  }
+
+
 
   void setMeals(){
-
+    MealController mealController = Get.find();
+    int defaultMealId = mealController.getMeals[0].mealId;
     DateTime nextSunday = DateTime(
       DateTime.now().year,
       DateTime.now().month,
@@ -40,12 +65,14 @@ class OrderedMealController extends GetxController {
       orderedWeekMeals[nextSunday]!.add(OrderedMeal.init(
           reservedDate: DateTime(
               nextSunday.year,nextSunday.month,nextSunday.day, 0, 0),
-          reservedTime: Time.LUNCH
+          reservedTime: Time.LUNCH,
+          mealId: defaultMealId
       ));
       orderedWeekMeals[nextSunday]!.add(OrderedMeal.init(
           reservedDate: DateTime(
               nextSunday.year,nextSunday.month,nextSunday.day, 0, 0),
-          reservedTime: Time.DINNER
+          reservedTime: Time.DINNER,
+          mealId: defaultMealId
       ));
       nextSunday = nextSunday.add(const Duration(days: 1));
     }
@@ -62,13 +89,15 @@ class OrderedMealController extends GetxController {
         reservedDate: DateTime(
             currentDay.year, currentDay.month, currentDay.day, 0, 0),
         reservedTime: Time.LUNCH,
-        isVisible: true
+        isVisible: true,
+        mealId: defaultMealId
     ));
     orderedDayMeals[currentDay]!.add(OrderedMeal.init(
         reservedDate: DateTime(
             currentDay.year, currentDay.month, currentDay.day, 0, 0),
         reservedTime: Time.DINNER,
-        isVisible: true
+        isVisible: true,
+        mealId: defaultMealId
     ));
 
     currentDay = currentDay.add(const Duration(days: 1));
@@ -77,13 +106,15 @@ class OrderedMealController extends GetxController {
       reservedDate: DateTime(DateTime.now().year, DateTime.now().month,
           DateTime.now().day + 1, 0, 0),
       reservedTime: Time.LUNCH,
-      isVisible: true
+      isVisible: true,
+      mealId: defaultMealId
     ));
     orderedDayMeals[currentDay]!.add(OrderedMeal.init(
       reservedDate: DateTime(DateTime.now().year, DateTime.now().month,
           DateTime.now().day + 1, 0, 0),
       reservedTime: Time.DINNER,
-      isVisible: true
+      isVisible: true,
+      mealId: defaultMealId
     ));
     update();
 
@@ -92,6 +123,9 @@ class OrderedMealController extends GetxController {
   void updateVisible(DateTime dateTime){
     for (var element in orderedWeekMeals[dateTime]!) {
       element.isVisible = !element.isVisible;
+      if(element.isVisible == false){
+        element.isChecked = false;
+      }
     }
     update();
   }
@@ -132,4 +166,25 @@ class OrderedMealController extends GetxController {
     update();
   }
 
+
+  void updateMealById(OrderType orderType, DateTime dateTime, Time time, int mealId){
+    MealController mealController = Get.find();
+    if(orderType == OrderType.DAY_ORDER){
+      for (var element in orderedDayMeals[dateTime]!) {
+        if(element.reservedTime == time){
+          element.meal = mealController.getMealByID(mealId);
+          element.mealId = mealId;
+        }
+      }
+    }
+    else{
+      for (var element in orderedWeekMeals[dateTime]!) {
+        if(element.reservedTime == time){
+          element.meal = mealController.getMealByID(mealId);
+          element.mealId = mealId;
+        }
+      }
+    }
+    update();
+  }
 }

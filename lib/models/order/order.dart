@@ -10,14 +10,18 @@ class Order extends BaseModel{
   String specialInstruction; //요청사항
 
   int userId;
+  int addressId; // 배송주소
 
   int mealPrice;
   int deliveryPrice;
   int fullServicePrice;
   int totalPrice;
 
-  DateTime orderTime; // 주문닐짜
-  String address; // 배송주소
+  int totalMealDeliveryCount;
+  int remainingMealDeliveryCount;
+
+  DateTime? orderTime; // 주문닐짜
+
 
   List<MealDelivery> mealDeliveries; // 주문한 도시락 리스트(주간 결제일 경우 2개이상, 일 결제일 경우 1개이상)
 
@@ -27,20 +31,22 @@ class Order extends BaseModel{
     this.orderState = OrderState.ORDERED,
     this.specialInstruction = '',
     this.userId = 0,
+    this.addressId = 0,
     this.mealPrice = 0,
     this.deliveryPrice = 0,
     this.fullServicePrice = 0,
     this.totalPrice = 0,
-    required this.orderTime,
-    this.address = '',
+    this.orderTime,
+    this.totalMealDeliveryCount = 0,
+    this.remainingMealDeliveryCount = 0,
     this.mealDeliveries = const [],
   });
 
 
   @override
-  BaseModel fromMap(Map<String, dynamic> map) {
+  Order fromMap(Map<String, dynamic> map) {
     List<MealDelivery> mealDeliveries = [];
-    OrderedMeal orderedMeal = OrderedMeal.init(reservedDate: DateTime(0));
+    OrderedMeal orderedMeal = OrderedMeal.init();
     for(var item in map['mealDeliveries']){
       mealDeliveries.add(MealDelivery.init(orderedMeal: orderedMeal).fromMap(item));
     }
@@ -52,6 +58,7 @@ class Order extends BaseModel{
           (e) => e.toString().split('.').last == map['order']['orderState']),
       specialInstruction: map['order']['specialInstruction'],
       userId: map['order']['orderer']['userId'],
+
       mealPrice: map['order']['orderPrice']['mealPrice']['amount'],
       deliveryPrice: map['order']['orderPrice']['deliveryPrice']['amount'],
       fullServicePrice: map['order']['orderPrice']['fullServicePrice']['amount'],
@@ -75,41 +82,20 @@ class Order extends BaseModel{
           'fullServicePrice': {'amount': fullServicePrice},
           'totalPrice': {'amount': totalPrice},
         },
+
+
       'orderTime': orderTime.toString(),
       'mealDeliveries': mealDeliveries.map((e) => e.toJson()).toList(),
     };
   }
 
 
-  List<MealDetail> get orderedMealList {
+
+
+  List<MealDetail> get combinedMenuList {
     List<MealDetail> mealDetails = [];
     for (var item in mealDeliveries) {
-      mealDetails.add(MealDetail.init(
-          title: item.orderedMeal.getMealString(), subTitle: item.orderedMeal.getMenuString()));
-    }
-
-    mealDetails.sort((a, b) => a.title.compareTo(b.title));
-
-    return mealDetails;
-  }
-  //수, 금, 토
-  String get dayOfWeekInitial {
-    List<String> dayOfWeekList = ['일', '월', '화', '수', '목', '금', '토'];
-
-    Set<String> initialsSet = Set<String>();
-
-    for (var item in orderedMealList) {
-      initialsSet.add(dayOfWeekList[(item.priority)~/2]);
-    }
-    List<String> sortedInitials = initialsSet.toList()..sort();
-    return sortedInitials.join(', ');
-  }
-
-  List<MealDetail> getCombinedMenuList() {
-    List<MealDetail> mealDetails = [];
-    for (var item in mealDeliveries) {
-      mealDetails.add(MealDetail.init(
-          title: item.orderedMeal.getMealString(), subTitle: item.orderedMeal.getMenuString()));
+      mealDetails.add(item.orderedMeal.getMealDetail());
     }
 
     mealDetails.sort((a, b) => a.priority.compareTo(b.priority));
@@ -117,9 +103,27 @@ class Order extends BaseModel{
     return mealDetails;
   }
 
+  //수, 금, 토
+  String get dayOfWeekInitial {
+    List<String> dayOfWeekList = ['일', '월', '화', '수', '목', '금', '토'];
+
+    Set<String> initialsSet = Set<String>();
+
+    for (var item in combinedMenuList) {
+      initialsSet.add(dayOfWeekList[(item.priority)~/2]);
+    }
+    List<String> sortedInitials = initialsSet.toList();
+    sortedInitials.sort((a, b) => dayOfWeekList.indexOf(a).compareTo(dayOfWeekList.indexOf(b)));
+    return sortedInitials.join(', ');
+  }
+
   //2024년 06월 29일 오후 14:20
   String get orderDateString {
-    return '${orderTime.year}년 ${orderTime.month}월 ${orderTime.day}일 ${orderTime.hour}:${orderTime.minute}';
+    return '${orderTime!.year}년 ${orderTime!.month}월 ${orderTime!.day}일 ${orderTime!.hour}:${orderTime!.minute}';
+  }
+  //2024.06.29
+  String get simpleOrderDateString {
+    return '${orderTime!.year}.${orderTime!.month}.${orderTime!.day}';
   }
 
 
@@ -142,7 +146,7 @@ class Order extends BaseModel{
     ];
 
     List<int> dayOfWeekIndexList = [0,0,0,0,0,0,0];
-    for (var item in orderedMealList) {
+    for (var item in combinedMenuList) {
       dayOfWeekIndexList[(item.priority)~/2] += 1;
       if(item.priority % 2 == 0){
         dayOfWeekIndexList[(item.priority)~/2] += 1;
@@ -171,4 +175,5 @@ class Order extends BaseModel{
     }
     return dayOfWeekStringList;
   }
+
 }

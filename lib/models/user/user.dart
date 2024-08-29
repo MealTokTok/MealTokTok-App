@@ -1,44 +1,51 @@
 import 'package:hankkitoktok/models/base_model.dart';
 
 class User extends BaseModel{
-  String? uid;
-  String? email;
-  String? name;
-  String? photoUrl;
-  String? provider;
-  String? token;
+  int userId;
+  String username;
+  String nickname;
+  String email;
+  String phoneNumber;
+  String profileImageUrl;
+  DateTime? birth;
+  String token;
 
-  User({
-    this.uid,
-    this.email,
-    this.name,
-    this.photoUrl,
-    this.provider,
-    this.token,
+  User.init({
+    this.userId = 0,
+    this.username = '',
+    this.nickname = '',
+    this.email = '',
+    this.phoneNumber = '',
+    this.profileImageUrl = '',
+    this.birth,
+    this.token = '',
   });
 
-  User.fromMap(Map<String, dynamic> map) {
-    uid = map['uid'];
-    email = map['email'];
-    name = map['name'];
-    photoUrl = map['photoUrl'];
-    provider = map['provider'];
-    token = map['token'];
+  @override
+  User fromMap(Map<String, dynamic> map) {
+    return User.init(
+      userId: map['uid'],
+      username: map['username'],
+      nickname: map['nickname'],
+      email: map['email'],
+      phoneNumber: map['phoneNumber'],
+      profileImageUrl: map['profileImageUrl'],
+      birth: map['birth'],
+      token: map['token'],
+    );
   }
 
-  @override
-  BaseModel fromMap(Map<String, dynamic> map) {
-    return User.fromMap(map);
-  }
 
   @override
   Map<String, dynamic> toJson() {
     return {
-      'uid': uid,
+      'uid': userId,
+      'username': username,
+      'nickname': nickname,
       'email': email,
-      'name': name,
-      'photoUrl': photoUrl,
-      'provider': provider,
+      'phoneNumber': phoneNumber,
+      'profileImageUrl': profileImageUrl,
+      'birth': birth,
       'token': token,
     };
   }
