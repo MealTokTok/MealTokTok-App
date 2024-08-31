@@ -6,9 +6,11 @@ import 'package:kakao_map_plugin/kakao_map_plugin.dart';
 import 'dart:math';
 import 'package:geolocator/geolocator.dart';
 
+//더 해야할 것: text style 통일, 지도 마커 수정, 주소 등록 후 페이지, 맵 누르면 위치 이동 버튼
+
 TextStyle normalgrey14 = TextStyle(color: Color(0xff999999),fontSize: 16.0,fontWeight: FontWeight.normal,letterSpacing: -1.0);
 TextStyle appBarMain = TextStyle(color: Colors.black,fontSize: 18.0, fontWeight: FontWeight.normal);
-//마지막 변수들
+//연결할 변수들
 String faddressName = '';
 String fplaceName = '';
 String fdetailedAddressName = '';
