@@ -45,6 +45,23 @@ class _OrderScreenState extends State<OrderScreen> {
     _orderedMealController.updateVisible(selectedDay);
   }
 
+  bool selectDate(DateTime day) {
+    OrderedMealController mealController =
+    Get.find<OrderedMealController>();
+
+    return mealController.orderedWeekMeals[
+    day.subtract(const Duration(hours: 9)).toLocal()] !=
+        null &&
+        mealController
+            .orderedWeekMeals[
+        day.subtract(const Duration(hours: 9)).toLocal()]![0]
+            .isVisible &&
+        mealController
+            .orderedWeekMeals[
+        day.subtract(const Duration(hours: 9)).toLocal()]![1]
+            .isVisible;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -283,6 +300,7 @@ class _OrderScreenState extends State<OrderScreen> {
             Tile(title: '주문 요일 선택', subtitle: '배송 받고 싶은 요일을 선택해주세요.'),
             const SizedBox(height: 8),
             Calendar(
+              selectDate: selectDate,
               onDaySelected: _onDaySelected,
             )
           ],
