@@ -4,13 +4,11 @@ import 'package:get/get.dart';
 import 'package:hankkitoktok/component/four_image.dart';
 import 'package:hankkitoktok/const/color.dart';
 import 'package:hankkitoktok/controller/tmpdata.dart';
-
 import 'package:hankkitoktok/const/style.dart';
 import 'package:hankkitoktok/functions/httpRequest.dart';
 import 'package:hankkitoktok/models/meal/meal_delivery.dart';
 import 'package:hankkitoktok/models/meal/ordered_meal.dart';
 import 'package:hankkitoktok/models/meal/meal.dart';
-
 import 'package:hankkitoktok/screen/2_home/2_notification_screen.dart';
 
 enum ScreenStatus { AFTER_DELIVERY, MENU_EMPTY, MENU_SELECTED, ON_DELIVERY }
@@ -155,7 +153,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
                     screenStatus == ScreenStatus.AFTER_DELIVERY
                         ? _buildAfterDeliveryTitle()
                         : _buildMainTitle(),
@@ -169,7 +166,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                 : _buildMenuList(mealMenuList),
                     const SizedBox(height: 10),
                     _buildSelectedMenuButton(screenStatus),
-
                   ],
                 ),
               ),
@@ -489,7 +485,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
 
   Widget _buildAfterDelivery(MealDelivery mealDelivery) {
     Meal meal = mealDelivery.orderedMeal.meal;
