@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:hankkitoktok/const/strings.dart';
+import 'package:hankkitoktok/models/user/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -161,3 +162,4 @@ String mapToString(Map<String, String> map) {
   });
   return buffer.toString();
 }
+

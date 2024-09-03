@@ -15,6 +15,11 @@ import 'package:hankkitoktok/screen/3_menu_choice/0_meal_menu_screen.dart';
 import 'package:hankkitoktok/screen/3_menu_choice/0_set_meal_name_screen.dart';
 import 'package:hankkitoktok/screen/3_menu_choice/1_choice_menu_screen.dart';
 import 'package:hankkitoktok/screen/3_menu_choice/2_order_screen.dart';
+import 'package:hankkitoktok/screen/4_my_page/0_my_page_home.dart';
+import 'package:hankkitoktok/screen/4_my_page/3_delete_id.dart';
+import 'package:hankkitoktok/screen/4_my_page/practice.dart';
+import 'package:hankkitoktok/screen/5_order/0_full_dinings_warning_dialog.dart';
+import 'package:hankkitoktok/screen/5_order/1_full_dining_explanation.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -161,6 +166,10 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: PRIMARY_COLOR),
         useMaterial3: true,
         bottomAppBarTheme: BottomAppBarTheme(color: Colors.white),
+        scaffoldBackgroundColor: Colors.white,
+        appBarTheme: AppBarTheme(
+          color: Colors.white, // AppBar의 배경 색 설정
+        ),
       ),
       getPages: [
         // 스크린 지정
@@ -178,7 +187,9 @@ class MyApp extends StatelessWidget {
         //   page: () => CommunityScreen(),
         // ),
       ],
-      home: OrderScreen(menus: mealMenuList),
+
+      home: MyPageHome(),
+
     );
   }
 }

@@ -1,10 +1,17 @@
 import "package:flutter/material.dart";
+import "package:hankkitoktok/component/show_warning_dialog.dart";
 import "package:hankkitoktok/const/color.dart";
 import "package:hankkitoktok/const/style.dart";
+import "package:hankkitoktok/const/style2.dart";
+import "package:hankkitoktok/models/user/user.dart";
 import "package:hankkitoktok/screen/4_my_page/2_my_nickname_editing.dart";
+import "package:hankkitoktok/screen/4_my_page/3_delete_id.dart";
 
 class MyInformationEditng extends StatefulWidget {
-  const MyInformationEditng({super.key});
+
+  final User? user;
+
+  const MyInformationEditng({required this.user, super.key});
 
   @override
   State<MyInformationEditng> createState() => _MyInformationEditngState();
@@ -57,7 +64,7 @@ class _MyInformationEditngState extends State<MyInformationEditng> {
                           padding: EdgeInsets.symmetric(vertical: 8),
                           child: Text(
                             "닉네임",
-                            style: myPageRecordGray14,
+                            style: TextStyles.getTextStyle(TextType.BODY_2, GRAY4),
                           ),
                         ),
                         Divider(
@@ -75,7 +82,7 @@ class _MyInformationEditngState extends State<MyInformationEditng> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => MyNicknameEditing(),
+                                    builder: (context) => MyNicknameEditing(user: widget.user,),
                                   ),
                                 );
                               },
@@ -87,7 +94,7 @@ class _MyInformationEditngState extends State<MyInformationEditng> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    "닉네임",
+                                    "${widget.user!.nickname}",
                                     style: myPageRecordBlack16,
                                   ),
                                   const Icon(
@@ -155,7 +162,7 @@ class _MyInformationEditngState extends State<MyInformationEditng> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "cbnu@gmail.com",
+                                "${widget.user!.email}",
                                 style: myPageRecordBlack16,
                               ),
                               //디자인 변경 대비
@@ -251,7 +258,7 @@ class _MyInformationEditngState extends State<MyInformationEditng> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "010-9999-9999",
+                                "${widget.user!.phoneNumber}",
                                 style: myPageRecordBlack16,
                               ),
                               //디자인 수정 대비
@@ -281,7 +288,17 @@ class _MyInformationEditngState extends State<MyInformationEditng> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("로그아웃", style: myPageRecordGray14500),
+
+              TextButton(
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                ),
+                  //constraints: BoxConstraints(),
+                  onPressed: () {
+                    showWarningDialog(context, '로그아웃 하실 건가요?', '다시 로그인하시면 \'한끼톡톡\'서비스를\n이어서 이용하실 수 있습니다.', '돌아가기','로그아웃');
+                  },
+                  child:  Text("로그아웃", style: TextStyles.getTextStyle(TextType.BUTTON, GRAY3)),),
+
               SizedBox(
                 width: 8,
               ),
@@ -289,17 +306,15 @@ class _MyInformationEditngState extends State<MyInformationEditng> {
               SizedBox(
                 width: 8,
               ),
-              Text(
-                "회원탈퇴",
-                style: TextStyle(
-                  color: SECONDARY,
-                  fontSize: 14,
-                  fontFamily: 'Pretendard Variable',
-                  fontWeight: FontWeight.w500,
-                  height: 0.11,
-                  letterSpacing: -0.28,
+              TextButton(
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
                 ),
-              ),
+                //constraints: BoxConstraints(),
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>DeleteID()),);
+                },
+                child:  Text("회원탈퇴", style: TextStyles.getTextStyle(TextType.BUTTON, SECONDARY)),),
             ],
           ),
         ),
