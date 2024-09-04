@@ -41,6 +41,8 @@ class LoginPage extends StatelessWidget {
 
                       onTap: () async {
                         await signInKaKao(context);
+                        //키해시값 확인하는 코드
+                        //debugPrint(await KakaoSdk.origin);
                       },
 
                   child: Image.asset(
