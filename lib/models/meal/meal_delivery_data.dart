@@ -1,19 +1,29 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-import 'package:hankkitoktok/models/order/order.dart';
+import 'package:hankkitoktok/models/meal/meal_delivery.dart';
 import 'package:hankkitoktok/functions/httpRequest.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-Future<List<Order>> orderGetList(Map<String,dynamic>? query) async {
+import 'ordered_meal.dart';
+
+enum RequestMode {
+  NEXT_DELIVERY,
+  RECENT_DELIVERED_DELIVERY,
+  DELVERING_DELIVERY,
+  COMMON
+}
+
+Future<MealDelivery?> networkGetNextDelivery(Map<String,dynamic>? query, RequestMode mode) async {
   SharedPreferences prefs = await SharedPreferences.getInstance(); // 저장소
   String accessToken = prefs.getString('access_token') ?? '';
-  Uri uri = Uri.parse('$BASE_URL/api/v1/orders');
+  Uri uri = Uri.parse('$BASE_URL/api/v1/meal-deliveries/next-delivery');
 
   if (query != null) {
     uri = uri.replace(queryParameters: query.map((key, value) => MapEntry(key, value.toString())));
   }
+
 
   http.Response? response;
   Map<String, String> header = {
@@ -31,7 +41,7 @@ Future<List<Order>> orderGetList(Map<String,dynamic>? query) async {
     if (response.statusCode == 401) {
       // access token이 만료되었을 경우,
       await tokenRefresh(prefs); // refresh token으로 token을 refresh한 후 다시 요청
-      header['Authorization'] = 'Bearer ${prefs.getString('access_token')}';
+      header['Authorization'] = 'Bearer ${prefs.getString('refresh_token')}';
       response = await http.get(uri, headers: header);
 
       if (response == null) {
@@ -40,12 +50,8 @@ Future<List<Order>> orderGetList(Map<String,dynamic>? query) async {
     }
     if(response.statusCode == 200){
       var responseBody = jsonDecode(utf8.decode(response.bodyBytes));
-      List<Order> result = [];
-      debugPrint(responseBody['result']['content'].toString());
-      for (var data in responseBody['result']['content']) {
-        Order order = Order.init();
-        result.add(order.fromMap(data));
-      }
+      MealDelivery result = MealDelivery.init(orderedMeal: OrderedMeal.init());
+      result = result.fromMap(responseBody);
       // await prefs.setString("access_token", responseBody['access']); //Todo: 데이터 보고 교체
       // await prefs.setString("refresh_token", responseBody['refresh']); //Todo: 데이터 보고 교체
       return result;
@@ -54,7 +60,6 @@ Future<List<Order>> orderGetList(Map<String,dynamic>? query) async {
     }
   }catch (e) {
     debugPrint(e.toString());
-    throw Exception("네트워크 요청에 실패했습니다: $e");
+    return null;
   }
 }
-

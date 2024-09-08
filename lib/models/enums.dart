@@ -37,13 +37,13 @@ DayOfWeek stringToDayOfWeek(String value) {
 }
 
 enum Time {
-  LUNCH,
+  AFTERNOON,
   DINNER
 }
 
 Time stringToTime(String value) {
   if(value == 'LUNCH'){
-    return Time.LUNCH;
+    return Time.AFTERNOON;
   }
   else if(value == 'DINNER'){
     return Time.DINNER;

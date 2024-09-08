@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hankkitoktok/controller/ordered_meal_controller.dart';
+import 'package:hankkitoktok/controller/tmpdata.dart';
 import 'package:intl/intl.dart';
 import '../../const/style2.dart';
 import '../../component/calendar.dart';
@@ -15,6 +16,8 @@ import '../../functions/formatter.dart';
 import '../../models/enums.dart';
 import '../../models/meal/meal.dart';
 import '../../models/meal/ordered_meal.dart';
+import '../../models/order/order_post.dart';
+import '../4_pay_choice/0_pay_aggrement_screen.dart';
 
 class OrderScreen extends StatefulWidget {
   const OrderScreen({super.key});
@@ -41,26 +44,8 @@ class _OrderScreenState extends State<OrderScreen> {
     super.initState();
   }
 
-  void _onDaySelected(DateTime selectedDay) {
-    _orderedMealController.updateVisible(selectedDay);
-  }
 
-  bool selectDate(DateTime day) {
-    OrderedMealController mealController =
-    Get.find<OrderedMealController>();
 
-    return mealController.orderedWeekMeals[
-    day.subtract(const Duration(hours: 9)).toLocal()] !=
-        null &&
-        mealController
-            .orderedWeekMeals[
-        day.subtract(const Duration(hours: 9)).toLocal()]![0]
-            .isVisible &&
-        mealController
-            .orderedWeekMeals[
-        day.subtract(const Duration(hours: 9)).toLocal()]![1]
-            .isVisible;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -300,8 +285,8 @@ class _OrderScreenState extends State<OrderScreen> {
             Tile(title: '주문 요일 선택', subtitle: '배송 받고 싶은 요일을 선택해주세요.'),
             const SizedBox(height: 8),
             Calendar(
-              selectDate: selectDate,
-              onDaySelected: _onDaySelected,
+              selectDate: _orderedMealController.getSelectedDate,
+              onDaySelected: _orderedMealController.updateVisible,
             )
           ],
         ));
@@ -612,6 +597,12 @@ class _OrderScreenState extends State<OrderScreen> {
                                     child: ElevatedButton(
                                         onPressed: () {
                                           //TODO: 풀대접 서비스 페이지 보기
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => PayAggrementScreen(orderPost: _orderedMealController.getOrderedMealsSelected(_orderType))
+                                              )
+                                          );
                                         },
                                         style: ElevatedButton.styleFrom(
                                           elevation: 0,

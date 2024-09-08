@@ -1,0 +1,81 @@
+import 'package:get/get.dart';
+import 'package:hankkitoktok/controller/tmpdata.dart';
+import 'package:hankkitoktok/models/order/order.dart';
+import 'package:hankkitoktok/models/meal/meal_delivery.dart';
+
+import '../models/full_service/full_service_data.dart';
+import '../models/meal/meal_delivery_data.dart';
+import '../models/meal/ordered_meal.dart';
+import '../models/order/order_data.dart';
+
+class DeliveryController extends GetxController {
+  //주문 정보와 다음 배송 정보를 가져오는 컨트롤러 (해당 정보들은 사용자 시나리오에 따라 null일 수 있음)
+  Order? recentOrder;
+  MealDelivery? nextMealDelivery;
+  MealDelivery? deliveringMealDelivery;
+  MealDelivery? recentDeliveredMealDelivery;
+
+  int fullDiningCount = 0;
+
+  @override
+  void onInit() async {
+    // 주문정보 가져오기
+    await initOrder();
+    //다음 배송정보 가져오기
+    await initNextMealDelivery();
+    //배송중인 배송 정보 가져오기
+    await initDeliveringMealDelivery();
+    //최근 배송된 배송정보 가져오기
+    await initDeliveredMealDelivery();
+    //요청 수거된 다회용기 횟수 가져오기
+    initFullDiningCount();
+    super.onInit();
+  }
+
+  Future<void> initOrder() async {
+    Map<String, dynamic> query = {
+      "page": "1",
+      "size": "1",
+      "sortOrders": [
+        {
+          "key": "createdAt",
+          "direction": "ASC"
+        }
+      ]
+    };
+    List<Order> tmp = await orderGetList(query);
+    if(tmp.isNotEmpty) {
+      recentOrder = tmp.first;
+    }
+    update();
+  }
+
+  Future<void> initNextMealDelivery() async {
+    int? orderId;
+    if(recentOrder != null) orderId = recentOrder!.orderID;
+    if(orderId == null) return;
+
+    Map<String, dynamic> query = {
+      "orderId": orderId,
+    };
+    nextMealDelivery = await networkGetNextDelivery(query, RequestMode.NEXT_DELIVERY);
+
+    update();
+  }
+
+  Future<void> initDeliveringMealDelivery() async {
+    deliveringMealDelivery = await networkGetNextDelivery(null, RequestMode.DELVERING_DELIVERY);
+    update();
+  }
+  Future<void> initDeliveredMealDelivery() async {
+    recentDeliveredMealDelivery = await networkGetNextDelivery(null, RequestMode.RECENT_DELIVERED_DELIVERY);
+    update();
+  }
+
+
+
+  Future<void> initFullDiningCount() async {
+    fullDiningCount = await networkGetFullDiningsCount() ?? 0;
+    update();
+  }
+}

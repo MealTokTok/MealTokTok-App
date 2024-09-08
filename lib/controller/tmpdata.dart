@@ -66,7 +66,7 @@
 import 'package:hankkitoktok/models/meal/meal_delivery.dart';
 import 'package:hankkitoktok/models/meal/ordered_meal.dart';
 import 'package:hankkitoktok/models/meal/meal.dart';
-import 'package:hankkitoktok/models/order/order_mini.dart';
+import 'package:hankkitoktok/models/order/order_post.dart';
 import 'package:hankkitoktok/models/sidedish/sidedish.dart';
 
 import '../models/enums.dart';
@@ -140,7 +140,7 @@ List<OrderedMeal> orderedMeals = [
   OrderedMeal.init(
     mealId: 1,
     reservedDate: DateTime(2024, 8, 15), // 특정 날짜로 설정
-    reservedTime: Time.LUNCH, // 점심 시간
+    reservedTime: Time.AFTERNOON, // 점심 시간
     includeRice: true, // 밥 포함
     hasFullDiningOption: false, // 전체 다이닝 옵션 제외
   ),
@@ -154,7 +154,7 @@ List<OrderedMeal> orderedMeals = [
   OrderedMeal.init(
     mealId: 3,
     reservedDate: DateTime(2024, 8, 17),
-    reservedTime: Time.LUNCH,
+    reservedTime: Time.AFTERNOON,
     includeRice: true,
     hasFullDiningOption: true,
   ),
@@ -247,7 +247,6 @@ Order exampleOrder = Order.init(
   fullServicePrice: 5000,
   totalPrice: 26000,
   orderTime: DateTime(2024, 8, 14, 14, 20), // 주문 시간 설정
-  mealDeliveries: orderedMealsExamples[0], // OrderedMeal 리스트 추가
 );
 
 Order exampleOrder2 = Order.init(
@@ -262,7 +261,6 @@ Order exampleOrder2 = Order.init(
   fullServicePrice: 3000,
   totalPrice: 17000,
   orderTime: DateTime(2024, 8, 15, 12, 30),
-  mealDeliveries: orderedMealsExamples[1],
 );
 
 Order exampleOrder3 = Order.init(
@@ -277,7 +275,6 @@ Order exampleOrder3 = Order.init(
   fullServicePrice: 7000,
   totalPrice: 35000,
   orderTime: DateTime(2024, 8, 16, 11, 45),
-  mealDeliveries: orderedMealsExamples[2],
 );
 
 List<Order> orders = [exampleOrder, exampleOrder2, exampleOrder3];

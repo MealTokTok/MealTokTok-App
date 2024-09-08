@@ -9,14 +9,14 @@ import '../const/style2.dart';
 import '../models/meal/ordered_meal.dart';
 
 class Calendar extends StatefulWidget {
-  final void Function(DateTime selectedDay) onDaySelected;
   final bool Function(DateTime day) selectDate;
+  final void Function(DateTime selectedDay)? onDaySelected;
   final DateTime currentDate = DateTime.now();
 
   Calendar({
     super.key,
-    required this.onDaySelected,
     required this.selectDate,
+    this.onDaySelected,
   });
 
   @override
@@ -93,7 +93,10 @@ class _CalendarState extends State<Calendar> {
               selectedDay.subtract(const Duration(hours: 9)).toLocal(); //우선, 선택한 날짜 정보를 adjustedSelectedDay 변수에 저장
 
           setState(() {
-            widget.onDaySelected(adjustedSelectedDay); //선택한 날짜 정보를 onDaySelected 함수에 전달
+            //선택한 날짜 정보를 onDaySelected 함수에 전달
+            if (widget.onDaySelected != null) {
+              widget.onDaySelected!(adjustedSelectedDay);
+            }
 
             _focusedDate = focusedDay; //선택한 날짜 정보를 _focusedDate 변수에 저장
           });

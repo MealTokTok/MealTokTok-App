@@ -8,14 +8,11 @@ import 'package:hankkitoktok/functions/httpRequest.dart';
 enum RequestType { POST, PATCH, DELETE }
 
 
-Future<List<Address>> addressGetList(Map<String,dynamic>? query) async {
+Future<List<Address>> addressGetList() async {
   SharedPreferences prefs = await SharedPreferences.getInstance(); // 저장소
   String accessToken = prefs.getString('access_token') ?? '';
   Uri uri = Uri.parse('$BASE_URL/api/v1/user/my/addresses');
 
-  if (query != null) {
-    uri = uri.replace(queryParameters: query);
-  }
 
   http.Response? response;
   Map<String, String> header = {

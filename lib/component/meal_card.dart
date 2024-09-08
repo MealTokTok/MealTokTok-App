@@ -96,7 +96,7 @@ class _MenuCardsState extends State<MenuCards> {
                                 child: Center(
                                   child: Image.asset(
                                       widget.orderedMealController.orderedDayMeals[widget.reservedDate] != null &&
-                                      (widget.orderedMealController.orderedDayMeals[widget.reservedDate]![widget.time == Time.LUNCH ? 0 : 1].mealId
+                                      (widget.orderedMealController.orderedDayMeals[widget.reservedDate]![widget.time == Time.AFTERNOON ? 0 : 1].mealId
                                           == _mealController.getMeals[index].mealId)
                                           ? "assets/images/3_menu_choice/radio_button_on.png"
                                           : "assets/images/3_menu_choice/radio_button_off.png",
@@ -109,7 +109,7 @@ class _MenuCardsState extends State<MenuCards> {
                                 child: Center(
                                   child: Image.asset(
                                       widget.orderedMealController.orderedWeekMeals[widget.reservedDate] != null &&
-                                          (widget.orderedMealController.orderedWeekMeals[widget.reservedDate]![widget.time == Time.LUNCH ? 0 : 1].mealId
+                                          (widget.orderedMealController.orderedWeekMeals[widget.reservedDate]![widget.time == Time.AFTERNOON ? 0 : 1].mealId
                                               == _mealController.getMeals[index].mealId)
                                           ? "assets/images/3_menu_choice/radio_button_on.png"
                                           : "assets/images/3_menu_choice/radio_button_off.png",

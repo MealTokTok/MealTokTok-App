@@ -67,12 +67,12 @@ class TimeCheckbox extends StatelessWidget {
       MealController mealController = Get.find();
       int defaultMealId = mealController.getMeals[0].mealId;
       controller.updateChecked(
-          orderType, key, index == 0 ? Time.LUNCH : Time.DINNER);
+          orderType, key, index == 0 ? Time.AFTERNOON : Time.DINNER);
       controller.updateMealById(
-          orderType, key, index == 0 ? Time.LUNCH : Time.DINNER, defaultMealId);
+          orderType, key, index == 0 ? Time.AFTERNOON : Time.DINNER, defaultMealId);
     } else if (mode == Mode.RICE) {
       controller.updateRice(
-          orderType, key, index == 0 ? Time.LUNCH : Time.DINNER);
+          orderType, key, index == 0 ? Time.AFTERNOON : Time.DINNER);
     } else if (mode == Mode.WASHING) {}
   }
 

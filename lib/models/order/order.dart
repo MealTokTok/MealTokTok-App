@@ -23,7 +23,7 @@ class Order extends BaseModel{
   DateTime? orderTime; // 주문닐짜
 
 
-  List<MealDelivery> mealDeliveries; // 주문한 도시락 리스트(주간 결제일 경우 2개이상, 일 결제일 경우 1개이상)
+  late List<MealDelivery> mealDeliveries; // 주문한 도시락 리스트(주간 결제일 경우 2개이상, 일 결제일 경우 1개이상)
 
   Order.init({
     this.orderID = 0,
@@ -39,41 +39,60 @@ class Order extends BaseModel{
     this.orderTime,
     this.totalMealDeliveryCount = 0,
     this.remainingMealDeliveryCount = 0,
-    this.mealDeliveries = const [],
-  });
+  }){
+    mealDeliveries = [];
+  }
 
 
   @override
   Order fromMap(Map<String, dynamic> map) {
-    List<MealDelivery> mealDeliveries = [];
-    OrderedMeal orderedMeal = OrderedMeal.init();
-    for(var item in map['mealDeliveries']){
-      mealDeliveries.add(MealDelivery.init(orderedMeal: orderedMeal).fromMap(item));
-    }
     return Order.init(
-      orderID: map['order']['orderID'],
-      orderType: OrderType.values.firstWhere(
-          (e) => e.toString().split('.').last == map['order']['orderType']),
-      orderState: OrderState.values.firstWhere(
-          (e) => e.toString().split('.').last == map['order']['orderState']),
-      specialInstruction: map['order']['specialInstruction'],
-      userId: map['order']['orderer']['userId'],
-
-      mealPrice: map['order']['orderPrice']['mealPrice']['amount'],
-      deliveryPrice: map['order']['orderPrice']['deliveryPrice']['amount'],
-      fullServicePrice: map['order']['orderPrice']['fullServicePrice']['amount'],
-      totalPrice: map['order']['orderPrice']['totalPrice']['amount'],
-      orderTime: DateTime.parse(map['order']['orderTime']),
-      mealDeliveries: mealDeliveries,
+      orderID: _extractOrderId(map['orderId']),  // OrderId 객체 처리
+      orderType: _getOrderType(map['orderType']),
+      orderState: _getOrderState(map['orderState']),
+      specialInstruction: map['specialInstruction'] ?? '',  // null 처리
+      userId: map['orderer']?['userId'] ?? 0,  // null 처리
+      mealPrice: map['orderPrice']?['mealPrice']?['amount'] ?? 0,
+      deliveryPrice: map['orderPrice']?['deliveryPrice']?['amount'] ?? 0,
+      fullServicePrice: map['orderPrice']?['fullServicePrice']?['amount'] ?? 0,
+      totalPrice: map['orderPrice']?['totalPrice']?['amount'] ?? 0,
+      orderTime: map['orderTime'] != null ? DateTime.parse(map['orderTime']) : null,
     );
+  }
 
+  int _extractOrderId(dynamic orderIdObj) {
+    // OrderId 객체에서 값을 추출하는 로직
+    if (orderIdObj is String) {
+      // 혹시 orderId가 단순 문자열이라면 파싱
+      return int.tryParse(orderIdObj) ?? 0;
+    }
+    // 다른 형태로 받는다면 적절한 변환 로직 추가
+    // 기본값으로 0 반환
+    return 0;
+  }
+
+  OrderType _getOrderType(String? orderTypeStr) {
+    // Enum 변환에서 안전하게 처리
+    return OrderType.values.firstWhere(
+          (e) => e.toString().split('.').last == orderTypeStr,
+      orElse: () => OrderType.DAY_ORDER,  // 기본값 설정
+    );
+  }
+
+  OrderState? _getOrderState(String? orderStateStr) {
+    // Enum 변환에서 안전하게 처리, null 허용
+    if (orderStateStr == null) return null;
+    return OrderState.values.firstWhere(
+          (e) => e.toString().split('.').last == orderStateStr,
+      orElse: () => OrderState.ORDERED,  // 기본값 설정
+    );
   }
 
   @override
   Map<String, dynamic> toJson() {
     return {
         'orderType': orderType.toString().split('.').last,
-        'orderedMeals' : mealDeliveries.map((e) => e.toJson()).toList(),
+        //'orderedMeals' : mealDeliveries.map((e) => e.toJson()).toList(),
 
         'specialInstruction': specialInstruction,
         'orderPrice': {
@@ -85,7 +104,7 @@ class Order extends BaseModel{
 
 
       'orderTime': orderTime.toString(),
-      'mealDeliveries': mealDeliveries.map((e) => e.toJson()).toList(),
+      //'mealDeliveries': mealDeliveries.map((e) => e.toJson()).toList(),
     };
   }
 

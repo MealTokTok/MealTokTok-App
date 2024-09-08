@@ -4,8 +4,10 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hankkitoktok/component/calendar.dart';
+import 'package:hankkitoktok/controller/delivery_controller.dart';
 import 'package:hankkitoktok/controller/list_view_scroll_controller.dart';
 import 'package:hankkitoktok/controller/ordered_meal_controller.dart';
+import 'package:hankkitoktok/controller/user_controller.dart';
 import 'package:hankkitoktok/screen/0_login_and_set_address/0_login_screen.dart';
 import 'package:hankkitoktok/const/color.dart';
 import 'package:hankkitoktok/screen/0_login_and_set_address/temporary_adress.dart';
@@ -112,6 +114,8 @@ void _getControllerSetting(){
   Get.put(MealController());
   Get.put(OrderedMealController());
   Get.put(ListViewScrollController());
+  Get.put(UserController());
+  Get.put(DeliveryController());
 }
 
 void main() async {
@@ -181,7 +185,7 @@ class MyApp extends StatelessWidget {
         //   page: () => CommunityScreen(),
         // ),
       ],
-      home: OrderScreen(),
+      home: Home(),
     );
   }
 }
