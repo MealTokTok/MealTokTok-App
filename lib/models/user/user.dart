@@ -121,6 +121,8 @@ class User extends BaseModel{
   }
 
 
+
+  @override
   Map<String, dynamic> toJson() {
     return {
       'uid': userId,
