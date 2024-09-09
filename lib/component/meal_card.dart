@@ -89,7 +89,7 @@ class _MenuCardsState extends State<MenuCards> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        widget.orderType == OrderType.DAY_ORDER
+                        widget.orderType == OrderType.IMMEDIATE
                             ? SizedBox(
                                 width: 32,
                                 height: 32,

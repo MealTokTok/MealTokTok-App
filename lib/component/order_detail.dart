@@ -21,7 +21,7 @@ Widget buildOrderDetailByOrder(Order order) {
               children: [
                 TextSpan(text: '주문방식: ', style: TextStyles.getTextStyle(TextType.BODY_2, GREY_COLOR_2)),
                 TextSpan(
-                    text: order.orderType==OrderType.DAY_ORDER ? '일 결제' : '주간 결제',
+                    text: order.orderType==OrderType.IMMEDIATE ? '일 결제' : '주간 결제',
                     style: TextStyles.getTextStyle(TextType.BUTTON, GREY_COLOR_2)),
               ],
             ),
@@ -86,7 +86,7 @@ Widget buildOrderDetailByOrderPost(OrderPost orderPost) {
               children: [
                 TextSpan(text: '주문방식: ', style: TextStyles.getTextStyle(TextType.BODY_2, GREY_COLOR_2)),
                 TextSpan(
-                    text: orderPost.orderType==OrderType.DAY_ORDER ? '일 결제' : '주간 결제',
+                    text: orderPost.orderType==OrderType.IMMEDIATE ? '일 결제' : '주간 결제',
                     style: TextStyles.getTextStyle(TextType.BUTTON, GREY_COLOR_2)),
               ],
             ),

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:hankkitoktok/controller/tmpdata.dart';
 import 'package:hankkitoktok/models/order/order.dart';
@@ -8,8 +9,9 @@ import '../models/meal/meal_delivery_data.dart';
 import '../models/meal/ordered_meal.dart';
 import '../models/order/order_data.dart';
 
+//주문 정보와 다음 배송 정보를 가져오는 컨트롤러 (해당 정보들은 사용자 시나리오에 따라 null일 수 있음)
+//실행되는 시점: 앱 시작 시
 class DeliveryController extends GetxController {
-  //주문 정보와 다음 배송 정보를 가져오는 컨트롤러 (해당 정보들은 사용자 시나리오에 따라 null일 수 있음)
   Order? recentOrder;
   MealDelivery? nextMealDelivery;
   MealDelivery? deliveringMealDelivery;
@@ -43,6 +45,7 @@ class DeliveryController extends GetxController {
         }
       ]
     };
+    debugPrint("initOrder");
     List<Order> tmp = await orderGetList(query);
     if(tmp.isNotEmpty) {
       recentOrder = tmp.first;
@@ -50,6 +53,7 @@ class DeliveryController extends GetxController {
     update();
   }
 
+  //다음 배송 정보 가져오기
   Future<void> initNextMealDelivery() async {
     int? orderId;
     if(recentOrder != null) orderId = recentOrder!.orderID;
@@ -58,16 +62,24 @@ class DeliveryController extends GetxController {
     Map<String, dynamic> query = {
       "orderId": orderId,
     };
+    debugPrint("nextDel");
+
     nextMealDelivery = await networkGetNextDelivery(query, RequestMode.NEXT_DELIVERY);
 
     update();
   }
 
+  //현재 배송 중인 정보 가져오기
   Future<void> initDeliveringMealDelivery() async {
+    debugPrint("delivering");
+
     deliveringMealDelivery = await networkGetNextDelivery(null, RequestMode.DELVERING_DELIVERY);
     update();
   }
+
+  //최근 배송 완료된 배송 정보 가져오기
   Future<void> initDeliveredMealDelivery() async {
+    debugPrint("delivered");
     recentDeliveredMealDelivery = await networkGetNextDelivery(null, RequestMode.RECENT_DELIVERED_DELIVERY);
     update();
   }

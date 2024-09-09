@@ -147,7 +147,7 @@ List<OrderedMeal> orderedMeals = [
   OrderedMeal.init(
     mealId: 2,
     reservedDate: DateTime(2024, 8, 16),
-    reservedTime: Time.DINNER, // 저녁 시간
+    reservedTime: Time.EVENING, // 저녁 시간
     includeRice: false,
     hasFullDiningOption: true,
   ),
@@ -161,7 +161,7 @@ List<OrderedMeal> orderedMeals = [
   OrderedMeal.init(
     mealId: 4,
     reservedDate: DateTime(2024, 8, 17),
-    reservedTime: Time.DINNER,
+    reservedTime: Time.EVENING,
     includeRice: false,
     hasFullDiningOption: false,
   ),
@@ -237,7 +237,7 @@ List<List<MealDelivery>> orderedMealsExamples = [
 
 Order exampleOrder = Order.init(
   orderID: _orderIdCounter++,
-  orderType: OrderType.WEEK_ORDER, // 주간 결제로 설정
+  orderType: OrderType.SCHEDULED, // 주간 결제로 설정
   orderState: OrderState.DELIVERING, // 주문 상태 설정
   specialInstruction: '배송 시 문 앞에 두세요.', // 요청 사항
   userId: 1,
@@ -251,7 +251,7 @@ Order exampleOrder = Order.init(
 
 Order exampleOrder2 = Order.init(
   orderID: _orderIdCounter++,
-  orderType: OrderType.DAY_ORDER,
+  orderType: OrderType.IMMEDIATE,
   orderState: OrderState.PENDING,
   specialInstruction: '배송 시 연락주세요.',
   userId: 1,
@@ -265,7 +265,7 @@ Order exampleOrder2 = Order.init(
 
 Order exampleOrder3 = Order.init(
   orderID: _orderIdCounter++,
-  orderType: OrderType.WEEK_ORDER,
+  orderType: OrderType.SCHEDULED,
   orderState: OrderState.DELIVERED,
   specialInstruction: '부재 시 경비실에 맡겨주세요.',
   userId: 1,

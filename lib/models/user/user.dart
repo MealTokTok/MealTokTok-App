@@ -109,7 +109,7 @@ class User extends BaseModel{
   @override
   User fromMap(Map<String, dynamic> map) {
     return User.init(
-      userId: map['uid'],
+      userId: map['userId'],
       username: map['username'],
       nickname: map['nickname'],
       email: map['email'],

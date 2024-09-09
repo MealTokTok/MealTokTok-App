@@ -17,7 +17,7 @@ class OrderPost{
 
   OrderPost.init({
     this.orderId = 0,
-    this.orderType = OrderType.DAY_ORDER,
+    this.orderType = OrderType.IMMEDIATE,
     this.orderState = OrderState.ORDERED,
     this.orderTime,
     required this.orderedMeals,
@@ -38,7 +38,6 @@ class OrderPost{
 
   Map<String, dynamic> toJson() {
     return {
-      'orderId': orderId,
       'orderType': orderType.toString().split('.').last,
       'orderState': orderState.toString().split('.').last,
       'orderTime': orderTime.toString(),

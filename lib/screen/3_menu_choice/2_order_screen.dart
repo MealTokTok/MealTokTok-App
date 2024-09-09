@@ -35,7 +35,7 @@ class _OrderScreenState extends State<OrderScreen> {
 
   @override
   void initState() {
-    _orderType = OrderType.DAY_ORDER;
+    _orderType = OrderType.IMMEDIATE;
     _timeType = TimeType.BEFORE_LUNCH;
     _mealController = Get.find<MealController>();
     _orderedMealController = Get.find<OrderedMealController>();
@@ -58,8 +58,8 @@ class _OrderScreenState extends State<OrderScreen> {
         children: [
           _buildOrderButtons(),
           const Divider(thickness: 4, color: GREY_COLOR_0),
-          if (_orderType == OrderType.WEEK_ORDER) _buildSelectOrderDay(),
-          if (_orderType == OrderType.WEEK_ORDER)
+          if (_orderType == OrderType.SCHEDULED) _buildSelectOrderDay(),
+          if (_orderType == OrderType.SCHEDULED)
             const Divider(thickness: 4, color: GREY_COLOR_0),
           _buildSelectOrderTime(),
           const Divider(thickness: 4, color: GREY_COLOR_0),
@@ -103,7 +103,7 @@ class _OrderScreenState extends State<OrderScreen> {
             _orderType = buttonOrderType;
           });
         },
-        child: Text(buttonOrderType == OrderType.DAY_ORDER ? '일 결제' : '주간 결제',
+        child: Text(buttonOrderType == OrderType.IMMEDIATE ? '일 결제' : '주간 결제',
             style: _orderType == buttonOrderType
                 ? TextStyles.getTextStyle(TextType.BUTTON, WHITE_COLOR)
                 : TextStyles.getTextStyle(TextType.BUTTON, GREY_COLOR_3)),
@@ -124,7 +124,7 @@ class _OrderScreenState extends State<OrderScreen> {
                 width: 1),
           ),
           child: Center(
-            child: Text(buttonOrderType == OrderType.DAY_ORDER ? '일 결제' : '주간 결제',
+            child: Text(buttonOrderType == OrderType.IMMEDIATE ? '일 결제' : '주간 결제',
                 style: _orderType == buttonOrderType
                     ? TextStyles.getTextStyle(TextType.BUTTON, WHITE_COLOR)
                     : TextStyles.getTextStyle(TextType.BUTTON, GREY_COLOR_3)),
@@ -267,9 +267,9 @@ class _OrderScreenState extends State<OrderScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.max,
           children: [
-            Flexible(flex: 1,child: orderButton(OrderType.DAY_ORDER)),
+            Flexible(flex: 1,child: orderButton(OrderType.IMMEDIATE)),
             const SizedBox(width: 12),
-            Flexible(flex: 1,child: orderButton(OrderType.WEEK_ORDER)),
+            Flexible(flex: 1,child: orderButton(OrderType.SCHEDULED)),
           ],
         ),
       ]),
@@ -346,7 +346,7 @@ class _OrderScreenState extends State<OrderScreen> {
     Widget buildOrderList(OrderType orderType) {
       return GetBuilder<OrderedMealController>(
         builder: (_orderedMealController) {
-          return (orderType == OrderType.DAY_ORDER)
+          return (orderType == OrderType.IMMEDIATE)
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -410,9 +410,9 @@ class _OrderScreenState extends State<OrderScreen> {
           children: [
             Tile(title: '메뉴 선택', subtitle: '선택하신 날짜에 받고싶은 도시락을 정해주세요.'),
             const SizedBox(height: 12),
-            _orderType == OrderType.DAY_ORDER
-                ? buildOrderList(OrderType.DAY_ORDER)
-                : buildOrderList(OrderType.WEEK_ORDER),
+            _orderType == OrderType.IMMEDIATE
+                ? buildOrderList(OrderType.IMMEDIATE)
+                : buildOrderList(OrderType.SCHEDULED),
 
             // _menuList
           ],
@@ -455,7 +455,7 @@ class _OrderScreenState extends State<OrderScreen> {
             ),
           ),
           const SizedBox(height: 12),
-          if (_orderType == OrderType.DAY_ORDER)
+          if (_orderType == OrderType.IMMEDIATE)
             TimeCheckbox(
                 orderType: _orderType, mode: Mode.RICE, timeType: _timeType)
           else
@@ -473,7 +473,7 @@ class _OrderScreenState extends State<OrderScreen> {
       child: SizedBox(
         child: ElevatedButton(
           onPressed: () {
-            if((_orderType == OrderType.DAY_ORDER ? _orderedMealController.menuPriceDay() : _orderedMealController.menuPriceWeek()) > 0){
+            if((_orderType == OrderType.IMMEDIATE ? _orderedMealController.menuPriceDay() : _orderedMealController.menuPriceWeek()) > 0){
               showModalBottomSheet<void>(
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
@@ -640,7 +640,7 @@ class _OrderScreenState extends State<OrderScreen> {
           child: GetBuilder<OrderedMealController>(
             builder: (_orderedMealController) {
               return Text(
-                  '${f.format(_orderType == OrderType.DAY_ORDER ? _orderedMealController.menuPriceDay() : _orderedMealController.menuPriceWeek())}원 담기',
+                  '${f.format(_orderType == OrderType.IMMEDIATE ? _orderedMealController.menuPriceDay() : _orderedMealController.menuPriceWeek())}원 담기',
                   style: TextStyles.getTextStyle(TextType.BUTTON, WHITE_COLOR));
             },
           ),

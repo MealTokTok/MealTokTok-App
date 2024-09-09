@@ -84,7 +84,7 @@ class OrderedMealController extends GetxController {
       orderedWeekMeals[nextSunday]!.add(OrderedMeal.init(
           reservedDate: DateTime(
               nextSunday.year,nextSunday.month,nextSunday.day, 0, 0),
-          reservedTime: Time.DINNER,
+          reservedTime: Time.EVENING,
           mealId: defaultMealId
       ));
       nextSunday = nextSunday.add(const Duration(days: 1));
@@ -110,7 +110,7 @@ class OrderedMealController extends GetxController {
     orderedDayMeals[currentDay]!.add(OrderedMeal.init(
         reservedDate: DateTime(
             currentDay.year, currentDay.month, currentDay.day, 0, 0),
-        reservedTime: Time.DINNER,
+        reservedTime: Time.EVENING,
         isVisible: (DateTime.now().hour < 16) ? true : false,
         mealId: defaultMealId
     ));
@@ -127,7 +127,7 @@ class OrderedMealController extends GetxController {
     orderedDayMeals[currentDay]!.add(OrderedMeal.init(
       reservedDate: DateTime(currentDay.year, currentDay.month,
           currentDay.day, 0, 0),
-      reservedTime: Time.DINNER,
+      reservedTime: Time.EVENING,
       isVisible: true,
       mealId: defaultMealId
     ));
@@ -143,7 +143,7 @@ class OrderedMealController extends GetxController {
     orderedDayMeals[currentDay]!.add(OrderedMeal.init(
         reservedDate: DateTime(currentDay.year, currentDay.month,
             currentDay.day, 0, 0),
-        reservedTime: Time.DINNER,
+        reservedTime: Time.EVENING,
         isVisible: (DateTime.now().hour < 16) ? false : true,
         mealId: defaultMealId
     ));
@@ -162,7 +162,7 @@ class OrderedMealController extends GetxController {
   }
 
   void updateChecked(OrderType orderType, DateTime dateTime, Time time){
-    if(orderType == OrderType.DAY_ORDER){
+    if(orderType == OrderType.IMMEDIATE){
       for (var element in orderedDayMeals[dateTime]!) {
         if(element.reservedTime == time){
           element.isChecked = !element.isChecked;
@@ -180,7 +180,7 @@ class OrderedMealController extends GetxController {
   }
 
   void updateRice(OrderType orderType, DateTime dateTime, Time time){
-    if(orderType == OrderType.DAY_ORDER){
+    if(orderType == OrderType.IMMEDIATE){
       for (var element in orderedDayMeals[dateTime]!) {
         if(element.reservedTime == time){
           element.includeRice = !element.includeRice;
@@ -199,7 +199,7 @@ class OrderedMealController extends GetxController {
 
   void updateMealById(OrderType orderType, DateTime dateTime, Time time, int mealId){
     MealController mealController = Get.find();
-    if(orderType == OrderType.DAY_ORDER){
+    if(orderType == OrderType.IMMEDIATE){
       for (var element in orderedDayMeals[dateTime]!) {
         if(element.reservedTime == time){
           element.meal = mealController.getMealByID(mealId);
@@ -221,7 +221,7 @@ class OrderedMealController extends GetxController {
 
   OrderPost getOrderedMealsSelected(OrderType orderType){
     List<OrderedMeal> result = [];
-    if(orderType == OrderType.DAY_ORDER){
+    if(orderType == OrderType.IMMEDIATE){
       for (var orderedMeals in orderedDayMeals.values) {
         for (var orderedMeal in orderedMeals) {
           if(orderedMeal.isChecked == true && orderedMeal.isVisible == true){

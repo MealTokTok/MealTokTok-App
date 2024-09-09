@@ -63,7 +63,7 @@ class Payment extends StatelessWidget {
             ],
           ),
           Text(
-            '${order.orderType == OrderType.DAY_ORDER ? '일 결제' : '주간결제'} - ${order.totalMealDeliveryCount}회: ${f.format(order.mealPrice)}원',
+            '${order.orderType == OrderType.IMMEDIATE ? '일 결제' : '주간결제'} - ${order.totalMealDeliveryCount}회: ${f.format(order.mealPrice)}원',
             style: TextStyles.getTextStyle(TextType.BODY_1, BLACK_COLOR),
           ),
           const SizedBox(height: 2),

@@ -7,8 +7,10 @@ import 'package:hankkitoktok/const/color.dart';
 import 'package:hankkitoktok/const/style2.dart';
 import 'package:get/get.dart';
 
+import '../../controller/address_controller.dart';
+
 class ViewAddressScreen extends StatelessWidget {
-  UserController userController = Get.find<UserController>();
+  final AddressController _addressController = Get.find<AddressController>();
 
   ViewAddressScreen({super.key});
 
@@ -70,11 +72,11 @@ class ViewAddressScreen extends StatelessWidget {
   Widget _buildAddressList() {
     return ListView.separated(
       shrinkWrap: true,
-      itemCount: userController.addresses.length,
+      itemCount: _addressController.addresses.length,
       itemBuilder: (context, index) {
         return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: GetBuilder<UserController>(
+            child: GetBuilder<AddressController>(
                 builder: (controller) => AddressCard(
                     address: controller.addresses[index],
                     isSelected: controller.selectedAddressIndex == index)));

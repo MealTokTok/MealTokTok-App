@@ -6,8 +6,10 @@ import 'package:hankkitoktok/const/style2.dart';
 import 'package:hankkitoktok/controller/user_controller.dart';
 import 'package:get/get.dart';
 import 'package:hankkitoktok/functions/formatter.dart';
+import 'package:hankkitoktok/models/order/order_data.dart';
 import 'package:hankkitoktok/screen/0_login_and_set_address/3_view_address_screen.dart';
 import '../../component/tile.dart';
+import '../../controller/address_controller.dart';
 import '../../models/enums.dart';
 import '../../models/order/order_post.dart';
 
@@ -102,7 +104,7 @@ class _PayAggrementScreenState extends State<PayAggrementScreen> {
                         style: TextStyles.getTextStyle(
                             TextType.BODY_2, GREY_COLOR_2)),
                     TextSpan(
-                        text: userController.user.username,
+                        text: userController.user!.username,
                         style: TextStyles.getTextStyle(
                             TextType.BUTTON, GREY_COLOR_2)),
                   ])),
@@ -114,7 +116,7 @@ class _PayAggrementScreenState extends State<PayAggrementScreen> {
                         style: TextStyles.getTextStyle(
                             TextType.BODY_2, GREY_COLOR_2)),
                     TextSpan(
-                        text: userController.user.phoneNumber,
+                        text: userController.user!.phoneNumber,
                         style: TextStyles.getTextStyle(
                             TextType.BUTTON, GREY_COLOR_2)),
                   ])),
@@ -126,7 +128,7 @@ class _PayAggrementScreenState extends State<PayAggrementScreen> {
               )
             else
               Text(
-                  '${userController.user.username} ${userController.user.phoneNumber}',
+                  '${userController.user!.username} ${userController.user!.phoneNumber}',
                   style:
                       TextStyles.getTextStyle(TextType.BODY_2, GREY_COLOR_2)),
           ],
@@ -136,7 +138,7 @@ class _PayAggrementScreenState extends State<PayAggrementScreen> {
   }
 
   Widget _buildAddressInfo() {
-    return GetBuilder(builder: (UserController userController) {
+    return GetBuilder(builder: (AddressController addressController) {
       return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
           child:
@@ -147,7 +149,7 @@ class _PayAggrementScreenState extends State<PayAggrementScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(userController.getSelectedAddress.getAddressString,
+                Text(addressController.getSelectedAddress.getAddressString,
                     style:
                         TextStyles.getTextStyle(TextType.BODY_2, GREY_COLOR_2)),
                 OutlinedButton(
@@ -254,7 +256,7 @@ class _PayAggrementScreenState extends State<PayAggrementScreen> {
             child: RichText(text:
             TextSpan(
                 children: [
-                  TextSpan(text: (widget.orderPost.orderType == OrderType.DAY_ORDER) ? "일 결제": "주간 결제", style: TextStyles.getTextStyle(TextType.BODY_2, GREY_COLOR_2)),
+                  TextSpan(text: (widget.orderPost.orderType == OrderType.IMMEDIATE) ? "일 결제": "주간 결제", style: TextStyles.getTextStyle(TextType.BODY_2, GREY_COLOR_2)),
                   TextSpan(text:'${widget.orderPost.orderedMeals.length}회', style: TextStyles.getTextStyle(TextType.BUTTON, GREY_COLOR_2)),
                 ]
             )
@@ -322,11 +324,14 @@ class _PayAggrementScreenState extends State<PayAggrementScreen> {
             ],
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               if(widget.checkAggrement == true){
                 widget.orderPost.specialInstruction = editingController.text;
                 widget.orderPost.specialInstruction += widget.checkDisposable == true ? '(일회용품 o)' : '(일회용품 x)';
+                //Todo: 결제 -> 결제완료 콜백 -> 주문완료 처리?
                 debugPrint(widget.orderPost.toJson().toString());
+                String id = await orderPost(widget.orderPost.toJson());
+                //Todo: 주문완료 페이지로 이동(id 전달)
               }
             },
             style: ElevatedButton.styleFrom(

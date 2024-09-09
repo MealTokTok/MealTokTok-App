@@ -31,6 +31,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'component/meal_card.dart';
 import 'const/strings.dart';
 import 'component/time_checkbox.dart';
+import 'controller/address_controller.dart';
 import 'controller/tmpdata.dart';
 import 'convention.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -120,6 +121,7 @@ void _getControllerSetting(){
   Get.put(OrderedMealController());
   Get.put(ListViewScrollController());
   Get.put(UserController());
+  Get.put(AddressController());
   Get.put(DeliveryController());
 }
 
@@ -196,7 +198,7 @@ class MyApp extends StatelessWidget {
         //   page: () => CommunityScreen(),
         // ),
       ],
-      home: Home(),
+      home: OrderScreen(),
 
 
     );

@@ -27,7 +27,7 @@ class Order extends BaseModel{
 
   Order.init({
     this.orderID = 0,
-    this.orderType = OrderType.DAY_ORDER,
+    this.orderType = OrderType.IMMEDIATE,
     this.orderState = OrderState.ORDERED,
     this.specialInstruction = '',
     this.userId = 0,
@@ -75,7 +75,7 @@ class Order extends BaseModel{
     // Enum 변환에서 안전하게 처리
     return OrderType.values.firstWhere(
           (e) => e.toString().split('.').last == orderTypeStr,
-      orElse: () => OrderType.DAY_ORDER,  // 기본값 설정
+      orElse: () => OrderType.IMMEDIATE,  // 기본값 설정
     );
   }
 

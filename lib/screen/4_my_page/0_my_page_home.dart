@@ -5,7 +5,7 @@
 // import "package:hankkitoktok/functions/httpRequest.dart";
 // import "package:hankkitoktok/models/delivery/delivery_status.dart";
 // import "package:hankkitoktok/models/user/user.dart";
-// import "package:hankkitoktok/models/user/user_data.dart";
+// import "package:hankkitoktok/models/user/auth_data.dart";
 // import "package:hankkitoktok/screen/4_my_page/1_my_information_editing.dart";
 //
 // class MyPageHome extends StatefulWidget {

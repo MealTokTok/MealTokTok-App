@@ -3,28 +3,21 @@ import 'package:flutter/painting.dart';
 import 'package:get/get.dart';
 import 'package:hankkitoktok/component/four_image.dart';
 import 'package:hankkitoktok/const/color.dart';
+import 'package:hankkitoktok/controller/address_controller.dart';
 import 'package:hankkitoktok/controller/delivery_controller.dart';
 import 'package:hankkitoktok/controller/meal_controller.dart';
 import 'package:hankkitoktok/controller/tmpdata.dart';
 
 import 'package:hankkitoktok/controller/user_controller.dart';
-import 'package:hankkitoktok/functions/httpRequest.dart';
-import 'package:hankkitoktok/models/address/address_data.dart';
 import 'package:hankkitoktok/models/meal/meal_delivery.dart';
-import 'package:hankkitoktok/models/meal/ordered_meal.dart';
 import 'package:hankkitoktok/models/meal/meal.dart';
-import 'package:hankkitoktok/models/order/order_data.dart';
 
 import 'package:hankkitoktok/screen/2_home/2_notification_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../models/address/address.dart';
-//import '../../models/address/address_data.dart';
 import '../../models/enums.dart';
-import '../../models/order/order.dart';
 import 'package:hankkitoktok/const/style2.dart';
-
+import 'package:freezed_annotation/freezed_annotation.dart';
 enum ScreenStatus { AFTER_DELIVERY, MENU_EMPTY, MENU_SELECTED, ON_DELIVERY , ADDRESS_EMPTY}
+
 
 
 class HomeScreen extends StatefulWidget {
@@ -35,7 +28,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   //--------sampleData----------
 
-  String dropdownValue= '';
+  String _dropdownValue= '';
   String _buttonString = '반찬도시락 메뉴담기';
   String _mainTitle = '반찬도시락\n메뉴를 선택해볼까요?';
   String _subTitle = '원하는 반찬을 선택하고 주문하면 \n든든한 한끼가 되어줄게요!';
@@ -77,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
         // Todo 조건: 배송 중, 저녁
         setState(() {
           screenStatus = ScreenStatus.ON_DELIVERY;
-          timeStatus = Time.DINNER;
+          timeStatus = Time.EVENING;
           _mainTitle = '주문하신 반찬도시락이\n배송중입니다!';
           _subTitle = '6시~7시 사이에 배송됩니다!';
           _buttonString = '배송 조회';
@@ -99,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
         // Todo 조건: 배송 중, 저녁
         setState(() {
           screenStatus = ScreenStatus.AFTER_DELIVERY;
-          timeStatus = Time.DINNER;
+          timeStatus = Time.EVENING;
           _mainTitle = '주문하신 반찬도시락\n배달이 완료되었습니다!';
           _subTitle = '맛있는 저녁식사 되세요!';
           _buttonString = '배송 내역';
@@ -124,7 +117,6 @@ class _HomeScreenState extends State<HomeScreen> {
     _userController = Get.find();
     _deliveryController = Get.find();
     _mealController = Get.find();
-
     _checkMenu();
     super.initState();
   }
@@ -180,31 +172,41 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return AppBar(
       surfaceTintColor: Colors.transparent,
-      title: DropdownButton(
-          underline: Container(),
-          value: dropdownValue,
-          items: _userController.getAddressList.map((String value) {
-            return DropdownMenuItem(
-                value: value,
-                child: Row(
-                  children: [
-                    Image.asset('assets/images/2_home/app_bar_place.png',
-                        width: 24, height: 24),
-                    const SizedBox(width: 8),
-                    _userController.getAddressList.isNotEmpty
-                        ? Text(
-                            value,
-                            style: TextStyles.getTextStyle(TextType.SUBTITLE_1, BLACK_COLOR),
-                          )
-                        : const Text(''),
-                  ],
-                ));
-          }).toList(),
-          onChanged: (String? value) {
-            setState(() {
-              dropdownValue = value!;
-            });
-          }),
+      title: GetBuilder<AddressController>(
+        builder: (controller) {
+          return DropdownButton(
+              underline: Container(),
+              value: controller.getAddressList.isNotEmpty
+                  ? controller.getAddressList[controller.selectedAddressIndex]
+                  : '배달 주소를 설정해주세요',
+              items: controller.getAddressList.map((String value) {
+                return DropdownMenuItem(
+                    value: value,
+                    child: Row(
+                      children: [
+                        Image.asset('assets/images/2_home/app_bar_place.png',
+                            width: 24, height: 24),
+                        const SizedBox(width: 8),
+                        controller.getAddressList.isNotEmpty
+                            ? Text(
+                          value,
+                          style: TextStyles.getTextStyle(TextType.SUBTITLE_1, BLACK_COLOR),
+                        )
+                            : const Text(''),
+                      ],
+                    ));
+              }).toList(),
+              onChanged: (String? value) {
+                setState(() {
+                  for(int i = 0; i < controller.getAddressList.length; i++){
+                    if(controller.getAddressList[i] == value){
+                      controller.selectedAddressIndex = i;
+                    }
+                  }
+                });
+              });
+        },
+      ),
       actions: [
         IconButton(
           icon: Stack(
