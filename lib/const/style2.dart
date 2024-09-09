@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hankkitoktok/const/color.dart';
 
 enum TextType {
   TITLE_1,
@@ -133,3 +134,18 @@ class TextStyles {
   }
 
 }
+
+TextStyle noName = const TextStyle(
+  color: PRIMARY_COLOR,
+  fontFamily: 'Pretendard',
+  fontWeight: FontWeight.w700, // Weight 700
+  fontSize: 24,                // Size 24px
+  height: 1.5,             // Line height 36px (must be relative to fontSize)
+  letterSpacing: -0.48,        // Letter spacing -2% of fontSize
+);
+
+TextStyle badgeStyle = const TextStyle(
+  fontSize: 8,
+  fontWeight: FontWeight.w500,
+  color: WHITE_COLOR,
+);

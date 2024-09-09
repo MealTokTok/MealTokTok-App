@@ -77,6 +77,13 @@ enum OrderState {
   DELIVERED,
 }
 
+enum DeliveryState {
+  PENDING,
+  INDELIVERING,
+  DELIVERED,
+}
+
+
 OrderState stringToOrderState(String value) {
   if(value == 'ORDERED'){
     return OrderState.ORDERED;

@@ -3,16 +3,19 @@ import 'package:hankkitoktok/models/enums.dart';
 import 'package:intl/intl.dart';
 import 'package:get/get.dart';
 import '../../controller/meal_controller.dart';
+import '../../controller/tmpdata.dart';
 import 'meal.dart';
 
 class MealDetail {
   String title;
   String subTitle;
+  int mealPrice;
   int priority;
 
   MealDetail.init({
     this.title = '',
     this.subTitle = '',
+    this.mealPrice = 0,
     this.priority = 0,
   });
 }
@@ -20,7 +23,7 @@ class MealDetail {
 class OrderedMeal extends BaseModel {
   int mealId;
   late Meal meal;
-  DateTime reservedDate;
+  DateTime? reservedDate;
   Time reservedTime;
   late DayOfWeek dayOfWeek;
   bool includeRice = false;
@@ -31,14 +34,19 @@ class OrderedMeal extends BaseModel {
 
   OrderedMeal.init({
     this.mealId = 0,
-    required this.reservedDate,
+    this.reservedDate,
     this.reservedTime = Time.LUNCH,
     this.includeRice = false,
     this.hasFullDiningOption = false,
     this.isVisible = false,
   }) {
-    meal = Meal.init();
-    dayOfWeek = DayOfWeek.values[reservedDate.weekday % 7];
+
+    meal = getMealById(mealId);
+    if(reservedDate == null){
+      throw Exception('Ordered Meal 클래스: reservedDate가 null입니다.');
+    }
+    dayOfWeek = DayOfWeek.values[reservedDate!.weekday % 7];
+
   }
 
   @override
@@ -55,10 +63,13 @@ class OrderedMeal extends BaseModel {
   @override
   Map<String, dynamic> toJson() {
     final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    if(reservedDate == null){
+      throw Exception('Ordered Meal 클래스: reservedDate가 null입니다.');
+    }
     return {
       'mealId': meal.mealId,
       'reservedSchedule': {
-        'reservedDate': formatter.format(reservedDate),
+        'reservedDate': formatter.format(reservedDate!),
         // DateTime을 String YYYY-MM-DD 로 변환
         'reservedTime': reservedTime.toString().split('.').last,
         // enum 을 String 으로 변환
@@ -68,25 +79,52 @@ class OrderedMeal extends BaseModel {
     };
   }
 
-  Meal _mealIDtoMeal(int mealId) {
-    final mealController = Get.find<MealController>();
-    return mealController.getMealByID(mealId);
-
-    return Meal.init();
+  String getDeliveryDateTimeString() {
+    if(reservedDate == null){
+      throw Exception('Ordered Meal 클래스: reservedDate가 null입니다.');
+    }
+    return "${reservedDate!.year}-${reservedDate!.month}-${reservedDate!.day}";
   }
 
-  String getDeliveryTime() {
-    return "${reservedDate.year}-${reservedDate.month}-${reservedDate.day}";
-  }
-
-  String getMealString() {
+  String get getMealString {
     // 월요일-점심 도시락 이름
-    return "$dayOfWeek-${reservedTime == Time.LUNCH ? '점심' : '저녁'} ${meal.name}";
+    List<String> days = ['월', '화', '수', '목', '금', '토', '일'];
+    String dayOfWeekString = days[reservedDate!.weekday % 7];
+
+
+    return "$dayOfWeekString-${reservedTime == Time.LUNCH ? '점심' : '저녁'}(${meal.name})";
   }
 
-  String getMenuString() {
+  String get getDeliveryDateTimeString2{
+    if(reservedDate == null){
+      throw Exception('Ordered Meal 클래스: reservedDate가 null입니다.');
+    }
+    return "${reservedDate!.year}.${reservedDate!.month}.${reservedDate!.day} - ${reservedTime == Time.LUNCH ? '점심' : '저녁'}";
+  }
+
+  String get getDateString {
+    return "${reservedDate!.year}월 ${reservedDate!.month}일";
+  }
+
+  String get getDayOfWeekString {
+    return DateFormat('EEEE','ko-KR').format(reservedDate!);
+  }
+
+  String get getTimeString{
+    return reservedTime == Time.LUNCH ? '점심' : '저녁';
+  }
+
+  String get getMenuString {
     // 메뉴이름, 메뉴이름, 메뉴이름/햇반o
     return "${meal.getDishString()} /햇반 ${includeRice ? 'o' : 'x'}";
+  }
+
+  int get orderedMealPrice {
+    int price = meal.price;
+    if (includeRice) {
+      price += 1000;
+    }
+    return price;
   }
 
   MealDetail getMealDetail() {
@@ -102,8 +140,9 @@ class OrderedMeal extends BaseModel {
 
 
     return MealDetail.init(
-      title: getMealString(),
-      subTitle: getMenuString(),
+      title: getMealString,
+      subTitle: getMenuString,
+      mealPrice: orderedMealPrice,
       priority: priority,
     );
   }

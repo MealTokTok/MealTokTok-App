@@ -45,6 +45,8 @@ dependencies:
   permission_handler: ^11.3.1
   flutter_local_notifications: ^17.2.1+2
   table_calendar: ^3.1.2
+  dropdown_button2: ^2.3.9
+  shared_preferences: ^2.2.3
   geolocator: ^9.0.2
   kakao_map_plugin: ^0.3.1
   webview_flutter: ^4.0.7

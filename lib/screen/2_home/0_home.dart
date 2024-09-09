@@ -16,23 +16,14 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   //--------sampleData----------
-  List<String> addressList = ['충북대학교 충대로1', '충북대학교 충대로2', '충북대학교 충대로3'];
-  String dropdownValue = '충북대학교 충대로1';
 
   List<Meal> mealMenuListEmpty = [];
   int _selectedIndex = 0;
   List<Widget> pages = [];
 
-  void getUDID() async {
-    String? fcmToken = await FirebaseMessaging.instance.getToken();
-    debugPrint(fcmToken ?? 'null');
-  }
-
   @override
   void initState() {
-    // TODO: 처음 들어갔을 때, 사용자 정보 가져오기
-    // TODO: 사용자 정보가 없을 경우, Alter Dialog(대충 로그인 필요하다는 내용과 로그인 페이지로 이동하는 메소드)
-    getUDID();
+
     pages = [
       HomeScreen(),
       MealMenuScreen(),

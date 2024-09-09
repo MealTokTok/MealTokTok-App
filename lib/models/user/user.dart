@@ -86,95 +86,53 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 // Define a User class to map the JSON response
 class User extends BaseModel{
-  final int userId;
-  final String username;
-  final String nickname;
-  final String email;
-  final String phoneNumber;
-  final String profileImageUrl;
-  final String birth;
 
-  // User.init({
-  //    this.userId=0,
-  //    this.username='',
-  //    this.nickname='',
-  //    this.email='',
-  //    this.phoneNumber='',
-  //    this.profileImageUrl='',
-  //    this.birth='',
-  // });
+  int userId;
+  String username;
+  String nickname;
+  String email;
+  String phoneNumber;
+  String profileImageUrl;
+  DateTime? birth;
+  String token;
 
-  User({
-    required this.userId,
-    required this.username,
-    required this.nickname,
-    required this.email,
-    required this.phoneNumber,
-    required this.profileImageUrl,
-    required this.birth,
+  User.init({
+    this.userId = 0,
+    this.username = '',
+    this.nickname = '',
+    this.email = '',
+    this.phoneNumber = '',
+    this.profileImageUrl = '',
+    this.birth,
+    this.token = '',
   });
-
-  // User.fromJson(Map<String, dynamic> json)
-  //     : userId = json['userId'] ?? 0,
-  //       username = json['username'] ?? '',
-  //       nickname = json['nickname']?? '',
-  //       email = json['email']?? '',
-  //       phoneNumber = json['phoneNumber']?? '',
-  //       profileImageUrl = json['profileImageUrl']?? '',
-  //       birth = json['birth']?? '';
-
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
-      userId: json['userId'] ?? 0,
-      username: json['username'] ?? '',
-      nickname: json['nickname'] ?? '',
-      email: json['email'] ?? '',
-      phoneNumber : json['phoneNumber']?? '',
-      profileImageUrl: json['profileImageUrl'] ?? '',
-      birth : json['birth']?? '',
-    );
-  }
 
   @override
   User fromMap(Map<String, dynamic> map) {
-    return User.fromJson(map);
+    return User.init(
+      userId: map['uid'],
+      username: map['username'],
+      nickname: map['nickname'],
+      email: map['email'],
+      phoneNumber: map['phoneNumber'],
+      profileImageUrl: map['profileImageUrl'],
+      birth: map['birth'],
+      token: map['token'],
+    );
   }
 
+
+  @override
   Map<String, dynamic> toJson() {
     return {
-      'userId': userId,
+      'uid': userId,
       'username': username,
       'nickname': nickname,
       'email': email,
       'phoneNumber': phoneNumber,
       'profileImageUrl': profileImageUrl,
       'birth': birth,
-    };
-  }
-}
-
-class IsAvailable extends BaseModel{
-  final bool isAvailable;
-
-  IsAvailable({
-    required this.isAvailable,
-  });
-
-  factory IsAvailable.fromJson(Map<String, dynamic> json) {
-    return IsAvailable(
-      isAvailable: json['isAvailable'] ?? false,
-
-    );
-  }
-
-  @override
-  IsAvailable fromMap(Map<String, dynamic> map) {
-    return IsAvailable.fromJson(map);
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'isAvailable': isAvailable,
+      'token': token,
     };
   }
 }

@@ -4,6 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hankkitoktok/component/calendar.dart';
+import 'package:hankkitoktok/controller/list_view_scroll_controller.dart';
 import 'package:hankkitoktok/controller/ordered_meal_controller.dart';
 import 'package:hankkitoktok/screen/0_login_and_set_address/0_login_screen.dart';
 import 'package:hankkitoktok/const/color.dart';
@@ -114,7 +115,9 @@ void _notificationSetting(){
 }
 
 void _getControllerSetting(){
+  Get.put(MealController());
   Get.put(OrderedMealController());
+  Get.put(ListViewScrollController());
 }
 
 void main() async {
@@ -161,7 +164,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    MealController mealController = Get.put(MealController());
+
 
     return GetMaterialApp(
       title: 'Flutter Demo',
@@ -182,7 +185,7 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(
           name: '/order',
-          page: () => OrderScreen(menus: mealMenuList),
+          page: () => OrderScreen(),
         )
 
         // GetPage(
@@ -190,8 +193,7 @@ class MyApp extends StatelessWidget {
         //   page: () => CommunityScreen(),
         // ),
       ],
-
-      home: MyPageHome(),
+      home: OrderScreen(),
 
     );
   }

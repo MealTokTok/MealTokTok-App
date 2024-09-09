@@ -16,7 +16,9 @@ Future<bool> networkRequest(String detailUri,RequestType requestType, Map<String
   http.Response? response;
   Map<String, String> header = {
     'Content-Type': 'application/json',
-    'Authorization': 'Bearer $accessToken',
+    //'Authorization': 'Bearer $accessToken',
+    'Access-token': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzIzNDYyOTM5LCJleHAiOjE3NDkzODI5Mzl9.rmDSuxTSfjJplWLm-v1AxKrz_-9jt8u5RJeC4q2JW38'
+
   };
   try{
     response = await httpResponse(uri, header, requestType, data);
@@ -85,7 +87,10 @@ Future<T> networkGetRequest<T extends BaseModel>(T model, String detailUri, Map<
   http.Response? response;
   Map<String, String> header = {
     'Content-Type': 'application/json',
-    'Access-Token': 'Bearer $accessToken',
+    //'Authorization': 'Bearer $accessToken',
+    'Access-token': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzIzNDYyOTM5LCJleHAiOjE3NDkzODI5Mzl9.rmDSuxTSfjJplWLm-v1AxKrz_-9jt8u5RJeC4q2JW38'
+
+    //'Access-Token': 'Bearer $accessToken',
   };
 
   try {
@@ -105,13 +110,13 @@ Future<T> networkGetRequest<T extends BaseModel>(T model, String detailUri, Map<
       }
     }
     if (response.statusCode == 200) {
-      var responseBody = jsonDecode(response.body);
+      var responseBody = jsonDecode(utf8.decode(response.bodyBytes));
       var responseHeader = response.headers;
       if (responseHeader['access-token'] == null || responseHeader['refresh-token'] == null) {
         throw Exception('토큰이 없습니다.');
       }
-      await prefs.setString("access_token", responseHeader['access-token']!); // Todo: 데이터 보고 교체
-      await prefs.setString("refresh_token", responseHeader['refresh-token']!); // Todo: 데이터 보고 교체
+      // await prefs.setString("access_token", responseHeader['access-token']!); // Todo: 데이터 보고 교체
+      // await prefs.setString("refresh_token", responseHeader['refresh-token']!); // Todo: 데이터 보고 교체
       return model.fromMap(responseBody) as T;
     } else {
       throw Exception(response.statusCode.toString());
@@ -136,7 +141,8 @@ Future<List<T>> networkGetListRequest<T extends BaseModel>(T model,String detail
   http.Response? response;
   Map<String, String> header = {
     'Content-Type': 'application/json',
-    'Authorization': 'Bearer $accessToken',
+    //'Authorization': 'Bearer $accessToken',
+    'Access-token': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzIzNDYyOTM5LCJleHAiOjE3NDkzODI5Mzl9.rmDSuxTSfjJplWLm-v1AxKrz_-9jt8u5RJeC4q2JW38'
   };
 
   try {
@@ -156,13 +162,19 @@ Future<List<T>> networkGetListRequest<T extends BaseModel>(T model,String detail
       }
     }
     if(response.statusCode == 200){
-      var responseBody = jsonDecode(response.body);
+      var responseBody = jsonDecode(utf8.decode(response.bodyBytes));
       List<T> result = [];
-      for(var data in responseBody){
-        result.add(model.fromMap(data) as T);
+      for (var data in responseBody['result']) {
+        // 매번 새로운 인스턴스를 생성하여 사용
+        T newInstance = model.fromMap(data) as T;
+        result.add(newInstance);
       }
-      await prefs.setString("access_token", responseBody['access']); //Todo: 데이터 보고 교체
-      await prefs.setString("refresh_token", responseBody['refresh']); //Todo: 데이터 보고 교체
+      for(T data in result){
+        print(data.toJson());
+      }
+
+      // await prefs.setString("access_token", responseBody['access']); //Todo: 데이터 보고 교체
+      // await prefs.setString("refresh_token", responseBody['refresh']); //Todo: 데이터 보고 교체
       return result;
     } else {
       throw Exception(response.statusCode.toString());
