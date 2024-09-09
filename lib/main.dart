@@ -10,6 +10,7 @@ import 'package:hankkitoktok/controller/ordered_meal_controller.dart';
 import 'package:hankkitoktok/controller/user_controller.dart';
 import 'package:hankkitoktok/screen/0_login_and_set_address/0_login_screen.dart';
 import 'package:hankkitoktok/const/color.dart';
+import 'package:hankkitoktok/screen/0_login_and_set_address/1_address_setting.dart';
 import 'package:hankkitoktok/screen/0_login_and_set_address/temporary_adress.dart';
 import 'package:hankkitoktok/screen/1_my_page/1_order_histories_screen.dart';
 import 'package:hankkitoktok/screen/2_home/0_home.dart';
@@ -18,10 +19,14 @@ import 'package:hankkitoktok/screen/3_menu_choice/0_meal_menu_screen.dart';
 import 'package:hankkitoktok/screen/3_menu_choice/0_set_meal_name_screen.dart';
 import 'package:hankkitoktok/screen/3_menu_choice/1_choice_menu_screen.dart';
 import 'package:hankkitoktok/screen/3_menu_choice/2_order_screen.dart';
+import 'package:hankkitoktok/screen/4_my_page/0_my_page_home.dart';
+import 'package:hankkitoktok/screen/4_my_page/3_delete_id.dart';
+import 'package:hankkitoktok/screen/5_order/1_full_dining_explanation.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:kakao_map_plugin/kakao_map_plugin.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'component/meal_card.dart';
 import 'const/strings.dart';
@@ -124,6 +129,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  //앱 인증 초기화
+  await AuthRepository.initialize(appKey: '<javascript apikey>');
   await _initializeNotification();
   _notificationSetting();
   // runApp() 호출 전 Flutter SDK 초기화
@@ -168,6 +175,10 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: PRIMARY_COLOR),
         useMaterial3: true,
         bottomAppBarTheme: BottomAppBarTheme(color: Colors.white),
+        scaffoldBackgroundColor: Colors.white,
+        appBarTheme: AppBarTheme(
+          color: Colors.white, // AppBar의 배경 색 설정
+        ),
       ),
       getPages: [
         // 스크린 지정
@@ -186,6 +197,7 @@ class MyApp extends StatelessWidget {
         // ),
       ],
       home: Home(),
+
     );
   }
 }

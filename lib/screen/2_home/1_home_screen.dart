@@ -6,8 +6,8 @@ import 'package:hankkitoktok/const/color.dart';
 import 'package:hankkitoktok/controller/delivery_controller.dart';
 import 'package:hankkitoktok/controller/meal_controller.dart';
 import 'package:hankkitoktok/controller/tmpdata.dart';
-import 'package:hankkitoktok/controller/user_controller.dart';
 
+import 'package:hankkitoktok/controller/user_controller.dart';
 import 'package:hankkitoktok/functions/httpRequest.dart';
 import 'package:hankkitoktok/models/address/address_data.dart';
 import 'package:hankkitoktok/models/meal/meal_delivery.dart';
@@ -152,7 +152,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
                     screenStatus == ScreenStatus.AFTER_DELIVERY
                         ? _buildAfterDeliveryTitle()
                         : _buildMainTitle(),
@@ -166,7 +165,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                 : _buildMenuList(mealMenuList),
                     const SizedBox(height: 10),
                     _buildSelectedMenuButton(screenStatus),
-
                   ],
                 ),
               ),
@@ -490,7 +488,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
 
   Widget _buildAfterDelivery(MealDelivery mealDelivery) {
     Meal meal = mealDelivery.orderedMeal.meal;

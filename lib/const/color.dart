@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+//순영 바꿔야할 부분
 const Color PRIMARY_COLOR = Color(0xFFFFAA35);
 const Color PRIMARY_LIGHT = Color(0xFFFFF9F0);
 
@@ -11,8 +11,9 @@ const Color GRAY3= Color(0xFF999999);
 const Color GRAY4= Color(0xFF686868);
 
 
+//태현 바꾼 부분
 const Color BANNER_COLOR = Color(0xFFFFF9F0);
-//const Color BANNER_COLOR = Color(0xFFFFF9F0);
+
 
 const Color BLACK_COLOR = Color(0xFF000000);
 const Color BLACK_COLOR_2 = Color(0xFF131313);

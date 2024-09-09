@@ -49,5 +49,14 @@
 		<true/>
 		<key>UIViewControllerBasedStatusBarAppearance</key>
 		<false/>
+		<key>NSAppTransportSecurity</key>
+                <dict>
+                    <key>NSAllowsArbitraryLoads</key>
+                    <true/>
+                </dict>
+                <key>NSLocationWhenInUseUsageDescription</key>
+                <string>지도에서 위치를 사용하려면 권한이 필요합니다.</string>
+                <key>NSLocationAlwaysUsageDescription</key>
+                <string>지도에서 위치를 항상 사용하려면 권한이 필요합니다.</string>
 	</dict>
 </plist>

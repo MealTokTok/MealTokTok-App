@@ -1,8 +1,10 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hankkitoktok/const/style.dart';
 import 'package:hankkitoktok/models/meal/meal.dart';
+import 'package:hankkitoktok/controller/tmpdata.dart';
+import 'package:hankkitoktok/screen/3_menu_choice/0_meal_menu_screen.dart';
+import 'package:hankkitoktok/screen/4_my_page/0_my_page_home.dart';
 
 import '1_home_screen.dart';
 
@@ -22,6 +24,8 @@ class _HomeState extends State<Home> {
   void initState() {
 
     pages = [
+      HomeScreen(),
+      MealMenuScreen(),
       HomeScreen(),
 
       //Todo: 페이지 추가

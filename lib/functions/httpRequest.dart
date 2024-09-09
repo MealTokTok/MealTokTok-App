@@ -89,7 +89,6 @@ Future<T> networkGetRequest<T extends BaseModel>(T model, String detailUri, Map<
     'Content-Type': 'application/json',
     //'Authorization': 'Bearer $accessToken',
     'Access-token': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzIzNDYyOTM5LCJleHAiOjE3NDkzODI5Mzl9.rmDSuxTSfjJplWLm-v1AxKrz_-9jt8u5RJeC4q2JW38'
-
   };
 
   try {
@@ -125,6 +124,7 @@ Future<T> networkGetRequest<T extends BaseModel>(T model, String detailUri, Map<
     throw Exception("네트워크 요청에 실패했습니다: $e");
   }
 }
+
 
 //GET 요청(전체조회)
 Future<List<T>> networkGetListRequest<T extends BaseModel>(T model,String detailUri, Map<String,dynamic>? query) async {
@@ -211,5 +211,68 @@ Future<void> tokenRefresh(SharedPreferences prefs) async {
     //Todo: 에러코드 알림
   }
 
+}
+
+
+/////////////////////////////////////////////////////
+
+//마스터 토큰용
+Future<T> networkGetRequest111<T extends BaseModel>(T model, String detailUri, Map<String, dynamic>? query, ) async {
+  //SharedPreferences prefs = await SharedPreferences.getInstance(); // 저장소
+  //String accessToken = prefs.getString('access_token') ?? '';
+  String accessToken ='Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzIzNDYyOTM5LCJleHAiOjE3NDkzODI5Mzl9.rmDSuxTSfjJplWLm-v1AxKrz_-9jt8u5RJeC4q2JW38';
+
+  Uri uri = Uri.parse('$BASE_URL/$detailUri');
+  // Todo:  아래 형식과 같이 만든 후에 쿼리 파라미터 자리로 넣어줘야 함
+  //  Map<String, dynamic> queryParams = {
+  //       'nickname': _nickname.text,
+  //     };
+  if (query != null) {
+    uri = uri.replace(queryParameters: query);
+  }
+
+  http.Response? response;
+  Map<String, String> header = {
+    'Content-Type': 'application/json',
+    'Access-Token': 'Bearer $accessToken',
+  };
+
+  try {
+    response = await http.get(uri, headers: header);
+    if (response == null) {
+      throw Exception('리스폰스가 null입니다.');
+    }
+
+    // if (response.statusCode == 401) {
+    //   // access token이 만료되었을 경우,
+    //   await tokenRefresh(prefs); // refresh token으로 token을 refresh한 후 다시 요청
+    //   header['Authorization'] = 'Bearer ${prefs.getString('access_token')}';
+    //   response = await http.get(uri, headers: header);
+    //
+    //   if (response == null) {
+    //     throw Exception('리스폰스가 null입니다.');
+    //   }
+    // }
+    if (response.statusCode == 200) {
+      final jsonBody  = utf8.decode(response.bodyBytes);
+      final  responseBody = json.decode(jsonBody);
+      var responseHeader = response.headers;
+      // if (responseHeader['access-token'] == null || responseHeader['refresh-token'] == null) {
+      //   throw Exception('토큰이 없습니다.');
+      // }
+      // await prefs.setString("access_token", responseHeader['access-token']!); // Todo: 데이터 보고 교체
+      // await prefs.setString("refresh_token", responseHeader['refresh-token']!); // Todo: 데이터 보고 교체
+      debugPrint('Raw Response Body: $jsonBody');
+
+      // 파싱된 JSON 데이터를 디버그 프린트로 출력
+      debugPrint('Parsed JSON Body: $responseBody');
+      return model.fromMap(responseBody['result']) as T;
+    } else {
+      throw Exception(response.statusCode.toString());
+    }
+  } catch (e) {
+    debugPrint(e.toString());
+    throw Exception("네트워크 요청에 실패했습니다: $e");
+  }
 }
 
