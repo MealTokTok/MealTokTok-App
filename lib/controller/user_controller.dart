@@ -19,7 +19,8 @@ class UserController extends GetxController{
 
   //네트워크 요정으로 사용자 정보 가져오기
   Future<void> initUser()async {
-    //user = await networkGetUser() ?? User.init();
+
+    user = await networkGetUser() ?? User.init();
     if(user != null){
       debugPrint('initUser: ${user!.username}');
     }
