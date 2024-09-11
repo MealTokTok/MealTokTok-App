@@ -1,15 +1,29 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 
-import 'package:flutter/cupertino.dart';
-import 'package:hankkitoktok/models/user/user.dart';
+import 'package:hankkitoktok/models/meal/meal_delivery.dart';
+import 'package:hankkitoktok/functions/httpRequest.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import '../../const/strings.dart';
 
-Future<User?> networkGetUser() async {
+import 'ordered_meal.dart';
+
+enum RequestMode {
+  NEXT_DELIVERY,
+  RECENT_DELIVERED_DELIVERY,
+  DELVERING_DELIVERY,
+  COMMON
+}
+
+Future<MealDelivery?> networkGetNextDelivery(Map<String,dynamic>? query, RequestMode mode) async {
   SharedPreferences prefs = await SharedPreferences.getInstance(); // 저장소
   String accessToken = prefs.getString('access_token') ?? '';
-  Uri uri = Uri.parse('$BASE_URL/api/v1/user/1');
+  Uri uri = Uri.parse('$BASE_URL/api/v1/meal-deliveries/next-delivery');
+
+  if (query != null) {
+    uri = uri.replace(queryParameters: query.map((key, value) => MapEntry(key, value.toString())));
+  }
+
 
   http.Response? response;
   Map<String, String> header = {
@@ -36,9 +50,8 @@ Future<User?> networkGetUser() async {
     }
     if(response.statusCode == 200){
       var responseBody = jsonDecode(utf8.decode(response.bodyBytes));
-      User result = User.init();
-      debugPrint(responseBody.toString());
-      result = result.fromMap(responseBody['result']);
+      MealDelivery result = MealDelivery.init(orderedMeal: OrderedMeal.init());
+      result = result.fromMap(responseBody);
       // await prefs.setString("access_token", responseBody['access']); //Todo: 데이터 보고 교체
       // await prefs.setString("refresh_token", responseBody['refresh']); //Todo: 데이터 보고 교체
       return result;

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hankkitoktok/controller/ordered_meal_controller.dart';
+import 'package:hankkitoktok/controller/tmpdata.dart';
 import 'package:intl/intl.dart';
 import '../../const/style2.dart';
 import '../../component/calendar.dart';
@@ -15,6 +16,8 @@ import '../../functions/formatter.dart';
 import '../../models/enums.dart';
 import '../../models/meal/meal.dart';
 import '../../models/meal/ordered_meal.dart';
+import '../../models/order/order_post.dart';
+import '../4_pay_choice/0_pay_aggrement_screen.dart';
 
 class OrderScreen extends StatefulWidget {
   const OrderScreen({super.key});
@@ -32,7 +35,7 @@ class _OrderScreenState extends State<OrderScreen> {
 
   @override
   void initState() {
-    _orderType = OrderType.DAY_ORDER;
+    _orderType = OrderType.IMMEDIATE;
     _timeType = TimeType.BEFORE_LUNCH;
     _mealController = Get.find<MealController>();
     _orderedMealController = Get.find<OrderedMealController>();
@@ -41,26 +44,8 @@ class _OrderScreenState extends State<OrderScreen> {
     super.initState();
   }
 
-  void _onDaySelected(DateTime selectedDay) {
-    _orderedMealController.updateVisible(selectedDay);
-  }
 
-  bool selectDate(DateTime day) {
-    OrderedMealController mealController =
-    Get.find<OrderedMealController>();
 
-    return mealController.orderedWeekMeals[
-    day.subtract(const Duration(hours: 9)).toLocal()] !=
-        null &&
-        mealController
-            .orderedWeekMeals[
-        day.subtract(const Duration(hours: 9)).toLocal()]![0]
-            .isVisible &&
-        mealController
-            .orderedWeekMeals[
-        day.subtract(const Duration(hours: 9)).toLocal()]![1]
-            .isVisible;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,8 +58,8 @@ class _OrderScreenState extends State<OrderScreen> {
         children: [
           _buildOrderButtons(),
           const Divider(thickness: 4, color: GREY_COLOR_0),
-          if (_orderType == OrderType.WEEK_ORDER) _buildSelectOrderDay(),
-          if (_orderType == OrderType.WEEK_ORDER)
+          if (_orderType == OrderType.SCHEDULED) _buildSelectOrderDay(),
+          if (_orderType == OrderType.SCHEDULED)
             const Divider(thickness: 4, color: GREY_COLOR_0),
           _buildSelectOrderTime(),
           const Divider(thickness: 4, color: GREY_COLOR_0),
@@ -118,7 +103,7 @@ class _OrderScreenState extends State<OrderScreen> {
             _orderType = buttonOrderType;
           });
         },
-        child: Text(buttonOrderType == OrderType.DAY_ORDER ? '일 결제' : '주간 결제',
+        child: Text(buttonOrderType == OrderType.IMMEDIATE ? '일 결제' : '주간 결제',
             style: _orderType == buttonOrderType
                 ? TextStyles.getTextStyle(TextType.BUTTON, WHITE_COLOR)
                 : TextStyles.getTextStyle(TextType.BUTTON, GREY_COLOR_3)),
@@ -139,7 +124,7 @@ class _OrderScreenState extends State<OrderScreen> {
                 width: 1),
           ),
           child: Center(
-            child: Text(buttonOrderType == OrderType.DAY_ORDER ? '일 결제' : '주간 결제',
+            child: Text(buttonOrderType == OrderType.IMMEDIATE ? '일 결제' : '주간 결제',
                 style: _orderType == buttonOrderType
                     ? TextStyles.getTextStyle(TextType.BUTTON, WHITE_COLOR)
                     : TextStyles.getTextStyle(TextType.BUTTON, GREY_COLOR_3)),
@@ -282,9 +267,9 @@ class _OrderScreenState extends State<OrderScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.max,
           children: [
-            Flexible(flex: 1,child: orderButton(OrderType.DAY_ORDER)),
+            Flexible(flex: 1,child: orderButton(OrderType.IMMEDIATE)),
             const SizedBox(width: 12),
-            Flexible(flex: 1,child: orderButton(OrderType.WEEK_ORDER)),
+            Flexible(flex: 1,child: orderButton(OrderType.SCHEDULED)),
           ],
         ),
       ]),
@@ -300,8 +285,8 @@ class _OrderScreenState extends State<OrderScreen> {
             Tile(title: '주문 요일 선택', subtitle: '배송 받고 싶은 요일을 선택해주세요.'),
             const SizedBox(height: 8),
             Calendar(
-              selectDate: selectDate,
-              onDaySelected: _onDaySelected,
+              selectDate: _orderedMealController.getSelectedDate,
+              onDaySelected: _orderedMealController.updateVisible,
             )
           ],
         ));
@@ -361,7 +346,7 @@ class _OrderScreenState extends State<OrderScreen> {
     Widget buildOrderList(OrderType orderType) {
       return GetBuilder<OrderedMealController>(
         builder: (_orderedMealController) {
-          return (orderType == OrderType.DAY_ORDER)
+          return (orderType == OrderType.IMMEDIATE)
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -425,9 +410,9 @@ class _OrderScreenState extends State<OrderScreen> {
           children: [
             Tile(title: '메뉴 선택', subtitle: '선택하신 날짜에 받고싶은 도시락을 정해주세요.'),
             const SizedBox(height: 12),
-            _orderType == OrderType.DAY_ORDER
-                ? buildOrderList(OrderType.DAY_ORDER)
-                : buildOrderList(OrderType.WEEK_ORDER),
+            _orderType == OrderType.IMMEDIATE
+                ? buildOrderList(OrderType.IMMEDIATE)
+                : buildOrderList(OrderType.SCHEDULED),
 
             // _menuList
           ],
@@ -470,7 +455,7 @@ class _OrderScreenState extends State<OrderScreen> {
             ),
           ),
           const SizedBox(height: 12),
-          if (_orderType == OrderType.DAY_ORDER)
+          if (_orderType == OrderType.IMMEDIATE)
             TimeCheckbox(
                 orderType: _orderType, mode: Mode.RICE, timeType: _timeType)
           else
@@ -488,7 +473,7 @@ class _OrderScreenState extends State<OrderScreen> {
       child: SizedBox(
         child: ElevatedButton(
           onPressed: () {
-            if((_orderType == OrderType.DAY_ORDER ? _orderedMealController.menuPriceDay() : _orderedMealController.menuPriceWeek()) > 0){
+            if((_orderType == OrderType.IMMEDIATE ? _orderedMealController.menuPriceDay() : _orderedMealController.menuPriceWeek()) > 0){
               showModalBottomSheet<void>(
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
@@ -612,6 +597,12 @@ class _OrderScreenState extends State<OrderScreen> {
                                     child: ElevatedButton(
                                         onPressed: () {
                                           //TODO: 풀대접 서비스 페이지 보기
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => PayAggrementScreen(orderPost: _orderedMealController.getOrderedMealsSelected(_orderType))
+                                              )
+                                          );
                                         },
                                         style: ElevatedButton.styleFrom(
                                           elevation: 0,
@@ -649,7 +640,7 @@ class _OrderScreenState extends State<OrderScreen> {
           child: GetBuilder<OrderedMealController>(
             builder: (_orderedMealController) {
               return Text(
-                  '${f.format(_orderType == OrderType.DAY_ORDER ? _orderedMealController.menuPriceDay() : _orderedMealController.menuPriceWeek())}원 담기',
+                  '${f.format(_orderType == OrderType.IMMEDIATE ? _orderedMealController.menuPriceDay() : _orderedMealController.menuPriceWeek())}원 담기',
                   style: TextStyles.getTextStyle(TextType.BUTTON, WHITE_COLOR));
             },
           ),

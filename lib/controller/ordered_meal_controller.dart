@@ -5,11 +5,27 @@ import 'package:hankkitoktok/models/meal/ordered_meal.dart';
 import 'package:hankkitoktok/models/enums.dart';
 
 import '../models/meal/meal.dart';
+import '../models/meal/meal_delivery.dart';
+import '../models/order/order.dart';
+import '../models/order/order_post.dart';
 class OrderedMealController extends GetxController {
 
 
   Map<DateTime, List<OrderedMeal>> orderedDayMeals = <DateTime, List<OrderedMeal>>{};
   Map<DateTime, List<OrderedMeal>> orderedWeekMeals = <DateTime, List<OrderedMeal>>{};
+
+
+  bool getSelectedDate(DateTime day) {
+    return orderedWeekMeals[
+        day.subtract(const Duration(hours: 9)).toLocal()] !=
+        null &&
+        orderedWeekMeals[
+        day.subtract(const Duration(hours: 9)).toLocal()]![0]
+            .isVisible &&
+            orderedWeekMeals[
+        day.subtract(const Duration(hours: 9)).toLocal()]![1]
+            .isVisible;
+  }
 
   int menuPriceDay() {
     int sum = 0;
@@ -62,13 +78,13 @@ class OrderedMealController extends GetxController {
       orderedWeekMeals[nextSunday]!.add(OrderedMeal.init(
           reservedDate: DateTime(
               nextSunday.year,nextSunday.month,nextSunday.day, 0, 0),
-          reservedTime: Time.LUNCH,
+          reservedTime: Time.AFTERNOON,
           mealId: defaultMealId
       ));
       orderedWeekMeals[nextSunday]!.add(OrderedMeal.init(
           reservedDate: DateTime(
               nextSunday.year,nextSunday.month,nextSunday.day, 0, 0),
-          reservedTime: Time.DINNER,
+          reservedTime: Time.EVENING,
           mealId: defaultMealId
       ));
       nextSunday = nextSunday.add(const Duration(days: 1));
@@ -87,14 +103,14 @@ class OrderedMealController extends GetxController {
     orderedDayMeals[currentDay]!.add(OrderedMeal.init(
         reservedDate: DateTime(
             currentDay.year, currentDay.month, currentDay.day, 0, 0),
-        reservedTime: Time.LUNCH,
+        reservedTime: Time.AFTERNOON,
         isVisible: (DateTime.now().hour < 10) ? true : false,
         mealId: defaultMealId
     ));
     orderedDayMeals[currentDay]!.add(OrderedMeal.init(
         reservedDate: DateTime(
             currentDay.year, currentDay.month, currentDay.day, 0, 0),
-        reservedTime: Time.DINNER,
+        reservedTime: Time.EVENING,
         isVisible: (DateTime.now().hour < 16) ? true : false,
         mealId: defaultMealId
     ));
@@ -104,14 +120,14 @@ class OrderedMealController extends GetxController {
     orderedDayMeals[currentDay]!.add(OrderedMeal.init(
       reservedDate: DateTime(currentDay.year, currentDay.month,
           currentDay.day + 1, 0, 0),
-      reservedTime: Time.LUNCH,
+      reservedTime: Time.AFTERNOON,
       isVisible: true,
       mealId: defaultMealId
     ));
     orderedDayMeals[currentDay]!.add(OrderedMeal.init(
       reservedDate: DateTime(currentDay.year, currentDay.month,
           currentDay.day, 0, 0),
-      reservedTime: Time.DINNER,
+      reservedTime: Time.EVENING,
       isVisible: true,
       mealId: defaultMealId
     ));
@@ -120,14 +136,14 @@ class OrderedMealController extends GetxController {
     orderedDayMeals[currentDay]!.add(OrderedMeal.init(
         reservedDate: DateTime(currentDay.year, currentDay.month,
             currentDay.day, 0, 0),
-        reservedTime: Time.LUNCH,
+        reservedTime: Time.AFTERNOON,
         isVisible: (DateTime.now().hour < 16) ? false : true,
         mealId: defaultMealId
     ));
     orderedDayMeals[currentDay]!.add(OrderedMeal.init(
         reservedDate: DateTime(currentDay.year, currentDay.month,
             currentDay.day, 0, 0),
-        reservedTime: Time.DINNER,
+        reservedTime: Time.EVENING,
         isVisible: (DateTime.now().hour < 16) ? false : true,
         mealId: defaultMealId
     ));
@@ -146,7 +162,7 @@ class OrderedMealController extends GetxController {
   }
 
   void updateChecked(OrderType orderType, DateTime dateTime, Time time){
-    if(orderType == OrderType.DAY_ORDER){
+    if(orderType == OrderType.IMMEDIATE){
       for (var element in orderedDayMeals[dateTime]!) {
         if(element.reservedTime == time){
           element.isChecked = !element.isChecked;
@@ -164,7 +180,7 @@ class OrderedMealController extends GetxController {
   }
 
   void updateRice(OrderType orderType, DateTime dateTime, Time time){
-    if(orderType == OrderType.DAY_ORDER){
+    if(orderType == OrderType.IMMEDIATE){
       for (var element in orderedDayMeals[dateTime]!) {
         if(element.reservedTime == time){
           element.includeRice = !element.includeRice;
@@ -183,7 +199,7 @@ class OrderedMealController extends GetxController {
 
   void updateMealById(OrderType orderType, DateTime dateTime, Time time, int mealId){
     MealController mealController = Get.find();
-    if(orderType == OrderType.DAY_ORDER){
+    if(orderType == OrderType.IMMEDIATE){
       for (var element in orderedDayMeals[dateTime]!) {
         if(element.reservedTime == time){
           element.meal = mealController.getMealByID(mealId);
@@ -202,9 +218,10 @@ class OrderedMealController extends GetxController {
     update();
   }
 
-  List<OrderedMeal> getOrderedMealsSelected(OrderType orderType){
+
+  OrderPost getOrderedMealsSelected(OrderType orderType){
     List<OrderedMeal> result = [];
-    if(orderType == OrderType.DAY_ORDER){
+    if(orderType == OrderType.IMMEDIATE){
       for (var orderedMeals in orderedDayMeals.values) {
         for (var orderedMeal in orderedMeals) {
           if(orderedMeal.isChecked == true && orderedMeal.isVisible == true){
@@ -222,6 +239,9 @@ class OrderedMealController extends GetxController {
         }
       }
     }
-    return result;
+    return OrderPost.init(
+      orderType: orderType,
+      orderedMeals: result,
+    );
   }
 }

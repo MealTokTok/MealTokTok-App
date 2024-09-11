@@ -35,7 +35,7 @@ class OrderedMeal extends BaseModel {
   OrderedMeal.init({
     this.mealId = 0,
     this.reservedDate,
-    this.reservedTime = Time.LUNCH,
+    this.reservedTime = Time.AFTERNOON,
     this.includeRice = false,
     this.hasFullDiningOption = false,
     this.isVisible = false,
@@ -92,14 +92,14 @@ class OrderedMeal extends BaseModel {
     String dayOfWeekString = days[reservedDate!.weekday % 7];
 
 
-    return "$dayOfWeekString-${reservedTime == Time.LUNCH ? '점심' : '저녁'}(${meal.name})";
+    return "$dayOfWeekString-${reservedTime == Time.AFTERNOON ? '점심' : '저녁'}(${meal.name})";
   }
 
   String get getDeliveryDateTimeString2{
     if(reservedDate == null){
       throw Exception('Ordered Meal 클래스: reservedDate가 null입니다.');
     }
-    return "${reservedDate!.year}.${reservedDate!.month}.${reservedDate!.day} - ${reservedTime == Time.LUNCH ? '점심' : '저녁'}";
+    return "${reservedDate!.year}.${reservedDate!.month}.${reservedDate!.day} - ${reservedTime == Time.AFTERNOON ? '점심' : '저녁'}";
   }
 
   String get getDateString {
@@ -111,7 +111,7 @@ class OrderedMeal extends BaseModel {
   }
 
   String get getTimeString{
-    return reservedTime == Time.LUNCH ? '점심' : '저녁';
+    return reservedTime == Time.AFTERNOON ? '점심' : '저녁';
   }
 
   String get getMenuString {
@@ -129,7 +129,7 @@ class OrderedMeal extends BaseModel {
 
   MealDetail getMealDetail() {
     int priority;
-    if (reservedTime == Time.LUNCH) {
+    if (reservedTime == Time.AFTERNOON) {
       priority = 0;
     } else {
       priority = 1;

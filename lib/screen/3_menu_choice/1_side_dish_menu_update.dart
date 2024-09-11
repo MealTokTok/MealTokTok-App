@@ -85,7 +85,7 @@ class _SelectMenuState extends State<SelectMenuScreen> {
             child: Text("삭제"),
           ),
         ],
-      )
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

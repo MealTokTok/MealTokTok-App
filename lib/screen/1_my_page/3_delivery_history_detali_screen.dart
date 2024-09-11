@@ -102,7 +102,7 @@ class _DeliveryHistoryDetailScreenState
           color: SECONDARY_1_CONTAINER,
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Text('${mealDelivery.orderedMeal.reservedTime == Time.LUNCH ? '12-1' : '6-7'}시 사이에 배송됩니다.' , style: TextStyles.getTextStyle(TextType.BUTTON, SECONDARY_1)),
+        child: Text('${mealDelivery.orderedMeal.reservedTime == Time.AFTERNOON ? '12-1' : '6-7'}시 사이에 배송됩니다.' , style: TextStyles.getTextStyle(TextType.BUTTON, SECONDARY_1)),
       )
     );
   }

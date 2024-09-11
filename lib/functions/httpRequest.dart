@@ -89,8 +89,6 @@ Future<T> networkGetRequest<T extends BaseModel>(T model, String detailUri, Map<
     'Content-Type': 'application/json',
     //'Authorization': 'Bearer $accessToken',
     'Access-token': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzIzNDYyOTM5LCJleHAiOjE3NDkzODI5Mzl9.rmDSuxTSfjJplWLm-v1AxKrz_-9jt8u5RJeC4q2JW38'
-
-    //'Access-Token': 'Bearer $accessToken',
   };
 
   try {

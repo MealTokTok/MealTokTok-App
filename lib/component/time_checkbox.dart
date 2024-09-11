@@ -25,18 +25,18 @@ class TimeCheckbox extends StatelessWidget {
   bool _visibleMeal(OrderedMealController controller, dateTime, int index) {
     if (mode == Mode.MEAL) {
       if (timeType == TimeType.BEFORE_LUNCH && (index == 0 || index == 1)) {
-        if (orderType == OrderType.DAY_ORDER) {
+        if (orderType == OrderType.IMMEDIATE) {
           return controller.orderedDayMeals[dateTime]![index].isVisible;
         }
         return controller.orderedWeekMeals[dateTime]![index].isVisible;
       } else if (timeType == TimeType.AFTER_LUNCH && index == 1) {
-        if (orderType == OrderType.DAY_ORDER) {
+        if (orderType == OrderType.IMMEDIATE) {
           return controller.orderedDayMeals[dateTime]![index].isVisible;
         }
         return controller.orderedWeekMeals[dateTime]![index].isVisible;
       }
     } else if (mode == Mode.RICE) {
-      if (orderType == OrderType.DAY_ORDER) {
+      if (orderType == OrderType.IMMEDIATE) {
         return controller.orderedDayMeals[dateTime]![index].isChecked;
       }
       return controller.orderedWeekMeals[dateTime]![index].isChecked;
@@ -48,12 +48,12 @@ class TimeCheckbox extends StatelessWidget {
 
   bool _getValue(OrderedMealController controller, DateTime key, int index) {
     if (mode == Mode.MEAL) {
-      if (orderType == OrderType.DAY_ORDER) {
+      if (orderType == OrderType.IMMEDIATE) {
         return controller.orderedDayMeals[key]![index].isChecked;
       }
       return controller.orderedWeekMeals[key]![index].isChecked;
     } else if (mode == Mode.RICE) {
-      if (orderType == OrderType.DAY_ORDER) {
+      if (orderType == OrderType.IMMEDIATE) {
         return controller.orderedDayMeals[key]![index].includeRice;
       }
       return controller.orderedWeekMeals[key]![index].includeRice;
@@ -67,12 +67,12 @@ class TimeCheckbox extends StatelessWidget {
       MealController mealController = Get.find();
       int defaultMealId = mealController.getMeals[0].mealId;
       controller.updateChecked(
-          orderType, key, index == 0 ? Time.LUNCH : Time.DINNER);
+          orderType, key, index == 0 ? Time.AFTERNOON : Time.EVENING);
       controller.updateMealById(
-          orderType, key, index == 0 ? Time.LUNCH : Time.DINNER, defaultMealId);
+          orderType, key, index == 0 ? Time.AFTERNOON : Time.EVENING, defaultMealId);
     } else if (mode == Mode.RICE) {
       controller.updateRice(
-          orderType, key, index == 0 ? Time.LUNCH : Time.DINNER);
+          orderType, key, index == 0 ? Time.AFTERNOON : Time.EVENING);
     } else if (mode == Mode.WASHING) {}
   }
 
@@ -80,13 +80,11 @@ class TimeCheckbox extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<OrderedMealController>(
       builder: (_orderedMealController) {
-        print(_orderedMealController.orderedDayMeals.keys);
-        print(orderType);
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            for (DateTime key in orderType == OrderType.DAY_ORDER
+            for (DateTime key in orderType == OrderType.IMMEDIATE
                 ? _orderedMealController.orderedDayMeals.keys
                 : _orderedMealController.orderedWeekMeals.keys)
               Column(

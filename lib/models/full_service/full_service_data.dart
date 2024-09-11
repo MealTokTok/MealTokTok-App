@@ -1,15 +1,14 @@
 import 'dart:convert';
-
-import 'package:flutter/cupertino.dart';
-import 'package:hankkitoktok/models/user/user.dart';
+import 'package:flutter/material.dart';
+import 'package:hankkitoktok/functions/httpRequest.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import '../../const/strings.dart';
 
-Future<User?> networkGetUser() async {
+Future<int?> networkGetFullDiningsCount() async{
   SharedPreferences prefs = await SharedPreferences.getInstance(); // 저장소
   String accessToken = prefs.getString('access_token') ?? '';
-  Uri uri = Uri.parse('$BASE_URL/api/v1/user/1');
+  Uri uri = Uri.parse('$BASE_URL/api/v1/meal-deliveries/next-delivery');
+
 
   http.Response? response;
   Map<String, String> header = {
@@ -36,16 +35,14 @@ Future<User?> networkGetUser() async {
     }
     if(response.statusCode == 200){
       var responseBody = jsonDecode(utf8.decode(response.bodyBytes));
-      User result = User.init();
-      debugPrint(responseBody.toString());
-      result = result.fromMap(responseBody['result']);
       // await prefs.setString("access_token", responseBody['access']); //Todo: 데이터 보고 교체
       // await prefs.setString("refresh_token", responseBody['refresh']); //Todo: 데이터 보고 교체
-      return result;
+      return responseBody['result'];
     } else {
       throw Exception(response.statusCode.toString());
     }
   }catch (e) {
+
     debugPrint(e.toString());
     return null;
   }
