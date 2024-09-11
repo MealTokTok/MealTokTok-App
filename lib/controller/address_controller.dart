@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/address/address.dart';
 import '../models/address/address_data.dart';
@@ -12,13 +13,17 @@ import '../models/user/user_data.dart';
 //실행되는 시점: 앱 시작 시
 class AddressController extends GetxController{
   List<Address> addresses = [];
+  late Address selectedAddress;
   int selectedAddressIndex = 0;
-
+  late SharedPreferences prefs;
   //컨트롤러가 Put 되는 시점에 주소 정보 가져오기(앱 시작시 해당 생성자 실행)
   @override
   void onInit() async {
     // TODO: implement onInit
     await initAddresses();
+    selectedAddress = addresses.isEmpty ? Address.init() : addresses[selectedAddressIndex];
+    prefs = await SharedPreferences.getInstance();
+    selectedAddressIndex = prefs.getInt('selectedAddressIndex') ?? 0;
     super.onInit();
   }
 
@@ -34,7 +39,12 @@ class AddressController extends GetxController{
   }
 
   void setSelectedAddressIndex(int index){
+    //기존 선택된 주소를 보이게 하고 새로 선택된 주소를 안보이게 함
+    addresses[selectedAddressIndex].setVisible(true);
     selectedAddressIndex = index;
+    addresses[selectedAddressIndex].setVisible(false);
+    prefs.setInt('selectedAddressIndex', selectedAddressIndex);
+    selectedAddress = addresses[selectedAddressIndex];
     update();
   }
 

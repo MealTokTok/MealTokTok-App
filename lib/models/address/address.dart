@@ -12,6 +12,7 @@ class Address extends BaseModel{
   AddressStatus addressStatus;
   double? latitude;
   double? longitude;
+  bool visible = true;
 
   Address.init({
     this.deliveryAddressId = 0,
@@ -48,5 +49,9 @@ class Address extends BaseModel{
 
   String get getAddressString {
     return '$address $detailAddress';
+  }
+
+  void setVisible(bool value){
+    visible = value;
   }
 }

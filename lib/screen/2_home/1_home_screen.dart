@@ -3,17 +3,23 @@ import 'package:flutter/painting.dart';
 import 'package:get/get.dart';
 import 'package:hankkitoktok/component/four_image.dart';
 import 'package:hankkitoktok/const/color.dart';
+import 'package:hankkitoktok/controller/address_controller.dart';
+import 'package:hankkitoktok/controller/delivery_controller.dart';
+import 'package:hankkitoktok/controller/meal_controller.dart';
 import 'package:hankkitoktok/controller/tmpdata.dart';
-import 'package:hankkitoktok/const/style.dart';
-import 'package:hankkitoktok/functions/httpRequest.dart';
-import 'package:hankkitoktok/models/meal/meal_delivery.dart';
-import 'package:hankkitoktok/models/meal/ordered_meal.dart';
-import 'package:hankkitoktok/models/meal/meal.dart';
-import 'package:hankkitoktok/screen/2_home/2_notification_screen.dart';
 
-enum ScreenStatus { AFTER_DELIVERY, MENU_EMPTY, MENU_SELECTED, ON_DELIVERY }
+import 'package:hankkitoktok/controller/user_controller.dart';
+import 'package:hankkitoktok/models/meal/meal_delivery.dart';
+import 'package:hankkitoktok/models/meal/meal.dart';
+
+import 'package:hankkitoktok/screen/2_home/2_notification_screen.dart';
+import '../../models/enums.dart';
+import 'package:hankkitoktok/const/style2.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+enum ScreenStatus { AFTER_DELIVERY, MENU_EMPTY, MENU_SELECTED, ON_DELIVERY , ADDRESS_EMPTY}
 
 enum TimeStatus { LUNCH, DINNER }
+
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -22,43 +28,23 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   //--------sampleData----------
-  List<String> addressList = ['충북대학교 충대로1', '충북대학교 충대로2', '충북대학교 충대로3'];
-  List<String> addressListEmpty = [];
-  String dropdownValue = '충북대학교 충대로1';
+
+  String _dropdownValue= '';
   String _buttonString = '반찬도시락 메뉴담기';
   String _mainTitle = '반찬도시락\n메뉴를 선택해볼까요?';
   String _subTitle = '원하는 반찬을 선택하고 주문하면 \n든든한 한끼가 되어줄게요!';
   ScreenStatus screenStatus = ScreenStatus.MENU_EMPTY;
-  TimeStatus timeStatus = TimeStatus.LUNCH;
+  Time timeStatus = Time.AFTERNOON;
   int cartCount = 1;
   int alarmCount = 0;
-  int containerCount = 30;
-
-  int testStatus = 1;
 
   //--------sampleData----------
 
-  List<Meal> mealMenuListEmpty = [];
-  late MealDelivery mealDelivery;
-
-  void getMealDelivery() async {
-    mealDelivery = await networkGetRequest(
-        MealDelivery.init(
-            orderedMeal: OrderedMeal.init(reservedDate: DateTime(0))),
-        "detail",
-        null);
-  }
-
-  void _checkAddress() {
-    if (addressList.isEmpty) {
-      WidgetsBinding.instance?.addPostFrameCallback((_) {
-        _showAddressDialog();
-      });
-    }
-  }
-
+  late final UserController _userController;
+  late final DeliveryController _deliveryController;
+  late final MealController _mealController;
   void _checkMenu() {
-    if (testStatus == 1) {
+    if (_mealController.getMeals.isEmpty) {
       //Todo 조건: menu empty
       setState(() {
         screenStatus = ScreenStatus.MENU_EMPTY;
@@ -66,8 +52,53 @@ class _HomeScreenState extends State<HomeScreen> {
         _subTitle = '원하는 반찬을 선택하고 주문하면 \n든든한 한끼가 되어줄게요!';
         _buttonString = '반찬도시락 메뉴담기';
       });
+      return ;
     }
-    if (testStatus == 2) {
+    if (_deliveryController.deliveringMealDelivery != null) {
+      if(_deliveryController.deliveringMealDelivery!.orderedMeal.reservedTime == Time.AFTERNOON){
+        // Todo 조건: 배송 중, 점심
+        setState(() {
+          screenStatus = ScreenStatus.ON_DELIVERY;
+          timeStatus = Time.AFTERNOON;
+          _mainTitle = '주문하신 반찬도시락이\n배송중입니다!';
+          _subTitle = '12시~1시 사이에 배송됩니다!';
+          _buttonString = '배송 조회';
+        });
+      }
+      else {
+        // Todo 조건: 배송 중, 저녁
+        setState(() {
+          screenStatus = ScreenStatus.ON_DELIVERY;
+          timeStatus = Time.EVENING;
+          _mainTitle = '주문하신 반찬도시락이\n배송중입니다!';
+          _subTitle = '6시~7시 사이에 배송됩니다!';
+          _buttonString = '배송 조회';
+        });
+      }
+    }
+    if(_deliveryController.recentDeliveredMealDelivery != null) {
+      if(_deliveryController.recentDeliveredMealDelivery!.orderedMeal.reservedTime == Time.AFTERNOON){
+        // Todo 조건: 배송 후, 점심
+        setState(() {
+          screenStatus = ScreenStatus.AFTER_DELIVERY;
+          timeStatus = Time.AFTERNOON;
+          _mainTitle = '주문하신 반찬도시락\n배달이 완료되었습니다!';
+          _subTitle = '맛있는 점심식사 되세요!';
+          _buttonString = '배송 내역';
+        });
+      }
+      else{
+        // Todo 조건: 배송 중, 저녁
+        setState(() {
+          screenStatus = ScreenStatus.AFTER_DELIVERY;
+          timeStatus = Time.EVENING;
+          _mainTitle = '주문하신 반찬도시락\n배달이 완료되었습니다!';
+          _subTitle = '맛있는 저녁식사 되세요!';
+          _buttonString = '배송 내역';
+        });
+      }
+    }
+    if(_deliveryController.deliveringMealDelivery == null && _deliveryController.recentDeliveredMealDelivery == null) {
       //Todo 조건: mealmenu is not empty
       setState(() {
         screenStatus = ScreenStatus.MENU_SELECTED;
@@ -76,57 +107,16 @@ class _HomeScreenState extends State<HomeScreen> {
         _buttonString = '주문하기';
       });
     }
-    if (testStatus == 3) {
-      // Todo 조건: 배송 중, 점심
-
-      setState(() {
-        screenStatus = ScreenStatus.ON_DELIVERY;
-        timeStatus = TimeStatus.LUNCH;
-        _mainTitle = '주문하신 반찬도시락이\n배송중입니다!';
-        _subTitle = '12시~1시 사이에 배송됩니다!';
-        _buttonString = '배송 조회';
-      });
-    }
-    if (testStatus == 4) {
-      // Todo: 조건: 배송 중, 저녁
-      setState(() {
-        screenStatus = ScreenStatus.ON_DELIVERY;
-        timeStatus = TimeStatus.DINNER;
-        _mainTitle = '주문하신 반찬도시락이\n배송중입니다!';
-        _subTitle = '6시~7시 사이에 배송됩니다!';
-        _buttonString = '배송 조회';
-      });
-    }
-    if (testStatus == 5) {
-      // Todo: 조건: 배송 후, 점심
-      setState(() {
-        screenStatus = ScreenStatus.AFTER_DELIVERY;
-        timeStatus = TimeStatus.LUNCH;
-        _mainTitle = '주문하신 반찬도시락\n배달이 완료되었습니다!';
-        _subTitle = '맛있는 점심식사 되세요!';
-        _buttonString = '배송 내역';
-      });
-    }
-    if (testStatus == 6) {
-      // Todo: 조건: 배송 후, 점심
-      setState(() {
-        screenStatus = ScreenStatus.AFTER_DELIVERY;
-        timeStatus = TimeStatus.DINNER;
-        _mainTitle = '주문하신 반찬도시락\n배달이 완료되었습니다!';
-        _subTitle = '맛있는 저녁식사 되세요!';
-        _buttonString = '배송 내역';
-      });
-    }
   }
 
   @override
   void initState() {
     // TODO: 처음 들어갔을 때, 사용자 정보 가져오기
-
     //TODO: MealDelivery로 화면 Status 결정
-    _checkAddress();
+    _userController = Get.find();
+    _deliveryController = Get.find();
+    _mealController = Get.find();
     _checkMenu();
-    getMealDelivery();
     super.initState();
   }
 
@@ -141,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildBanner(containerCount),
+              _buildBanner(_deliveryController.fullDiningCount),
               const SizedBox(height: 10),
               Container(
                 padding: const EdgeInsets.all(16.0),
@@ -160,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     screenStatus == ScreenStatus.ON_DELIVERY
                         ? _buildOnDelivery()
                         : screenStatus == ScreenStatus.AFTER_DELIVERY
-                            ? _buildAfterDelivery(mealDelivery)
+                            ? _buildAfterDelivery(_deliveryController.recentDeliveredMealDelivery!)
                             : screenStatus == ScreenStatus.MENU_EMPTY
                                 ? _buildMenuEmpty()
                                 : _buildMenuList(mealMenuList),
@@ -181,31 +171,41 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return AppBar(
       surfaceTintColor: Colors.transparent,
-      title: DropdownButton(
-          underline: Container(),
-          value: dropdownValue,
-          items: addressList.map((String value) {
-            return DropdownMenuItem(
-                value: value,
-                child: Row(
-                  children: [
-                    Image.asset('assets/images/2_home/app_bar_place.png',
-                        width: 24, height: 24),
-                    const SizedBox(width: 8),
-                    addressList.isNotEmpty
-                        ? Text(
-                            value,
-                            style: addressStyle,
-                          )
-                        : const Text(''),
-                  ],
-                ));
-          }).toList(),
-          onChanged: (String? value) {
-            setState(() {
-              dropdownValue = value!;
-            });
-          }),
+      title: GetBuilder<AddressController>(
+        builder: (controller) {
+          return DropdownButton(
+              underline: Container(),
+              value: controller.getAddressList.isNotEmpty
+                  ? controller.getAddressList[controller.selectedAddressIndex]
+                  : '배달 주소를 설정해주세요',
+              items: controller.getAddressList.map((String value) {
+                return DropdownMenuItem(
+                    value: value,
+                    child: Row(
+                      children: [
+                        Image.asset('assets/images/2_home/app_bar_place.png',
+                            width: 24, height: 24),
+                        const SizedBox(width: 8),
+                        controller.getAddressList.isNotEmpty
+                            ? Text(
+                          value,
+                          style: TextStyles.getTextStyle(TextType.SUBTITLE_1, BLACK_COLOR),
+                        )
+                            : const Text(''),
+                      ],
+                    ));
+              }).toList(),
+              onChanged: (String? value) {
+                setState(() {
+                  for(int i = 0; i < controller.getAddressList.length; i++){
+                    if(controller.getAddressList[i] == value){
+                      controller.selectedAddressIndex = i;
+                    }
+                  }
+                });
+              });
+        },
+      ),
       actions: [
         IconButton(
           icon: Stack(

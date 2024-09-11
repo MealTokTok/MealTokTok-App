@@ -4,7 +4,10 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hankkitoktok/component/calendar.dart';
+import 'package:hankkitoktok/controller/delivery_controller.dart';
+import 'package:hankkitoktok/controller/list_view_scroll_controller.dart';
 import 'package:hankkitoktok/controller/ordered_meal_controller.dart';
+import 'package:hankkitoktok/controller/user_controller.dart';
 import 'package:hankkitoktok/screen/0_login_and_set_address/0_login_screen.dart';
 import 'package:hankkitoktok/const/color.dart';
 import 'package:hankkitoktok/screen/0_login_and_set_address/temporary_adress.dart';
@@ -17,17 +20,18 @@ import 'package:hankkitoktok/screen/3_menu_choice/1_choice_menu_screen.dart';
 import 'package:hankkitoktok/screen/3_menu_choice/2_order_screen.dart';
 import 'package:hankkitoktok/screen/4_my_page/0_my_page_home.dart';
 import 'package:hankkitoktok/screen/4_my_page/3_delete_id.dart';
-import 'package:hankkitoktok/screen/4_my_page/practice.dart';
-import 'package:hankkitoktok/screen/5_order/0_full_dinings_warning_dialog.dart';
+import 'package:hankkitoktok/screen/4_pay_choice/payment_test.dart';
 import 'package:hankkitoktok/screen/5_order/1_full_dining_explanation.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:kakao_map_plugin/kakao_map_plugin.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'component/meal_card.dart';
 import 'const/strings.dart';
 import 'component/time_checkbox.dart';
+import 'controller/address_controller.dart';
 import 'controller/tmpdata.dart';
 import 'convention.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -114,6 +118,10 @@ void _notificationSetting(){
 
 void _getControllerSetting(){
   Get.put(OrderedMealController());
+  Get.put(ListViewScrollController());
+  Get.put(UserController());
+  Get.put(AddressController());
+  Get.put(DeliveryController());
 }
 
 void main() async {
@@ -191,8 +199,9 @@ class MyApp extends StatelessWidget {
 
       home: MyPageHome(),
 
+
     );
   }
 }
 
-
+//d
