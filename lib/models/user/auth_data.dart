@@ -153,20 +153,6 @@ Future<bool> login(String accessToken, String idToken, String deviceToken) async
   }
 }
 
-//로그아웃
-Future<bool> logout() async {
-  try {
-    SharedPreferences.getInstance().then((prefs) {
-      prefs.remove('access_token');
-      prefs.remove('refresh_token');
-    });
-    return true;
-  } catch (e) {
-    debugPrint('로그아웃 실패: $e');
-    return false;
-  }
-}
-
 //Map을 String으로 변환
 //테스트에만 사용
 String mapToString(Map<String, String> map) {

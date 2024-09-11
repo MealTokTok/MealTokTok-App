@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:hankkitoktok/component/four_image.dart';
+import 'package:hankkitoktok/component/order_detail.dart';
 import 'package:hankkitoktok/const/style.dart';
 import 'package:hankkitoktok/controller/tmpdata.dart';
 import 'package:hankkitoktok/functions/httpRequest.dart';
 import 'package:hankkitoktok/models/order/order.dart';
 import 'package:intl/intl.dart';
 import 'package:hankkitoktok/models/enums.dart';
+import '../../component/price_info.dart';
 import '../../const/color.dart';
 import '../../const/style2.dart';
 import '../../functions/formatter.dart';
@@ -73,9 +75,9 @@ class _OrderHistoryDetailScreen1State extends State<OrderHistoryDetailScreen> {
               const Divider(thickness: 4, color: GREY_COLOR_0),
               _buildRequestInfo(),
               const Divider(thickness: 4, color: GREY_COLOR_0),
-              _buildOrderDetail(),
+              buildOrderDetailByOrder(order),
               const Divider(thickness: 4, color: GREY_COLOR_0),
-              _buildPriceInfo(order),
+              buildPriceInfoByOrder(order),
               const SizedBox(height: 128.0), //Todo: 수정
               _buildRemoveButton(),
               const SizedBox(height: 32.0),
@@ -160,122 +162,9 @@ class _OrderHistoryDetailScreen1State extends State<OrderHistoryDetailScreen> {
         ));
   }
 
-  Widget _buildOrderDetail() {
-    return Padding(
-        padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('주문내역', style: TextStyles.getTextStyle(TextType.SUBTITLE_1, BLACK_COLOR_2)),
-            const SizedBox(height: 8.0),
-            RichText(
-              text: TextSpan(
-                children: [
-                  TextSpan(text: '주문방식: ', style: TextStyles.getTextStyle(TextType.BODY_2, GREY_COLOR_2)),
-                  TextSpan(
-                      text: order.orderType==OrderType.DAY_ORDER ? '일 결제' : '주간 결제',
-                      style: TextStyles.getTextStyle(TextType.BUTTON, GREY_COLOR_2)),
-                ],
-              ),
-            ),
-            const SizedBox(height: 8.0),
-            RichText(
-              text: TextSpan(
-                children: [
-                  TextSpan(text: '요일: ', style: TextStyles.getTextStyle(TextType.BODY_2, GREY_COLOR_2)),
-                  TextSpan(
-                      text: order.dayOfWeekInitial,
-                      style: TextStyles.getTextStyle(TextType.BUTTON, GREY_COLOR_2)),
-                ],
-              ),
-            ),
-            const SizedBox(height: 8.0),
-            Text('시간', style: TextStyles.getTextStyle(TextType.BODY_2, GREY_COLOR_2)),
-            for (String orderTime in order.getOrderTimeList)
-              Text(orderTime, style: TextStyles.getTextStyle(TextType.BUTTON, GREY_COLOR_2)),
-            const SizedBox(height: 8.0),
-            Text('메뉴', style: TextStyles.getTextStyle(TextType.BODY_2, GREY_COLOR_2)),
-            for (MealDetail menu in order.combinedMenuList)
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(menu.title, style: TextStyles.getTextStyle(TextType.BUTTON, GREY_COLOR_2)),
-                      Text("${f.format(menu.mealPrice)}원",
-                          style: TextStyles.getTextStyle(TextType.BUTTON, GREY_COLOR_2)),
-                    ],
-                  ),
-                  const SizedBox(height: 4.0),
-                  Text(menu.subTitle, style: TextStyles.getTextStyle(TextType.BODY_2, GREY_COLOR_2)),
-                  const SizedBox(height: 8.0),
-                ],
-              ),
-            const SizedBox(height: 8.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("총 횟수", style: TextStyles.getTextStyle(TextType.SUBTITLE_1, PRIMARY_COLOR)),
-                Text(
-                    "${order.combinedMenuList.length}회",
-                    style: TextStyles.getTextStyle(TextType.SUBTITLE_1, PRIMARY_COLOR)),
-              ],
-            )
-          ],
-        ));
-  } //Todo: 오류수정
 
-  Widget _buildPriceInfo(Order order) {
-    return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("결제 금액", style: TextStyles.getTextStyle(TextType.SUBTITLE_1, BLACK_COLOR)),
-            const SizedBox(height: 8.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("주문 금액", style: TextStyles.getTextStyle(TextType.BODY_2, BLACK_COLOR_2)),
-                Text("${f.format(order.mealPrice)}원",
-                    style:  TextStyles.getTextStyle(TextType.BUTTON, BLACK_COLOR_2)),
-              ],
-            ),
-            const SizedBox(height: 4.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("배달 금액", style: TextStyles.getTextStyle(TextType.BODY_2, BLACK_COLOR_2)),
-                Text("${f.format(order.deliveryPrice)}원",
-                    style: TextStyles.getTextStyle(TextType.BUTTON, BLACK_COLOR_2)),
-              ],
-            ),
-            const SizedBox(height: 4.0),
-            (order.fullServicePrice > 0)
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("풀결제 서비스 금액", style: TextStyles.getTextStyle(TextType.BODY_2, BLACK_COLOR_2)),
-                      Text("${f.format(order.fullServicePrice)}원",
-                          style: TextStyles.getTextStyle(TextType.BUTTON, BLACK_COLOR_2)),
-                    ],
-                  )
-                : const SizedBox(),
-            (order.fullServicePrice > 0)
-                ? const SizedBox(height: 4.0)
-                : const SizedBox(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("최종 결제 금액", style: TextStyles.getTextStyle(TextType.SUBTITLE_1, BLACK_COLOR)),
-                Text("${f.format(order.totalPrice)}원",
-                    style: TextStyles.getTextStyle(TextType.SUBTITLE_1, PRIMARY_COLOR)),
-              ],
-            ),
-          ],
-        ));
-  }
+
+
   //
   Widget _buildRemoveButton() {
     return Padding(

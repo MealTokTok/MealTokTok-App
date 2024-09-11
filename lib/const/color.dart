@@ -11,8 +11,9 @@ const Color GRAY3= Color(0xFF999999);
 const Color GRAY4= Color(0xFF686868);
 
 
+//태현 바꾼 부분
 const Color BANNER_COLOR = Color(0xFFFFF9F0);
-//const Color BANNER_COLOR = Color(0xFFFFF9F0);
+
 
 
 const Color BLACK_COLOR = Color(0xFF000000);
@@ -25,6 +26,7 @@ const Color GREY_COLOR_2 = Color(0xFF686868);
 const Color GREY_COLOR_3 = Color(0xFF999999);
 const Color GREY_COLOR_4 = Color(0xFFE9E9E9);
 const Color GREY_COLOR_5 = Color(0xFFD5D5D5);
+const Color GREY_COLOR_6 = Color(0xFF4D4D4D);
 const Color WHITE_COLOR = Color(0xFFFFFFFF);
 
 const Color SECONDARY_1 = Color(0xFF99BA00);

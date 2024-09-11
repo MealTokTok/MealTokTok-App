@@ -83,71 +83,75 @@ class _MyNicknameEditingState extends State<MyNicknameEditing> {
             ),
             Row(
               children: [
-                Container(
-                  width: 375,
-                  //너비 자유롭게 되도록 설정해둬야 함
-                  height: 48,
-                  child: TextFormField(
-                    maxLength: 10,
-                    controller: _nickname,
-                    textAlignVertical: TextAlignVertical.top,
-                    textAlign: TextAlign.start,
-                    style: myPageRecordBlack14,
-                    decoration: InputDecoration(
-                      contentPadding:
+                Expanded(
+                    child: Container(
+                      //width: 375,
+                      //너비 자유롭게 되도록 설정해둬야 함
+                      height: 48,
+                      child: TextFormField(
+                        maxLength: 10,
+                        controller: _nickname,
+                        textAlignVertical: TextAlignVertical.top,
+                        textAlign: TextAlign.start,
+                        style: myPageRecordBlack14,
+                        decoration: InputDecoration(
+                          contentPadding:
                           EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                      labelText: "닉네임을 입력해주세요.",
-                      labelStyle: myPageRecordGray14500,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                        borderSide: BorderSide(
-                          color: GRAY1,
+                          labelText: "닉네임을 입력해주세요.",
+                          labelStyle: myPageRecordGray14500,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            borderSide: BorderSide(
+                              color: GRAY1,
 
-                          //color: isAvailable != null && isAvailable!.isAvailable ? GRAY1 : SECONDARY,
-                          width: 1.6,
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                        borderSide: BorderSide(
-                          color: GRAY1,
+                              //color: isAvailable != null && isAvailable!.isAvailable ? GRAY1 : SECONDARY,
+                              width: 1.6,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            borderSide: BorderSide(
+                              color: GRAY1,
 
-                         // color: isAvailable != null && isAvailable!.isAvailable ? GRAY1 : SECONDARY,
-                          width: 1.6,
+                              // color: isAvailable != null && isAvailable!.isAvailable ? GRAY1 : SECONDARY,
+                              width: 1.6,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            borderSide: BorderSide(
+                              color: GRAY1,
+                              //color: isAvailable != null && isAvailable!.isAvailable ? GRAY1 : SECONDARY,
+                              width: 1.6,
+                            ),
+                          ),
+                          counterText: "",
+                          suffix: Text(
+                            "(${textValue.length}/10)",
+                            style: myPageRecordGray2_14_400,
+                          ),
+                          floatingLabelBehavior: FloatingLabelBehavior.never,
                         ),
+                        onChanged: (value) {
+                          setState(() {
+                            textValue = value;
+                          });
+                        },
+                        validator: (value) {
+                          //띄워쓰기 입력시 거절 추가
+                          if (value == null || value.isEmpty) {
+                            return '닉네임을 입력해주세요.';
+                          }
+                          if (int.tryParse(value) == null) {
+                            return '숫자로 입력해줘';
+                          }
+                          return null;
+                        },
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                        borderSide: BorderSide(
-                          color: GRAY1,
-                          //color: isAvailable != null && isAvailable!.isAvailable ? GRAY1 : SECONDARY,
-                          width: 1.6,
-                        ),
-                      ),
-                      counterText: "",
-                      suffix: Text(
-                        "(${textValue.length}/10)",
-                        style: myPageRecordGray2_14_400,
-                      ),
-                      floatingLabelBehavior: FloatingLabelBehavior.never,
                     ),
-                    onChanged: (value) {
-                      setState(() {
-                        textValue = value;
-                      });
-                    },
-                    validator: (value) {
-                      //띄워쓰기 입력시 거절 추가
-                      if (value == null || value.isEmpty) {
-                        return '닉네임을 입력해주세요.';
-                      }
-                      if (int.tryParse(value) == null) {
-                        return '숫자로 입력해줘';
-                      }
-                      return null;
-                    },
-                  ),
+
                 ),
+
                 SizedBox(
                   width: 8,
                 ),
@@ -181,8 +185,8 @@ class _MyNicknameEditingState extends State<MyNicknameEditing> {
             SizedBox(
               height: 4,
             ),
-            if( _nickname.text==widget.user!.nickname)
-              Text('기존 닉네임과 동일합니다.', style: TextStyles.getTextStyle(TextType.BUTTON, SECONDARY),),
+            // if( _nickname.text==widget.user!.nickname)
+            //   Text('기존 닉네임과 동일합니다.', style: TextStyles.getTextStyle(TextType.BUTTON, SECONDARY),),
             if ((_nickname.text != widget.user!.nickname) && isAvailable != null)
               isAvailable!.isAvailable
                   ? Text('사용가능한 닉네임입니다.', style: TextStyles.getTextStyle(TextType.BUTTON, PRIMARY_COLOR),)

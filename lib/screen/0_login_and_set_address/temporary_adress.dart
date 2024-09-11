@@ -4,7 +4,7 @@ import 'package:hankkitoktok/screen/2_home/1_home_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:hankkitoktok/models/user/user_data.dart';
+import 'package:hankkitoktok/models/user/auth_data.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 
 import '../2_home/0_home.dart';
@@ -75,6 +75,8 @@ class _TemporaryAdressState extends State<TemporaryAddress> {
               isUser=await getIsUser(idToken);
               if(isUser==true){
                 debugPrint('유저ㅇㅇ');
+                debugPrint('{$accessToken}');
+                debugPrint('{$idToken}');
               }
               else{
                 debugPrint('유저ㄴㄴ');

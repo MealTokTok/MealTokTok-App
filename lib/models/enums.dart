@@ -37,16 +37,16 @@ DayOfWeek stringToDayOfWeek(String value) {
 }
 
 enum Time {
-  LUNCH,
-  DINNER
+  AFTERNOON,
+  EVENING
 }
 
 Time stringToTime(String value) {
   if(value == 'LUNCH'){
-    return Time.LUNCH;
+    return Time.AFTERNOON;
   }
-  else if(value == 'DINNER'){
-    return Time.DINNER;
+  else if(value == 'EVENING'){
+    return Time.EVENING;
   }
   else{
     throw Exception('Invalid Time');
@@ -54,16 +54,16 @@ Time stringToTime(String value) {
 }
 
 enum OrderType{
-  DAY_ORDER,
-  WEEK_ORDER
+  IMMEDIATE,
+  SCHEDULED
 }
 
 OrderType stringToOrderType(String value) {
-  if(value == 'DAY_ORDER'){
-    return OrderType.DAY_ORDER;
+  if(value == 'IMMEDIATE'){
+    return OrderType.IMMEDIATE;
   }
-  else if(value == 'WEEK_ORDER'){
-    return OrderType.WEEK_ORDER;
+  else if(value == 'SCHEDULED'){
+    return OrderType.SCHEDULED;
   }
   else{
     throw Exception('Invalid OrderType');
@@ -102,4 +102,4 @@ OrderState stringToOrderState(String value) {
   }
 }
 
-enum TimeType { BEFORE_LUNCH, AFTER_LUNCH, AFTER_DINNER }
+enum TimeType { BEFORE_LUNCH, AFTER_LUNCH, AFTER_EVENING }

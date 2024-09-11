@@ -4,11 +4,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hankkitoktok/component/calendar.dart';
-import 'package:hankkitoktok/controller/list_view_scroll_controller.dart';
 import 'package:hankkitoktok/controller/ordered_meal_controller.dart';
 import 'package:hankkitoktok/screen/0_login_and_set_address/0_login_screen.dart';
 import 'package:hankkitoktok/const/color.dart';
-import 'package:hankkitoktok/screen/0_login_and_set_address/1_address_setting.dart';
 import 'package:hankkitoktok/screen/0_login_and_set_address/temporary_adress.dart';
 import 'package:hankkitoktok/screen/1_my_page/1_order_histories_screen.dart';
 import 'package:hankkitoktok/screen/2_home/0_home.dart';
@@ -115,9 +113,7 @@ void _notificationSetting(){
 }
 
 void _getControllerSetting(){
-  Get.put(MealController());
   Get.put(OrderedMealController());
-  Get.put(ListViewScrollController());
 }
 
 void main() async {
@@ -126,7 +122,6 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  //앱 인증 초기화
   await AuthRepository.initialize(appKey: '<javascript apikey>');
   await _initializeNotification();
   _notificationSetting();
@@ -164,7 +159,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-
+    MealController mealController = Get.put(MealController());
 
     return GetMaterialApp(
       title: 'Flutter Demo',
@@ -193,7 +188,8 @@ class MyApp extends StatelessWidget {
         //   page: () => CommunityScreen(),
         // ),
       ],
-      home: OrderScreen(),
+
+      home: MyPageHome(),
 
     );
   }

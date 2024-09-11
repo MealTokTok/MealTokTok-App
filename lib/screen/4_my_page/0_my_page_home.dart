@@ -18,10 +18,10 @@ class MyPageHome extends StatefulWidget {
 class _MyPageHomeState extends State<MyPageHome> {
   //int userId;
   User? _user;
-  Pending? _pending;
-  DeliveryRequested? _deliveryRequested;
-  Delivering? _delivering;
-  Delivered? _delivered;
+  int? _pending;
+  int? _deliveryRequested;
+  int? _delivering;
+  int? _delivered;
 
   // User _user = User(
   //   userId: 0,
@@ -48,11 +48,11 @@ class _MyPageHomeState extends State<MyPageHome> {
   }
 
   Future<void> fetchData() async {
-    _user = await networkGetRequest111(User(userId: 0, username: '', nickname: '', email: '', phoneNumber: '', profileImageUrl: '', birth: ''), 'api/v1/user/my',null );
-   //  _pending=await networkGetRequest111(Pending(pending: 0), 'api/v1/meal-deliveries/count',_queryParams('PENDING') );
-   // _deliveryRequested=await networkGetRequest111(DeliveryRequested(deliveryRequested: 0), 'api/v1/meal-deliveries/count',_queryParams('DELIVERY_REQUESTED') );
-   // _delivering=await networkGetRequest111(Delivering(delivering: 0), 'api/v1/meal-deliveries/count',_queryParams('DELIVERING') );
-   //  _delivered=await networkGetRequest111(Delivered(delivered: 0), 'api/v1/meal-deliveries/count',_queryParams('DELIVERED') );
+    //_user = await networkGetRequest111(User(userId: 0, username: '', nickname: '', email: '', phoneNumber: '', profileImageUrl: '', birth: ''), 'api/v1/user/my',null );
+    _pending=await networkGetRequest222('api/v1/meal-deliveries/count',_queryParams('PENDING') );
+   _deliveryRequested=await networkGetRequest222('api/v1/meal-deliveries/count',_queryParams('DELIVERY_REQUESTED') );
+   _delivering=await networkGetRequest222('api/v1/meal-deliveries/count',_queryParams('DELIVERING') );
+    _delivered=await networkGetRequest222('api/v1/meal-deliveries/count',_queryParams('DELIVERED') );
     setState(() {});
   }
 
@@ -168,7 +168,7 @@ class _MyPageHomeState extends State<MyPageHome> {
                                 Column(
                                   children: [
                                     Text(
-                                      "0",
+                                      "$_pending",
                                       style: myPageRecordGrayNum,
                                     ),
                                     Text(
@@ -185,7 +185,7 @@ class _MyPageHomeState extends State<MyPageHome> {
                                 Column(
                                   children: [
                                     Text(
-                                      "0",
+                                      "$_deliveryRequested",
                                       style: myPageRecordGrayNum,
                                     ),
                                     Text(
@@ -202,7 +202,7 @@ class _MyPageHomeState extends State<MyPageHome> {
                                 Column(
                                   children: [
                                     Text(
-                                      "0",
+                                      "$_delivering",
                                       style: myPageRecordGrayNum,
                                     ),
                                     Text(
@@ -219,7 +219,7 @@ class _MyPageHomeState extends State<MyPageHome> {
                                 Column(
                                   children: [
                                     Text(
-                                      "1",
+                                      "$_delivered",
                                       style: TextStyle(
                                         color: Colors.black
                                             ,

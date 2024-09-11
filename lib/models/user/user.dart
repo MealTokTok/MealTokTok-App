@@ -86,7 +86,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 // Define a User class to map the JSON response
 class User extends BaseModel{
-
   int userId;
   String username;
   String nickname;
@@ -110,7 +109,7 @@ class User extends BaseModel{
   @override
   User fromMap(Map<String, dynamic> map) {
     return User.init(
-      userId: map['uid'],
+      userId: map['userId'],
       username: map['username'],
       nickname: map['nickname'],
       email: map['email'],
@@ -120,6 +119,7 @@ class User extends BaseModel{
       token: map['token'],
     );
   }
+
 
 
   @override
@@ -133,6 +133,33 @@ class User extends BaseModel{
       'profileImageUrl': profileImageUrl,
       'birth': birth,
       'token': token,
+
+    };
+  }
+}
+
+class IsAvailable extends BaseModel{
+  final bool isAvailable;
+
+  IsAvailable({
+    required this.isAvailable,
+  });
+
+  factory IsAvailable.fromJson(Map<String, dynamic> json) {
+    return IsAvailable(
+      isAvailable: json['isAvailable'] ?? false,
+
+    );
+  }
+
+  @override
+  IsAvailable fromMap(Map<String, dynamic> map) {
+    return IsAvailable.fromJson(map);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'isAvailable': isAvailable,
     };
   }
 }
@@ -188,7 +215,8 @@ Future<User> getUser() async {
 
       // 파싱된 JSON 데이터를 디버그 프린트로 출력
       debugPrint('Parsed JSON Body: $responseBody');
-      return User.fromJson(responseBody['result']);
+      User user = User.init();
+      return user.fromMap(responseBody['result']);
 
       //return User.fromJson(responseBody);
     } else {

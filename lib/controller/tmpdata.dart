@@ -66,7 +66,7 @@
 import 'package:hankkitoktok/models/meal/meal_delivery.dart';
 import 'package:hankkitoktok/models/meal/ordered_meal.dart';
 import 'package:hankkitoktok/models/meal/meal.dart';
-import 'package:hankkitoktok/models/order/order_mini.dart';
+import 'package:hankkitoktok/models/order/order_post.dart';
 import 'package:hankkitoktok/models/sidedish/sidedish.dart';
 
 import '../models/enums.dart';
@@ -140,28 +140,28 @@ List<OrderedMeal> orderedMeals = [
   OrderedMeal.init(
     mealId: 1,
     reservedDate: DateTime(2024, 8, 15), // 특정 날짜로 설정
-    reservedTime: Time.LUNCH, // 점심 시간
+    reservedTime: Time.AFTERNOON, // 점심 시간
     includeRice: true, // 밥 포함
     hasFullDiningOption: false, // 전체 다이닝 옵션 제외
   ),
   OrderedMeal.init(
     mealId: 2,
     reservedDate: DateTime(2024, 8, 16),
-    reservedTime: Time.DINNER, // 저녁 시간
+    reservedTime: Time.EVENING, // 저녁 시간
     includeRice: false,
     hasFullDiningOption: true,
   ),
   OrderedMeal.init(
     mealId: 3,
     reservedDate: DateTime(2024, 8, 17),
-    reservedTime: Time.LUNCH,
+    reservedTime: Time.AFTERNOON,
     includeRice: true,
     hasFullDiningOption: true,
   ),
   OrderedMeal.init(
     mealId: 4,
     reservedDate: DateTime(2024, 8, 17),
-    reservedTime: Time.DINNER,
+    reservedTime: Time.EVENING,
     includeRice: false,
     hasFullDiningOption: false,
   ),
@@ -237,7 +237,7 @@ List<List<MealDelivery>> orderedMealsExamples = [
 
 Order exampleOrder = Order.init(
   orderID: _orderIdCounter++,
-  orderType: OrderType.WEEK_ORDER, // 주간 결제로 설정
+  orderType: OrderType.SCHEDULED, // 주간 결제로 설정
   orderState: OrderState.DELIVERING, // 주문 상태 설정
   specialInstruction: '배송 시 문 앞에 두세요.', // 요청 사항
   userId: 1,
@@ -247,12 +247,11 @@ Order exampleOrder = Order.init(
   fullServicePrice: 5000,
   totalPrice: 26000,
   orderTime: DateTime(2024, 8, 14, 14, 20), // 주문 시간 설정
-  mealDeliveries: orderedMealsExamples[0], // OrderedMeal 리스트 추가
 );
 
 Order exampleOrder2 = Order.init(
   orderID: _orderIdCounter++,
-  orderType: OrderType.DAY_ORDER,
+  orderType: OrderType.IMMEDIATE,
   orderState: OrderState.PENDING,
   specialInstruction: '배송 시 연락주세요.',
   userId: 1,
@@ -262,12 +261,11 @@ Order exampleOrder2 = Order.init(
   fullServicePrice: 3000,
   totalPrice: 17000,
   orderTime: DateTime(2024, 8, 15, 12, 30),
-  mealDeliveries: orderedMealsExamples[1],
 );
 
 Order exampleOrder3 = Order.init(
   orderID: _orderIdCounter++,
-  orderType: OrderType.WEEK_ORDER,
+  orderType: OrderType.SCHEDULED,
   orderState: OrderState.DELIVERED,
   specialInstruction: '부재 시 경비실에 맡겨주세요.',
   userId: 1,
@@ -277,7 +275,6 @@ Order exampleOrder3 = Order.init(
   fullServicePrice: 7000,
   totalPrice: 35000,
   orderTime: DateTime(2024, 8, 16, 11, 45),
-  mealDeliveries: orderedMealsExamples[2],
 );
 
 List<Order> orders = [exampleOrder, exampleOrder2, exampleOrder3];

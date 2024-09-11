@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hankkitoktok/const/color.dart';
 import 'package:hankkitoktok/const/style2.dart';
 
-void showWarningDialog(BuildContext context, String title, String content, String leftbutton, String rightbutton) {
+void showWarningDialog(BuildContext context, String title, String content, String leftbutton, String rightbutton, VoidCallback  rightButtonFunction) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -50,6 +50,7 @@ void showWarningDialog(BuildContext context, String title, String content, Strin
           ),
           TextButton(
             onPressed: () {
+              rightButtonFunction();
               Navigator.of(context).pop();
             },
             child: Text(
