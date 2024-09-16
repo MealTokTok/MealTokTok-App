@@ -24,9 +24,9 @@ class _HomeState extends State<Home> {
   void initState() {
 
     pages = [
-      HomeScreen(),
+      HomeScreen(testStatus: 1),
       MealMenuScreen(),
-      HomeScreen(),
+      //HomeScreen(),
 
       //Todo: 페이지 추가
       const Text(

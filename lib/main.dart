@@ -23,6 +23,7 @@ import 'package:hankkitoktok/screen/4_my_page/0_my_page_home.dart';
 import 'package:hankkitoktok/screen/4_my_page/3_delete_id.dart';
 import 'package:hankkitoktok/screen/4_pay_choice/payment_test.dart';
 import 'package:hankkitoktok/screen/5_order/1_full_dining_explanation.dart';
+import 'package:hankkitoktok/screen/test_screen.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -199,7 +200,7 @@ class MyApp extends StatelessWidget {
         //   page: () => CommunityScreen(),
         // ),
       ],
-      home: OrderScreen(),
+      home: TestScreen(),
 
 
     );

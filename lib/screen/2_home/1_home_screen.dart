@@ -21,6 +21,11 @@ enum ScreenStatus { AFTER_DELIVERY, MENU_EMPTY, MENU_SELECTED, ON_DELIVERY , ADD
 
 
 class HomeScreen extends StatefulWidget {
+  int testStatus = 1;
+  HomeScreen({
+    required this.testStatus,
+    super.key
+  });
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -44,8 +49,9 @@ class _HomeScreenState extends State<HomeScreen> {
   late final UserController _userController;
   late final DeliveryController _deliveryController;
   late final MealController _mealController;
+
   void _checkMenu() {
-    if (_mealController.getMeals.isEmpty) {
+    if (widget.testStatus == 1) {
       //Todo 조건: menu empty
       setState(() {
         screenStatus = ScreenStatus.MENU_EMPTY;
@@ -53,11 +59,17 @@ class _HomeScreenState extends State<HomeScreen> {
         _subTitle = '원하는 반찬을 선택하고 주문하면 \n든든한 한끼가 되어줄게요!';
         _buttonString = '반찬도시락 메뉴담기';
       });
-      return ;
     }
-    if (_deliveryController.deliveringMealDelivery != null) {
-      if(_deliveryController.deliveringMealDelivery!.orderedMeal.reservedTime == Time.AFTERNOON){
+    if (widget.testStatus == 2) {
+      //Todo 조건: mealmenu is not empty
+      setState(() {
+        screenStatus = ScreenStatus.MENU_SELECTED;
+        _buttonString = '주문하기';
+        });
+      }
+          if (widget.testStatus == 3) {
         // Todo 조건: 배송 중, 점심
+
         setState(() {
           screenStatus = ScreenStatus.ON_DELIVERY;
           timeStatus = Time.AFTERNOON;
@@ -66,8 +78,8 @@ class _HomeScreenState extends State<HomeScreen> {
           _buttonString = '배송 조회';
         });
       }
-      else {
-        // Todo 조건: 배송 중, 저녁
+      if (widget.testStatus == 4) {
+        // Todo: 조건: 배송 중, 저녁
         setState(() {
           screenStatus = ScreenStatus.ON_DELIVERY;
           timeStatus = Time.EVENING;
@@ -76,39 +88,94 @@ class _HomeScreenState extends State<HomeScreen> {
           _buttonString = '배송 조회';
         });
       }
+      // if (widget.testStatus == 5) {
+      //   // Todo: 조건: 배송 후, 점심
+      //   setState(() {
+      //     screenStatus = ScreenStatus.AFTER_DELIVERY;
+      //     timeStatus = Time.AFTERNOON;
+      //     _mainTitle = '주문하신 반찬도시락\n배달이 완료되었습니다!';
+      //     _subTitle = '맛있는 점심식사 되세요!';
+      //     _buttonString = '배송 내역';
+      //   });
+      // }
+      // if (widget.testStatus == 6) {
+      //   // Todo: 조건: 배송 후, 저녁
+      //   setState(() {
+      //     screenStatus = ScreenStatus.AFTER_DELIVERY;
+      //     timeStatus = Time.EVENING;
+      //     _mainTitle = '주문하신 반찬도시락\n배달이 완료되었습니다!';
+      //     _subTitle = '맛있는 저녁식사 되세요!';
+      //     _buttonString = '배송 내역';
+      //   });
+      // }
     }
-    if(_deliveryController.recentDeliveredMealDelivery != null) {
-      if(_deliveryController.recentDeliveredMealDelivery!.orderedMeal.reservedTime == Time.AFTERNOON){
-        // Todo 조건: 배송 후, 점심
-        setState(() {
-          screenStatus = ScreenStatus.AFTER_DELIVERY;
-          timeStatus = Time.AFTERNOON;
-          _mainTitle = '주문하신 반찬도시락\n배달이 완료되었습니다!';
-          _subTitle = '맛있는 점심식사 되세요!';
-          _buttonString = '배송 내역';
-        });
-      }
-      else{
-        // Todo 조건: 배송 중, 저녁
-        setState(() {
-          screenStatus = ScreenStatus.AFTER_DELIVERY;
-          timeStatus = Time.EVENING;
-          _mainTitle = '주문하신 반찬도시락\n배달이 완료되었습니다!';
-          _subTitle = '맛있는 저녁식사 되세요!';
-          _buttonString = '배송 내역';
-        });
-      }
-    }
-    if(_deliveryController.deliveringMealDelivery == null && _deliveryController.recentDeliveredMealDelivery == null) {
-      //Todo 조건: mealmenu is not empty
-      setState(() {
-        screenStatus = ScreenStatus.MENU_SELECTED;
-        _mainTitle = '반찬도시락을\n주문해볼까요?';
-        _subTitle = '원하는 반찬을 원하는 끼니에 \n문앞 배송으로 든든한 한끼가 되어줄게요!';
-        _buttonString = '주문하기';
-      });
-    }
-  }
+
+
+  // void _checkMenu() {
+  //   if (_mealController.getMeals.isEmpty) {
+  //     //Todo 조건: menu empty
+  //     setState(() {
+  //       screenStatus = ScreenStatus.MENU_EMPTY;
+  //       _mainTitle = '반찬도시락\n메뉴를 선택해볼까요?';
+  //       _subTitle = '원하는 반찬을 선택하고 주문하면 \n든든한 한끼가 되어줄게요!';
+  //       _buttonString = '반찬도시락 메뉴담기';
+  //     });
+  //     return ;
+  //   }
+  //   if (_deliveryController.deliveringMealDelivery != null) {
+  //     if(_deliveryController.deliveringMealDelivery!.orderedMeal.reservedTime == Time.AFTERNOON){
+  //       // Todo 조건: 배송 중, 점심
+  //       setState(() {
+  //         screenStatus = ScreenStatus.ON_DELIVERY;
+  //         timeStatus = Time.AFTERNOON;
+  //         _mainTitle = '주문하신 반찬도시락이\n배송중입니다!';
+  //         _subTitle = '12시~1시 사이에 배송됩니다!';
+  //         _buttonString = '배송 조회';
+  //       });
+  //     }
+  //     else {
+  //       // Todo 조건: 배송 중, 저녁
+  //       setState(() {
+  //         screenStatus = ScreenStatus.ON_DELIVERY;
+  //         timeStatus = Time.EVENING;
+  //         _mainTitle = '주문하신 반찬도시락이\n배송중입니다!';
+  //         _subTitle = '6시~7시 사이에 배송됩니다!';
+  //         _buttonString = '배송 조회';
+  //       });
+  //     }
+  //   }
+  //   if(_deliveryController.recentDeliveredMealDelivery != null) {
+  //     if(_deliveryController.recentDeliveredMealDelivery!.orderedMeal.reservedTime == Time.AFTERNOON){
+  //       // Todo 조건: 배송 후, 점심
+  //       setState(() {
+  //         screenStatus = ScreenStatus.AFTER_DELIVERY;
+  //         timeStatus = Time.AFTERNOON;
+  //         _mainTitle = '주문하신 반찬도시락\n배달이 완료되었습니다!';
+  //         _subTitle = '맛있는 점심식사 되세요!';
+  //         _buttonString = '배송 내역';
+  //       });
+  //     }
+  //     else{
+  //       // Todo 조건: 배송 중, 저녁
+  //       setState(() {
+  //         screenStatus = ScreenStatus.AFTER_DELIVERY;
+  //         timeStatus = Time.EVENING;
+  //         _mainTitle = '주문하신 반찬도시락\n배달이 완료되었습니다!';
+  //         _subTitle = '맛있는 저녁식사 되세요!';
+  //         _buttonString = '배송 내역';
+  //       });
+  //     }
+  //   }
+  //   if(_deliveryController.deliveringMealDelivery == null && _deliveryController.recentDeliveredMealDelivery == null) {
+  //     //Todo 조건: mealmenu is not empty
+  //     setState(() {
+  //       screenStatus = ScreenStatus.MENU_SELECTED;
+  //       _mainTitle = '반찬도시락을\n주문해볼까요?';
+  //       _subTitle = '원하는 반찬을 원하는 끼니에 \n문앞 배송으로 든든한 한끼가 되어줄게요!';
+  //       _buttonString = '주문하기';
+  //     });
+  //   }
+  // }
 
   @override
   void initState() {
