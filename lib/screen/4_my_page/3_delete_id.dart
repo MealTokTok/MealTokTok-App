@@ -114,9 +114,10 @@ class _DeleteIDState extends State<DeleteID> {
               ),
               SizedBox(height: 8),
               DropdownButtonFormField<String>(
-                icon: Image.asset(
-                  'assets/images/1_my_page/down_arrow.png',
-                ),
+                // icon: Image.asset(
+                //   'assets/images/1_my_page/down_arrow.png',width: 24, height: 24
+                // ),
+
                 decoration: InputDecoration(
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
