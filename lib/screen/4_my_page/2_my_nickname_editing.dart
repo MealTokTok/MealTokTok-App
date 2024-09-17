@@ -7,7 +7,6 @@ import 'package:hankkitoktok/functions/httpRequest.dart';
 import 'package:hankkitoktok/models/user/user.dart';
 
 class MyNicknameEditing extends StatefulWidget {
-
   final User? user;
 
   const MyNicknameEditing({required this.user, super.key});
@@ -189,10 +188,16 @@ class _MyNicknameEditingState extends State<MyNicknameEditing> {
             //   Text('기존 닉네임과 동일합니다.', style: TextStyles.getTextStyle(TextType.BUTTON, SECONDARY),),
             if ((_nickname.text != widget.user!.nickname) && isAvailable != null)
               isAvailable!.isAvailable
-                  ? Text('사용가능한 닉네임입니다.', style: TextStyles.getTextStyle(TextType.BUTTON, PRIMARY_COLOR),)
-                  : Text('사용불가능한 닉네임입니다.', style: TextStyles.getTextStyle(TextType.BUTTON, SECONDARY),),
-
-
+                  ? Text(
+                      '사용가능한 닉네임입니다.',
+                      style: TextStyles.getTextStyle(
+                          TextType.BUTTON, PRIMARY_COLOR),
+                    )
+                  : Text(
+                      '사용불가능한 닉네임입니다.',
+                      style:
+                          TextStyles.getTextStyle(TextType.BUTTON, SECONDARY),
+                    ),
           ],
         ),
       ),
@@ -220,7 +225,7 @@ class _MyNicknameEditingState extends State<MyNicknameEditing> {
             ),
             child: Text(
               "변경하기",
-                style: TextStyles.getTextStyle(TextType.BUTTON, Colors.white),
+              style: TextStyles.getTextStyle(TextType.BUTTON, Colors.white),
             ),
           ),
         ),

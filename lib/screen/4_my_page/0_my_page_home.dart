@@ -2,12 +2,13 @@ import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:hankkitoktok/const/color.dart";
 import "package:hankkitoktok/const/style.dart";
+import "package:hankkitoktok/controller/user_controller.dart";
 import "package:hankkitoktok/functions/httpRequest.dart";
 import "package:hankkitoktok/models/delivery/delivery_status.dart";
 import "package:hankkitoktok/models/user/user.dart";
-import "package:hankkitoktok/models/user/user_data.dart";
+import "package:hankkitoktok/models/user/auth_data.dart";
 import "package:hankkitoktok/screen/4_my_page/1_my_information_editing.dart";
-
+import 'package:get/get.dart';
 class MyPageHome extends StatefulWidget {
   const MyPageHome({super.key});
 
@@ -17,11 +18,12 @@ class MyPageHome extends StatefulWidget {
 
 class _MyPageHomeState extends State<MyPageHome> {
   //int userId;
-  User? _user;
+  
   int? _pending;
   int? _deliveryRequested;
   int? _delivering;
   int? _delivered;
+  UserController _userController = Get.find();
 
   // User _user = User(
   //   userId: 0,
@@ -67,7 +69,7 @@ class _MyPageHomeState extends State<MyPageHome> {
               Row(
                 children: [
                   Text(
-                    "${_user!.nickname} ",
+                    "${_userController.user.nickname} ",
                     style: TextStyle(
                       color: Color(0xFF131313),
                       fontSize: 18,
@@ -89,7 +91,7 @@ class _MyPageHomeState extends State<MyPageHome> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => MyInformationEditng(user: _user,),
+                            builder: (context) => MyInformationEditng(user: _userController.user,),
                           ),
                         );
                       },

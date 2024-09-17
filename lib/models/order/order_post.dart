@@ -29,6 +29,9 @@ class OrderPost{
   }){
     for(var orderedMeal in orderedMeals){
       mealPrice += orderedMeal.orderedMealPrice;
+      if(orderedMeal.hasFullDiningOption){
+        fullServicePrice += 2000;
+      }
       deliveryPrice += 2000;
       //Todo: fullServicePrice 계산
     }

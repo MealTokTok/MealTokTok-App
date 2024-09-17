@@ -46,6 +46,7 @@ class OrderedMealController extends GetxController {
         if(orderedMeal.isChecked == false) continue;
         sum += orderedMeal.meal.price;
         if(orderedMeal.includeRice) sum += 1000;
+        if(orderedMeal.hasFullDiningOption) sum += 2000;
       }
     }
     return sum;
@@ -151,6 +152,7 @@ class OrderedMealController extends GetxController {
 
   }
 
+
   void updateVisible(DateTime dateTime){
     for (var element in orderedWeekMeals[dateTime]!) {
       element.isVisible = !element.isVisible;
@@ -161,6 +163,7 @@ class OrderedMealController extends GetxController {
     update();
   }
 
+  //메뉴션택 업데이트
   void updateChecked(OrderType orderType, DateTime dateTime, Time time){
     if(orderType == OrderType.IMMEDIATE){
       for (var element in orderedDayMeals[dateTime]!) {
@@ -177,6 +180,33 @@ class OrderedMealController extends GetxController {
       }
     }
     update();
+  }
+
+  //풀서비스 업데이트
+  void updateFullServiceSelected(OrderType orderType)
+  {
+      for (var element in orderedWeekMeals.values) {
+        for (var orderedMeal in element) {
+          if(orderedMeal.isChecked == true){
+            orderedMeal.hasFullDiningOption = !orderedMeal.hasFullDiningOption;
+          }
+        }
+      }
+    update();
+  }
+
+  // 풀서비스 선택 여부
+  bool getFullServiceSelected(){
+    if(orderedWeekMeals.isEmpty) return false;
+    //선택한 메뉴 모두가 풀대접 서비스를 받는 경우 true, 아니면 false 반환
+    for (var element in orderedWeekMeals.values) {
+      for (var orderedMeal in element) {
+        if(orderedMeal.isChecked == true && orderedMeal.hasFullDiningOption == false){
+          return false;
+        }
+      }
+    }
+    return true;
   }
 
   void updateRice(OrderType orderType, DateTime dateTime, Time time){
