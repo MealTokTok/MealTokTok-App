@@ -23,7 +23,7 @@ class MealDetail {
 class OrderedMeal extends BaseModel {
   int mealId;
   late Meal meal;
-  DateTime? reservedDate;
+  DateTime reservedDate = DateTime.now();
   Time reservedTime;
   late DayOfWeek dayOfWeek;
   bool includeRice = false;
@@ -34,7 +34,7 @@ class OrderedMeal extends BaseModel {
 
   OrderedMeal.init({
     this.mealId = 0,
-    this.reservedDate,
+    required this.reservedDate,
     this.reservedTime = Time.AFTERNOON,
     this.includeRice = false,
     this.hasFullDiningOption = false,
@@ -42,9 +42,7 @@ class OrderedMeal extends BaseModel {
   }) {
 
     meal = getMealById(mealId);
-    if(reservedDate == null){
-      throw Exception('Ordered Meal 클래스: reservedDate가 null입니다.');
-    }
+
     dayOfWeek = DayOfWeek.values[reservedDate!.weekday % 7];
 
   }

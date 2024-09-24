@@ -24,6 +24,7 @@ class AddressController extends GetxController{
     selectedAddress = addresses.isEmpty ? Address.init() : addresses[selectedAddressIndex];
     prefs = await SharedPreferences.getInstance();
     selectedAddressIndex = prefs.getInt('selectedAddressIndex') ?? 0;
+    addresses[selectedAddressIndex].setVisible(false);
     super.onInit();
   }
 

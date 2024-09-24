@@ -4,7 +4,7 @@ import 'package:hankkitoktok/models/meal/ordered_meal.dart';
 import 'package:hankkitoktok/models/enums.dart';
 
 class Order extends BaseModel{
-  int orderID; //주문번호
+  String orderID; //주문번호
   OrderType orderType; // 주문타입 (일 결제, 주간 결제)
   OrderState? orderState; // 주문상태 (주문완료, 배송중, 배송완료)
   String specialInstruction; //요청사항
@@ -26,7 +26,7 @@ class Order extends BaseModel{
   late List<MealDelivery> mealDeliveries; // 주문한 도시락 리스트(주간 결제일 경우 2개이상, 일 결제일 경우 1개이상)
 
   Order.init({
-    this.orderID = 0,
+    this.orderID = "",
     this.orderType = OrderType.IMMEDIATE,
     this.orderState = OrderState.ORDERED,
     this.specialInstruction = '',
@@ -47,7 +47,7 @@ class Order extends BaseModel{
   @override
   Order fromMap(Map<String, dynamic> map) {
     return Order.init(
-      orderID: _extractOrderId(map['orderId']),  // OrderId 객체 처리
+      orderID: map['orderId'],  // OrderId 객체 처리
       orderType: _getOrderType(map['orderType']),
       orderState: _getOrderState(map['orderState']),
       specialInstruction: map['specialInstruction'] ?? '',  // null 처리
@@ -58,17 +58,6 @@ class Order extends BaseModel{
       totalPrice: map['orderPrice']?['totalPrice']?['amount'] ?? 0,
       orderTime: map['orderTime'] != null ? DateTime.parse(map['orderTime']) : null,
     );
-  }
-
-  int _extractOrderId(dynamic orderIdObj) {
-    // OrderId 객체에서 값을 추출하는 로직
-    if (orderIdObj is String) {
-      // 혹시 orderId가 단순 문자열이라면 파싱
-      return int.tryParse(orderIdObj) ?? 0;
-    }
-    // 다른 형태로 받는다면 적절한 변환 로직 추가
-    // 기본값으로 0 반환
-    return 0;
   }
 
   OrderType _getOrderType(String? orderTypeStr) {
@@ -138,6 +127,9 @@ class Order extends BaseModel{
 
   //2024년 06월 29일 오후 14:20
   String get orderDateString {
+    if(orderTime == null){
+      return '';
+    }
     return '${orderTime!.year}년 ${orderTime!.month}월 ${orderTime!.day}일 ${orderTime!.hour}:${orderTime!.minute}';
   }
   //2024.06.29

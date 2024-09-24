@@ -6,10 +6,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import '../../const/strings.dart';
 
-Future<User?> networkGetUser() async {
+Future<User?> networkGetUser(int userId) async {
   SharedPreferences prefs = await SharedPreferences.getInstance(); // 저장소
   String accessToken = prefs.getString('access_token') ?? '';
-  Uri uri = Uri.parse('$BASE_URL/api/v1/user/1');
+  Uri uri = Uri.parse('$BASE_URL/api/v1/user/$userId');
 
   http.Response? response;
   Map<String, String> header = {

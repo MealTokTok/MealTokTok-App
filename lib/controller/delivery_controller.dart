@@ -55,7 +55,7 @@ class DeliveryController extends GetxController {
 
   //다음 배송 정보 가져오기
   Future<void> initNextMealDelivery() async {
-    int? orderId;
+    String? orderId;
     if(recentOrder != null) orderId = recentOrder!.orderID;
     if(orderId == null) return;
 
@@ -64,7 +64,7 @@ class DeliveryController extends GetxController {
     };
     debugPrint("nextDel");
 
-    nextMealDelivery = await networkGetNextDelivery(query, RequestMode.NEXT_DELIVERY);
+    nextMealDelivery = await networkGetDelivery(query, RequestMode.NEXT_DELIVERY);
 
     update();
   }
@@ -73,14 +73,14 @@ class DeliveryController extends GetxController {
   Future<void> initDeliveringMealDelivery() async {
     debugPrint("delivering");
 
-    deliveringMealDelivery = await networkGetNextDelivery(null, RequestMode.DELVERING_DELIVERY);
+    deliveringMealDelivery = await networkGetDelivery(null, RequestMode.DELVERING_DELIVERY);
     update();
   }
 
   //최근 배송 완료된 배송 정보 가져오기
   Future<void> initDeliveredMealDelivery() async {
     debugPrint("delivered");
-    recentDeliveredMealDelivery = await networkGetNextDelivery(null, RequestMode.RECENT_DELIVERED_DELIVERY);
+    recentDeliveredMealDelivery = await networkGetDelivery(null, RequestMode.RECENT_DELIVERED_DELIVERY);
     update();
   }
 

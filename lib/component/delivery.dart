@@ -61,7 +61,7 @@ class Delivery extends StatelessWidget {
             ),
             const SizedBox(height: 2),
               Text(
-                '주문방식 - 메뉴명', //Todo: 반영하기
+                '${mealDelivery.getOrderTypeString} - 메뉴명', //Todo: 반영하기
                 style: TextStyles.getTextStyle(TextType.BODY_1, BLACK_COLOR),
               ),
             const SizedBox(height: 4),

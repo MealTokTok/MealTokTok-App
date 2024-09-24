@@ -17,7 +17,6 @@ class ViewAddressScreen extends StatefulWidget {
 }
 
 class _ViewAddressScreenState extends State<ViewAddressScreen> {
-  AddressController addressController = Get.find();
   bool isEdit = false;
 
   @override
@@ -94,6 +93,7 @@ class _ViewAddressScreenState extends State<ViewAddressScreen> {
                     children: [
                       AddressCardOff(
                         address: address,
+                        addressController: controller,
                         isEdit: isEdit,
                       ),
                       const Divider(height: 1, color: GREY_COLOR_4),

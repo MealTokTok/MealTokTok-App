@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hankkitoktok/models/meal/meal_delivery.dart';
+import 'package:hankkitoktok/models/meal/meal_delivery_data.dart';
+import 'package:hankkitoktok/models/order/order_data.dart';
 
 import '../../component/four_image.dart';
 import '../../const/color.dart';
@@ -31,16 +33,27 @@ class _DeliveryHistoryDetailScreenState
   late String address;
 
   void getOrderData() {
-    setState(() {
+    setState(()async {
       // order = await networkGetRequest(
       //     model, "/api/v1/orders/${widget.orderId}", null);
-      mealDelivery = getMealDeliveryById(widget.deliveryId);
-      order = getOrderById(mealDelivery.orderId);
+
+      Map<String,dynamic> orderQuery = {
+        "orderId": order.orderID,
+      };
+
+      Map<String,dynamic> deliveryQuery = {
+      "orderId": order.orderID,
+      };
+
+      mealDelivery = (await networkGetDelivery(deliveryQuery, RequestMode.COMMON))!;
+      order = await networkGetOrder(mealDelivery.orderId);
       user = getUserById(order.userId);
       orderedMeal = mealDelivery.orderedMeal;
       address = getAddressById(order.addressId);
       if(order.orderState == OrderState.DELIVERING && mealDelivery.deliveryState == DeliveryState.DELIVERED){
-        nextMealDelivery = getNextMealDelivery(order.orderID);
+        //nextMealDelivery = getNextMealDelivery(order.orderID);
+
+        nextMealDelivery = await networkGetDelivery(orderQuery, RequestMode.NEXT_DELIVERY);
       }
       print(order.orderState);
       print(mealDelivery.deliveryState);

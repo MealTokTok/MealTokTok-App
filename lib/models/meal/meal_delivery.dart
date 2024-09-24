@@ -6,11 +6,12 @@ import '../enums.dart';
 
 class MealDelivery extends BaseModel{
   int mealDeliveryId;
-  int orderId;
+  String orderId;
   OrderedMeal orderedMeal;
 
   OrderState orderState;
   DeliveryState deliveryState;
+  OrderType orderType;
   DateTime? orderTime;
   DateTime? deliveryRequestTime;
   DateTime? deliveryStartTime;
@@ -18,10 +19,11 @@ class MealDelivery extends BaseModel{
 
   MealDelivery.init({
     this.mealDeliveryId = 0,
-    this.orderId = 0,
+    this.orderId = "",
     required this.orderedMeal,
     this.orderState = OrderState.ORDERED,
     this.deliveryState = DeliveryState.PENDING,
+    this.orderType = OrderType.IMMEDIATE,
     this.orderTime,
     this.deliveryRequestTime,
     this.deliveryStartTime,
@@ -33,11 +35,13 @@ class MealDelivery extends BaseModel{
     return MealDelivery.init(
       mealDeliveryId: map['mealDeliveryId'],
       orderId: map['orderId'],
-      orderedMeal: OrderedMeal.init().fromMap(map['orderedMeal']),
+      orderedMeal: OrderedMeal.init(reservedDate: DateTime(0)).fromMap(map['orderedMeal']),
       orderState: OrderState.values.firstWhere(
           (e) => e.toString().split('.').last == map['orderState']),
       deliveryState: DeliveryState.values.firstWhere(
           (e) => e.toString().split('.').last == map['deliveryState']),
+      orderType: OrderType.values.firstWhere(
+          (e) => e.toString().split('.').last == map['orderType']),
       deliveryRequestTime: map['deliveryDateTime']['deliveryRequestTime'] == null ? null : DateTime.parse(map['deliveryDateTime']['deliveryRequestTime']),
       deliveryStartTime: map['deliveryDateTime']['deliveryStartTime'] == null ? null : DateTime.parse(map['deliveryDateTime']['deliveryStartTime']),
       deliveryCompleteTime: map['deliveryDateTime']['deliveryCompleteTime'] == null ? null : DateTime.parse(map['deliveryDateTime']['deliveryCompleteTime']),
@@ -51,6 +55,7 @@ class MealDelivery extends BaseModel{
       'orderId': orderId,
       'orderedMeal': orderedMeal.toJson(),
       'orderState': orderState.toString().split('.').last,
+      'deliveryState': deliveryState.toString().split('.').last,
       'deliveryDateTime': {
         'deliveryRequestTime': deliveryRequestTime.toString(),
         'deliveryStartTime': deliveryStartTime.toString(),
@@ -75,6 +80,10 @@ class MealDelivery extends BaseModel{
 
   String get getNextDeliveryMenuString {
     return "${orderedMeal.meal.name}입니다!";
+  }
+
+  String get getOrderTypeString {
+    return orderType == OrderType.IMMEDIATE ? '일 결제' : '주간 결제';
   }
 
 

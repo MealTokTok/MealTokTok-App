@@ -4,8 +4,10 @@ import 'package:hankkitoktok/controller/tmpdata.dart';
 
 import '../models/meal/meal_delivery.dart';
 import '../models/order/order.dart';
+import '../models/order/order_data.dart';
+import '../models/meal/meal_delivery_data.dart';
 
-class ListViewScrollController extends GetxController {
+class HistoryController extends GetxController {
 
   RxList<Order> orderHistories = <Order>[].obs;
   RxList<MealDelivery> mealDeliveryHistories = <MealDelivery>[].obs;
@@ -19,19 +21,45 @@ class ListViewScrollController extends GetxController {
 
 
 
-  void addOrder() {
-    orderHistories.addAll(orders);
-    orderHistories.addAll(orders);
-    orderHistories.addAll(orders);
-    orderHistories.addAll(orders);
+  void addOrder() async{
+    // orderHistories.addAll(orders);
+    // orderHistories.addAll(orders);
+    // orderHistories.addAll(orders);
+    // orderHistories.addAll(orders);
+
+    Map<String, dynamic> query = {
+      "page":orderPage.toString(),
+      "size": "12",
+      "sortOrders": [
+        {
+          "key": "createdAt",
+          "direction": "ASC"
+        }
+      ]
+    };
+
+    List<Order> tmp = await orderGetList(query);
+    orderHistories.addAll(tmp);
     orderPage++;
   }
 
-  void addDelivery() {
-    mealDeliveryHistories.addAll(mealDeliveries);
-    mealDeliveryHistories.addAll(mealDeliveries);
-    mealDeliveryHistories.addAll(mealDeliveries);
-    mealDeliveryHistories.addAll(mealDeliveries);
+  void addDelivery() async {
+    // mealDeliveryHistories.addAll(mealDeliveries);
+    // mealDeliveryHistories.addAll(mealDeliveries);
+    // mealDeliveryHistories.addAll(mealDeliveries);
+    // mealDeliveryHistories.addAll(mealDeliveries);
+    Map<String, dynamic> query = {
+      "page":deliveryPage.toString(),
+      "size": "12",
+      "sortOrders": [
+        {
+          "key": "createdAt",
+          "direction": "ASC"
+        }
+      ]
+    };
+    List<MealDelivery> tmp = await networkGetDeliveryList(query);
+    mealDeliveryHistories.addAll(tmp);
     deliveryPage++;
   }
 

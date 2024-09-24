@@ -5,6 +5,7 @@ import 'package:hankkitoktok/const/style.dart';
 import 'package:hankkitoktok/controller/tmpdata.dart';
 import 'package:hankkitoktok/functions/httpRequest.dart';
 import 'package:hankkitoktok/models/order/order.dart';
+import 'package:hankkitoktok/models/order/order_data.dart';
 import 'package:intl/intl.dart';
 import 'package:hankkitoktok/models/enums.dart';
 import '../../component/price_info.dart';
@@ -14,9 +15,10 @@ import '../../functions/formatter.dart';
 import '../../models/meal/ordered_meal.dart';
 import '../../models/order/order_user.dart';
 import '../../models/user/user.dart';
+import '../../models/user/user_data.dart';
 
 class OrderHistoryDetailScreen extends StatefulWidget {
-  final int orderId;
+  final String orderId;
 
   final formatter = NumberFormat('#,###');
 
@@ -32,25 +34,18 @@ class _OrderHistoryDetailScreen1State extends State<OrderHistoryDetailScreen> {
   late OrderState orderState;
   late Order order;
   late User user;
-  void getOrderData() {
-    setState(() {
+  void getOrderData() async{
+    setState(() async {
       // order = await networkGetRequest(
       //     model, "/api/v1/orders/${widget.orderId}", null);
-      order = Order.init();
-      for(var item in orders){
-        if(item.orderID == widget.orderId){
-          order = item;
-        }
-      }
+      order = await networkGetOrder(widget.orderId);
       orderState = order.orderState!;
 
     });
     int userId = order.userId;
-    setState(() {
+    setState(() async{
       user = exampleUser; //userId 가 userId인 유저
-      //   user = await networkGetRequest(
-      //       model, "/api/v1/user/$userId", null);
-      // });
+      user = (await networkGetUser(userId))!;
     });
 
   }
