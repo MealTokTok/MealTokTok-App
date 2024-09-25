@@ -21,9 +21,9 @@ class Meal extends BaseModel {
   @override
   Meal fromMap(Map<String, dynamic> map) {
     return Meal.init(
-      mealId: map['mealId'],
-      name: map['name'],
-      price: map['price'],
+      mealId: map['meal']['mealId'] ?? 0,
+      name: map['name'] ?? '',
+      price: map['price'] ?? 0,
       dishList: List<Dish>.from(map['dishList']),
       createdAt: DateTime.parse(map['createdAt']),
     );

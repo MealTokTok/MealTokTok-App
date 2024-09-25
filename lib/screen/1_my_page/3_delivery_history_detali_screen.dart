@@ -8,7 +8,7 @@ import '../../const/color.dart';
 import '../../const/style2.dart';
 import '../../controller/tmpdata.dart';
 import '../../models/enums.dart';
-import '../../models/meal/ordered_meal.dart';
+import '../../models/meal/meal_delivery_order.dart';
 import '../../models/order/order.dart';
 import '../../models/user/user.dart';
 import '2_order_history_detail_screen.dart';
@@ -29,7 +29,6 @@ class _DeliveryHistoryDetailScreenState
   MealDelivery? nextMealDelivery;
   late Order order;
   late User user;
-  late OrderedMeal orderedMeal;
   late String address;
 
   void getOrderData() {
@@ -45,15 +44,14 @@ class _DeliveryHistoryDetailScreenState
       "orderId": order.orderID,
       };
 
-      mealDelivery = (await networkGetDelivery(deliveryQuery, RequestMode.COMMON))!;
+      mealDelivery = (await networkGetDelivery(deliveryQuery, DeliveryRequestMode.COMMON))!;
       order = await networkGetOrder(mealDelivery.orderId);
       user = getUserById(order.userId);
-      orderedMeal = mealDelivery.orderedMeal;
       address = getAddressById(order.addressId);
       if(order.orderState == OrderState.DELIVERING && mealDelivery.deliveryState == DeliveryState.DELIVERED){
         //nextMealDelivery = getNextMealDelivery(order.orderID);
 
-        nextMealDelivery = await networkGetDelivery(orderQuery, RequestMode.NEXT_DELIVERY);
+        nextMealDelivery = await networkGetDelivery(orderQuery, DeliveryRequestMode.NEXT_DELIVERY);
       }
       print(order.orderState);
       print(mealDelivery.deliveryState);
@@ -115,7 +113,7 @@ class _DeliveryHistoryDetailScreenState
           color: SECONDARY_1_CONTAINER,
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Text('${mealDelivery.orderedMeal.reservedTime == Time.AFTERNOON ? '12-1' : '6-7'}시 사이에 배송됩니다.' , style: TextStyles.getTextStyle(TextType.BUTTON, SECONDARY_1)),
+        child: Text('${mealDelivery.reservedTime == Time.AFTERNOON ? '12-1' : '6-7'}시 사이에 배송됩니다.' , style: TextStyles.getTextStyle(TextType.BUTTON, SECONDARY_1)),
       )
     );
   }
@@ -142,26 +140,26 @@ class _DeliveryHistoryDetailScreenState
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(orderedMeal.getDeliveryDateTimeString2,
+                        Text(mealDelivery.getDeliveryDateTimeString2,
                             style: TextStyles.getTextStyle(
                                 TextType.SMALL, GREY_COLOR_2)),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             buildFourImage(
-                                orderedMeal.meal.getDishUrls(), 74, 74),
+                                mealDelivery.meal.getDishUrls(), 74, 74),
                             const SizedBox(width: 4.0),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(orderedMeal.meal.name,
+                                Text(mealDelivery.meal.name,
                                     style: TextStyles.getTextStyle(
                                         TextType.SUBTITLE_1, BLACK_COLOR)),
-                                Text(orderedMeal.meal.price.toString(),
+                                Text(mealDelivery.meal.price.toString(),
                                     style: TextStyles.getTextStyle(
                                         TextType.BUTTON, GREY_COLOR_2)),
                                 for (String dishName
-                                    in orderedMeal.meal.getDishNames())
+                                    in mealDelivery.meal.getDishNames())
                                   Text(dishName,
                                       style: TextStyles.getTextStyle(
                                           TextType.BODY_2, GREY_COLOR_2)),
@@ -197,7 +195,7 @@ class _DeliveryHistoryDetailScreenState
                   Text(nextMealDelivery!.getNextDeliveryMenuString, style: TextStyles.getTextStyle(TextType.SUBTITLE_2, BLACK_COLOR_2)),
                 ],
               ),
-              buildFourImage(nextMealDelivery!.orderedMeal.meal.getDishUrls(), 40, 40)
+              buildFourImage(nextMealDelivery!.meal.getDishUrls(), 40, 40)
             ],
           )
       )

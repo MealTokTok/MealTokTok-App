@@ -6,7 +6,7 @@ import 'package:table_calendar/table_calendar.dart';
 import '../const/color.dart';
 import '../const/style2.dart';
 
-import '../models/meal/ordered_meal.dart';
+import '../models/meal/meal_delivery_order.dart';
 
 class Calendar extends StatefulWidget {
   final bool Function(DateTime day) selectDate;

@@ -16,7 +16,7 @@ import '../../controller/meal_controller.dart';
 import '../../functions/formatter.dart';
 import '../../models/enums.dart';
 import '../../models/meal/meal.dart';
-import '../../models/meal/ordered_meal.dart';
+import '../../models/meal/meal_delivery_order.dart';
 import '../../models/order/order_post.dart';
 import '../4_pay_choice/0_pay_aggrement_screen.dart';
 
@@ -311,7 +311,7 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   Widget _buildSelectMenu() {
-    Widget buildSelectMenuDetails(OrderedMeal orderedMeal, String time,
+    Widget buildSelectMenuDetails(MealDeliveryOrder mealDeliveryOrder, String time,
         OrderedMealController orderedMealController) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -321,7 +321,7 @@ class _OrderScreenState extends State<OrderScreen> {
               children: [
                 TextSpan(
                   text: DateFormat('EEEE', 'ko_KR')
-                      .format(orderedMeal.reservedDate!),
+                      .format(mealDeliveryOrder.reservedDate!),
                   style: TextStyles.getTextStyle(
                       TextType.SUBTITLE_1, BLACK_COLOR_2),
                 ),
@@ -335,8 +335,8 @@ class _OrderScreenState extends State<OrderScreen> {
           const SizedBox(height: 8),
           MenuCards(
             orderType: _orderType,
-            reservedDate: orderedMeal.reservedDate!,
-            time: orderedMeal.reservedTime,
+            reservedDate: mealDeliveryOrder.reservedDate!,
+            time: mealDeliveryOrder.reservedTime,
             orderedMealController: orderedMealController,
           ),
           const SizedBox(height: 12),

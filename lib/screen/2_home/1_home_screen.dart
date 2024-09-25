@@ -128,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     if (_deliveryController.deliveringMealDelivery != null) {
       if (_deliveryController
-              .deliveringMealDelivery!.orderedMeal.reservedTime ==
+              .deliveringMealDelivery!.reservedTime ==
           Time.AFTERNOON) {
         // Todo 조건: 배송 중, 점심
         setState(() {
@@ -151,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     if (_deliveryController.recentDeliveredMealDelivery != null) {
       if (_deliveryController
-              .recentDeliveredMealDelivery!.orderedMeal.reservedTime ==
+              .recentDeliveredMealDelivery!.reservedTime ==
           Time.AFTERNOON) {
         // Todo 조건: 배송 후, 점심
         setState(() {

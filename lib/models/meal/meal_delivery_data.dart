@@ -6,19 +6,24 @@ import 'package:hankkitoktok/functions/httpRequest.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-import 'ordered_meal.dart';
+import 'meal_delivery_order.dart';
 
-enum RequestMode {
+enum DeliveryRequestMode {
   NEXT_DELIVERY,
   RECENT_DELIVERED_DELIVERY,
   DELVERING_DELIVERY,
   COMMON
 }
 
-Future<List<MealDelivery>> networkGetDeliveryList(Map<String,dynamic> query)async{
+enum DeliveryListRequestMode {
+  BY_ORDER_ID,
+  ALL
+}
+
+Future<List<MealDelivery>> networkGetDeliveryList(Map<String,dynamic> query, DeliveryListRequestMode deliveryListRequestMode)async{
   SharedPreferences prefs = await SharedPreferences.getInstance(); // 저장소
   String accessToken = prefs.getString('access_token') ?? '';
-  Uri uri = Uri.parse('$BASE_URL/api/v1/meal-deliveries');
+  Uri uri = Uri.parse('$BASE_URL/api/v1/meal-deliveries${deliveryListRequestMode== DeliveryListRequestMode.BY_ORDER_ID ? '/order' : ''}');
 
   uri = uri.replace(queryParameters: query.map((key, value) => MapEntry(key, value.toString())));
 
@@ -48,9 +53,13 @@ Future<List<MealDelivery>> networkGetDeliveryList(Map<String,dynamic> query)asyn
     if(response.statusCode == 200){
       var responseBody = jsonDecode(utf8.decode(response.bodyBytes));
       List<MealDelivery> result = [];
-      debugPrint(responseBody['result']['content'].toString());
-      for (var data in responseBody['result']['content']) {
-        MealDelivery mealDelivery = MealDelivery.init(orderedMeal: OrderedMeal.init(reservedDate: DateTime(0)));
+
+      if(deliveryListRequestMode == DeliveryListRequestMode.BY_ORDER_ID){
+        debugPrint(responseBody['result'].toString());
+      }
+
+      for (var data in responseBody['result']) {
+        MealDelivery mealDelivery = MealDelivery.init();
         //Todo: mealDelivery 비정규화 필요?
         result.add(mealDelivery.fromMap(data));
       }
@@ -66,7 +75,7 @@ Future<List<MealDelivery>> networkGetDeliveryList(Map<String,dynamic> query)asyn
   }
 }
 
-Future<MealDelivery?> networkGetDelivery(Map<String,dynamic>? query, RequestMode mode) async {
+Future<MealDelivery?> networkGetDelivery(Map<String,dynamic>? query, DeliveryRequestMode mode) async {
   SharedPreferences prefs = await SharedPreferences.getInstance(); // 저장소
   String accessToken = prefs.getString('access_token') ?? '';
   Uri uri = Uri.parse('$BASE_URL/api/v1/meal-deliveries/next-delivery');
@@ -101,7 +110,7 @@ Future<MealDelivery?> networkGetDelivery(Map<String,dynamic>? query, RequestMode
     }
     if(response.statusCode == 200){
       var responseBody = jsonDecode(utf8.decode(response.bodyBytes));
-      MealDelivery result = MealDelivery.init(orderedMeal: OrderedMeal.init(reservedDate: DateTime(0)));
+      MealDelivery result = MealDelivery.init();
       result = result.fromMap(responseBody);
       // await prefs.setString("access_token", responseBody['access']); //Todo: 데이터 보고 교체
       // await prefs.setString("refresh_token", responseBody['refresh']); //Todo: 데이터 보고 교체

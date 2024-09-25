@@ -58,7 +58,7 @@ class HistoryController extends GetxController {
         }
       ]
     };
-    List<MealDelivery> tmp = await networkGetDeliveryList(query);
+    List<MealDelivery> tmp = await networkGetDeliveryList(query, DeliveryListRequestMode.ALL);
     mealDeliveryHistories.addAll(tmp);
     deliveryPage++;
   }

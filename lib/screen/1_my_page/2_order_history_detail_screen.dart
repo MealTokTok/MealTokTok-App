@@ -3,6 +3,7 @@ import 'package:hankkitoktok/component/four_image.dart';
 import 'package:hankkitoktok/component/order_detail.dart';
 import 'package:hankkitoktok/const/style.dart';
 import 'package:hankkitoktok/controller/tmpdata.dart';
+import 'package:hankkitoktok/controller/user_controller.dart';
 import 'package:hankkitoktok/functions/httpRequest.dart';
 import 'package:hankkitoktok/models/order/order.dart';
 import 'package:hankkitoktok/models/order/order_data.dart';
@@ -11,9 +12,7 @@ import 'package:hankkitoktok/models/enums.dart';
 import '../../component/price_info.dart';
 import '../../const/color.dart';
 import '../../const/style2.dart';
-import '../../functions/formatter.dart';
-import '../../models/meal/ordered_meal.dart';
-import '../../models/order/order_user.dart';
+import 'package:get/get.dart';
 import '../../models/user/user.dart';
 import '../../models/user/user_data.dart';
 
@@ -26,28 +25,21 @@ class OrderHistoryDetailScreen extends StatefulWidget {
 
   @override
   State<OrderHistoryDetailScreen> createState() =>
-      _OrderHistoryDetailScreen1State();
+      _OrderHistoryDetailScreenState();
 }
 
-class _OrderHistoryDetailScreen1State extends State<OrderHistoryDetailScreen> {
+class _OrderHistoryDetailScreenState extends State<OrderHistoryDetailScreen> {
 
   late OrderState orderState;
-  late Order order;
-  late User user;
+  Order order = Order.init();
+  User user = User.init();
   void getOrderData() async{
-    setState(() async {
-      // order = await networkGetRequest(
-      //     model, "/api/v1/orders/${widget.orderId}", null);
-      order = await networkGetOrder(widget.orderId);
-      orderState = order.orderState!;
-
-    });
+    order = await networkGetOrder(widget.orderId);
+    await order.setMealDeliveries();
+    orderState = order.orderState!;
     int userId = order.userId;
-    setState(() async{
-      user = exampleUser; //userId 가 userId인 유저
-      user = (await networkGetUser(userId))!;
-    });
-
+    user = (await networkGetUser(userId))!;
+    setState(() {});
   }
 
   @override

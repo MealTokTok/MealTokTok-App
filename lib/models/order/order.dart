@@ -1,6 +1,7 @@
 import 'package:hankkitoktok/models/base_model.dart';
 import 'package:hankkitoktok/models/meal/meal_delivery.dart';
-import 'package:hankkitoktok/models/meal/ordered_meal.dart';
+import 'package:hankkitoktok/models/meal/meal_delivery_data.dart';
+import 'package:hankkitoktok/models/meal/meal_delivery_order.dart';
 import 'package:hankkitoktok/models/enums.dart';
 
 class Order extends BaseModel{
@@ -23,7 +24,7 @@ class Order extends BaseModel{
   DateTime? orderTime; // 주문닐짜
 
 
-  late List<MealDelivery> mealDeliveries; // 주문한 도시락 리스트(주간 결제일 경우 2개이상, 일 결제일 경우 1개이상)
+  List<MealDelivery> mealDeliveries = []; // 주문한 도시락 리스트(주간 결제일 경우 2개이상, 일 결제일 경우 1개이상)
 
   Order.init({
     this.orderID = "",
@@ -39,9 +40,7 @@ class Order extends BaseModel{
     this.orderTime,
     this.totalMealDeliveryCount = 0,
     this.remainingMealDeliveryCount = 0,
-  }){
-    mealDeliveries = [];
-  }
+  });
 
 
   @override
@@ -97,13 +96,21 @@ class Order extends BaseModel{
     };
   }
 
+  Future<void> setMealDeliveries() async {
+    Map<String, dynamic> query = {'orderId': orderID};
+    mealDeliveries = await networkGetDeliveryList(query, DeliveryListRequestMode.BY_ORDER_ID);
 
+    for(var mealDelivery in mealDeliveries) {
+      print("mealDeliveryId: ${mealDelivery.mealId}");
+      await mealDelivery.setMeal();
+    }
+  }
 
 
   List<MealDetail> get combinedMenuList {
     List<MealDetail> mealDetails = [];
     for (var item in mealDeliveries) {
-      mealDetails.add(item.orderedMeal.getMealDetail());
+      mealDetails.add(item.getMealDetail());
     }
 
     mealDetails.sort((a, b) => a.priority.compareTo(b.priority));

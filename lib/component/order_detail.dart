@@ -4,7 +4,7 @@ import '../const/color.dart';
 import '../const/style2.dart';
 import '../functions/formatter.dart';
 import '../models/enums.dart';
-import '../models/meal/ordered_meal.dart';
+import '../models/meal/meal_delivery.dart';
 import '../models/order/order.dart';
 import '../models/order/order_post.dart';
 

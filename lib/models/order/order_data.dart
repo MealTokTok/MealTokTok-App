@@ -130,9 +130,9 @@ Future<Order> networkGetOrder(String orderId) async
     }
     if(response.statusCode == 200){
       var responseBody = jsonDecode(utf8.decode(response.bodyBytes));
-
-      Order order = Order.init();
-      return order.fromMap(responseBody['result']);
+      Order order = Order.init().fromMap(responseBody['result']);
+      print("orderId3: ${order.orderID}");
+      return order;
       // await prefs.setString("access_token", responseBody['access']); //Todo: 데이터 보고 교체
       // await prefs.setString("refresh_token", responseBody['refresh']); //Todo: 데이터 보고 교체
 

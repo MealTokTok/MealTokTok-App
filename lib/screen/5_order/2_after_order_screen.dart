@@ -17,6 +17,7 @@ class AfterOrderScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("orderId: $orderId");
     return Scaffold(
       appBar: _buildAppBar(context),
       body: SafeArea(
@@ -135,6 +136,7 @@ class _OrderCardsState extends State<OrderCards> {
 
   void getOrder() async {
     order = await networkGetOrder(widget.orderId);
+    setState(() {});
   }
 
   @override

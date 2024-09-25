@@ -259,7 +259,7 @@ class _PayAggrementScreenState extends State<PayAggrementScreen> {
             TextSpan(
                 children: [
                   TextSpan(text: (widget.orderPost.orderType == OrderType.IMMEDIATE) ? "일 결제": "주간 결제", style: TextStyles.getTextStyle(TextType.BODY_2, GREY_COLOR_2)),
-                  TextSpan(text:'${widget.orderPost.orderedMeals.length}회', style: TextStyles.getTextStyle(TextType.BUTTON, GREY_COLOR_2)),
+                  TextSpan(text:'${widget.orderPost.mealDeliveryOrders.length}회', style: TextStyles.getTextStyle(TextType.BUTTON, GREY_COLOR_2)),
                 ]
             )
             )
@@ -333,7 +333,6 @@ class _PayAggrementScreenState extends State<PayAggrementScreen> {
                 //Todo: 결제 -> 결제완료 콜백 -> 주문완료 처리?
                 debugPrint(widget.orderPost.toJson().toString());
                 String id = await orderPost(widget.orderPost.toJson());
-                //Todo: 주문완료 페이지로 이동(id 전달)
                 Navigator.push(
                     context,
                     MaterialPageRoute(

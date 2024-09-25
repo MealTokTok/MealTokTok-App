@@ -64,7 +64,7 @@
 //     DateTime.now());
 
 import 'package:hankkitoktok/models/meal/meal_delivery.dart';
-import 'package:hankkitoktok/models/meal/ordered_meal.dart';
+import 'package:hankkitoktok/models/meal/meal_delivery_order.dart';
 import 'package:hankkitoktok/models/meal/meal.dart';
 import 'package:hankkitoktok/models/order/order_post.dart';
 import 'package:hankkitoktok/models/sidedish/sidedish.dart';
@@ -135,38 +135,38 @@ Meal getMealById(int mealId) {
   return mealMenuList[1];
 }
 
-
-List<OrderedMeal> orderedMeals = [
-  OrderedMeal.init(
-    mealId: 1,
-    reservedDate: DateTime(2024, 8, 15), // 특정 날짜로 설정
-    reservedTime: Time.AFTERNOON, // 점심 시간
-    includeRice: true, // 밥 포함
-    hasFullDiningOption: false, // 전체 다이닝 옵션 제외
-  ),
-  OrderedMeal.init(
-    mealId: 2,
-    reservedDate: DateTime(2024, 8, 16),
-    reservedTime: Time.EVENING, // 저녁 시간
-    includeRice: false,
-    hasFullDiningOption: true,
-  ),
-  OrderedMeal.init(
-    mealId: 3,
-    reservedDate: DateTime(2024, 8, 17),
-    reservedTime: Time.AFTERNOON,
-    includeRice: true,
-    hasFullDiningOption: true,
-  ),
-  OrderedMeal.init(
-    mealId: 4,
-    reservedDate: DateTime(2024, 8, 17),
-    reservedTime: Time.EVENING,
-    includeRice: false,
-    hasFullDiningOption: false,
-  ),
-];
-
+//
+// List<OrderedMeal> orderedMeals = [
+//   OrderedMeal.init(
+//     mealId: 1,
+//     reservedDate: DateTime(2024, 8, 15), // 특정 날짜로 설정
+//     reservedTime: Time.AFTERNOON, // 점심 시간
+//     includeRice: true, // 밥 포함
+//     hasFullDiningOption: false, // 전체 다이닝 옵션 제외
+//   ),
+//   OrderedMeal.init(
+//     mealId: 2,
+//     reservedDate: DateTime(2024, 8, 16),
+//     reservedTime: Time.EVENING, // 저녁 시간
+//     includeRice: false,
+//     hasFullDiningOption: true,
+//   ),
+//   OrderedMeal.init(
+//     mealId: 3,
+//     reservedDate: DateTime(2024, 8, 17),
+//     reservedTime: Time.AFTERNOON,
+//     includeRice: true,
+//     hasFullDiningOption: true,
+//   ),
+//   OrderedMeal.init(
+//     mealId: 4,
+//     reservedDate: DateTime(2024, 8, 17),
+//     reservedTime: Time.EVENING,
+//     includeRice: false,
+//     hasFullDiningOption: false,
+//   ),
+// ];
+//
 
 // List<MealDelivery> mealDeliveries = [
 //   MealDelivery.init(
