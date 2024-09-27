@@ -8,6 +8,7 @@ import 'package:hankkitoktok/const/style2.dart';
 import 'package:get/get.dart';
 
 import '../../controller/address_controller.dart';
+import '../../models/address/address.dart';
 
 class ViewAddressScreen extends StatefulWidget {
   const ViewAddressScreen({super.key});
@@ -17,7 +18,6 @@ class ViewAddressScreen extends StatefulWidget {
 }
 
 class _ViewAddressScreenState extends State<ViewAddressScreen> {
-  AddressController addressController = Get.find();
   bool isEdit = false;
 
   @override
@@ -89,11 +89,12 @@ class _ViewAddressScreenState extends State<ViewAddressScreen> {
                 ),
                 const Divider(height: 1, color: GREY_COLOR_4),
                 for (var address in controller.addresses)
-                  if(address.visible)
+                  if(address.addressStatus == AddressStatus.NOT_CONFIGURED)
                   Column(
                     children: [
                       AddressCardOff(
                         address: address,
+                        addressController: controller,
                         isEdit: isEdit,
                       ),
                       const Divider(height: 1, color: GREY_COLOR_4),

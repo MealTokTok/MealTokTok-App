@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:hankkitoktok/models/meal/meal_delivery.dart';
+import 'package:hankkitoktok/models/meal/meal_delivery_data.dart';
+import 'package:hankkitoktok/models/order/order_data.dart';
 
 import '../../component/four_image.dart';
 import '../../const/color.dart';
 import '../../const/style2.dart';
 import '../../controller/tmpdata.dart';
+import '../../models/address/address.dart';
+import '../../models/address/address_data.dart';
 import '../../models/enums.dart';
-import '../../models/meal/ordered_meal.dart';
+import '../../models/meal/meal_delivery_order.dart';
 import '../../models/order/order.dart';
 import '../../models/user/user.dart';
 import '2_order_history_detail_screen.dart';
@@ -23,28 +27,49 @@ class DeliveryHistoryDetailScreen extends StatefulWidget {
 
 class _DeliveryHistoryDetailScreenState
     extends State<DeliveryHistoryDetailScreen> {
-  late MealDelivery mealDelivery;
+  MealDelivery mealDelivery = MealDelivery.init();
   MealDelivery? nextMealDelivery;
-  late Order order;
-  late User user;
-  late OrderedMeal orderedMeal;
-  late String address;
+  Order order = Order.init();
+  User user = User.init();
+  Address address = Address.init();
 
-  void getOrderData() {
-    setState(() {
-      // order = await networkGetRequest(
-      //     model, "/api/v1/orders/${widget.orderId}", null);
-      mealDelivery = getMealDeliveryById(widget.deliveryId);
-      order = getOrderById(mealDelivery.orderId);
-      user = getUserById(order.userId);
-      orderedMeal = mealDelivery.orderedMeal;
-      address = getAddressById(order.addressId);
-      if(order.orderState == OrderState.DELIVERING && mealDelivery.deliveryState == DeliveryState.DELIVERED){
-        nextMealDelivery = getNextMealDelivery(order.orderID);
-      }
-      print(order.orderState);
-      print(mealDelivery.deliveryState);
-    });
+  void getOrderData() async {
+    // order = await networkGetRequest(
+    //     model, "/api/v1/orders/${widget.orderId}", null);
+
+    print("de: ${widget.deliveryId}");
+
+    Map<String, dynamic> deliveryQuery = {
+      "mealDeliveryId": widget.deliveryId,
+    };
+
+    mealDelivery =
+        (await networkGetDelivery(deliveryQuery, DeliveryRequestMode.COMMON))!;
+
+    print("mealDelivery: ${mealDelivery.mealId}");
+    await mealDelivery.setMeal();
+
+    print("mealDelivery.orderId: ${mealDelivery.orderId}");
+
+    Map<String, dynamic> orderQuery = {
+      "orderId": mealDelivery.orderId,
+    };
+
+    order = await networkGetOrder(mealDelivery.orderId);
+    //user = getUserById(order.userId);
+    //address = getAddressById(order.addressId);
+    print("address: ${order.addressId}");
+
+    //Todo: 주소 정상화 이후 바꾸기
+    address = await networkGetAddress(1);
+
+    nextMealDelivery = await networkGetDelivery(
+        orderQuery, DeliveryRequestMode.NEXT_DELIVERY);
+    if(nextMealDelivery!= null){
+      await nextMealDelivery!.setMeal();
+    }
+
+    setState(() {});
   }
 
   @override
@@ -58,28 +83,34 @@ class _DeliveryHistoryDetailScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(),
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(0,16,0,0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if(mealDelivery.deliveryState == DeliveryState.INDELIVERING)
-                const SizedBox(height: 8.0),
-              if(mealDelivery.deliveryState == DeliveryState.INDELIVERING)
-                _buildTodayDelivery(),
-              _buildMealInfo(),
-              if(order.orderState == OrderState.DELIVERING && mealDelivery.deliveryState == DeliveryState.DELIVERED)
-                _buildNextDeliveryBanner(),
-              if(order.orderState == OrderState.DELIVERING && mealDelivery.deliveryState == DeliveryState.DELIVERED)
-                const SizedBox(height: 8.0),
-              _buildOrderHistoryButton(),
-              const Divider(thickness: 4, color: GREY_COLOR_0),
-              _buildDeliveryInfo(),
-            ],
-          ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (mealDelivery.deliveryState ==
+                        DeliveryState.INDELIVERING)
+                      const SizedBox(height: 8.0),
+                    if (mealDelivery.deliveryState ==
+                        DeliveryState.INDELIVERING)
+                      _buildTodayDelivery(),
+                    _buildMealInfo(),
+                    if (nextMealDelivery != null)
+                      _buildNextDeliveryBanner(),
+                    if (nextMealDelivery != null)
+                      const SizedBox(height: 8.0),
+                    _buildOrderHistoryButton(),
+                  ]),
+            ),
+            const Divider(thickness: 4, color: GREY_COLOR_0),
+            _buildDeliveryInfo(),
+          ],
         ),
-      )
+      ),
     );
   }
 
@@ -92,19 +123,20 @@ class _DeliveryHistoryDetailScreenState
     );
   }
 
-  Widget _buildTodayDelivery(){
+  Widget _buildTodayDelivery() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: SECONDARY_1_CONTAINER,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Text('${mealDelivery.orderedMeal.reservedTime == Time.AFTERNOON ? '12-1' : '6-7'}시 사이에 배송됩니다.' , style: TextStyles.getTextStyle(TextType.BUTTON, SECONDARY_1)),
-      )
-    );
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: SECONDARY_1_CONTAINER,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Text(
+              '${mealDelivery.reservedTime == Time.AFTERNOON ? '12-1' : '6-7'}시 사이에 배송됩니다.',
+              style: TextStyles.getTextStyle(TextType.BUTTON, SECONDARY_1)),
+        ));
   }
 
   Widget _buildMealInfo() {
@@ -121,7 +153,7 @@ class _DeliveryHistoryDetailScreenState
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(20.0),
                   decoration: BoxDecoration(
                     border: Border.all(color: GREY_COLOR_4),
                     borderRadius: BorderRadius.circular(8.0),
@@ -129,26 +161,26 @@ class _DeliveryHistoryDetailScreenState
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(orderedMeal.getDeliveryDateTimeString2,
+                        Text(mealDelivery.getDeliveryDateTimeString2,
                             style: TextStyles.getTextStyle(
                                 TextType.SMALL, GREY_COLOR_2)),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             buildFourImage(
-                                orderedMeal.meal.getDishUrls(), 74, 74),
+                                mealDelivery.meal.getDishUrls(), 74, 74),
                             const SizedBox(width: 4.0),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(orderedMeal.meal.name,
+                                Text(mealDelivery.meal.name,
                                     style: TextStyles.getTextStyle(
                                         TextType.SUBTITLE_1, BLACK_COLOR)),
-                                Text(orderedMeal.meal.price.toString(),
+                                Text("${mealDelivery.meal.price.toString()}원",
                                     style: TextStyles.getTextStyle(
                                         TextType.BUTTON, GREY_COLOR_2)),
                                 for (String dishName
-                                    in orderedMeal.meal.getDishNames())
+                                    in mealDelivery.meal.getDishNames())
                                   Text(dishName,
                                       style: TextStyles.getTextStyle(
                                           TextType.BODY_2, GREY_COLOR_2)),
@@ -164,63 +196,65 @@ class _DeliveryHistoryDetailScreenState
       ),
     );
   }
-  Widget _buildNextDeliveryBanner(){
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Container(
-          padding: const EdgeInsets.all(16.0),
-          decoration: BoxDecoration(
-            color: PRIMARY_LIGHT,
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(nextMealDelivery!.getNextDeliveryString, style: TextStyles.getTextStyle(TextType.BODY_2, BLACK_COLOR_2)),
-                  Text(nextMealDelivery!.getNextDeliveryMenuString, style: TextStyles.getTextStyle(TextType.SUBTITLE_2, BLACK_COLOR_2)),
-                ],
-              ),
-              buildFourImage(nextMealDelivery!.orderedMeal.meal.getDishUrls(), 40, 40)
-            ],
-          )
-      )
-    );
-  }
-  Widget _buildOrderHistoryButton(){
-    return Center(
-      child: InkWell(
-          onTap: (){
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => OrderHistoryDetailScreen(orderId: order.orderID),
-                )
-            );
-          },
-          child: Container(
-            padding: const EdgeInsets.fromLTRB(10,4,2,4),
-            height: 28,
 
-            decoration: BoxDecoration(
-              color: GREY_COLOR_0,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
+  Widget _buildNextDeliveryBanner() {
+    return Container(
+        padding: const EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          color: PRIMARY_LIGHT,
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('상세보기', style: TextStyles.getTextStyle(TextType.CAPTION, GREY_COLOR_3)),
-                Image.asset('assets/images/3_menu_choice/arrow_right.png', width: 24, height: 24, color: GREY_COLOR_3),
+                Text(nextMealDelivery!.getNextDeliveryString,
+                    style: TextStyles.getTextStyle(
+                        TextType.BODY_2, BLACK_COLOR_2)),
+                Text(nextMealDelivery!.getNextDeliveryMenuString,
+                    style: TextStyles.getTextStyle(
+                        TextType.SUBTITLE_2, BLACK_COLOR_2)),
               ],
             ),
-          )
-      )
-    );
-}
+            buildFourImage(nextMealDelivery!.meal.getDishUrls(), 40, 40)
+          ],
+        ));
+  }
+
+  Widget _buildOrderHistoryButton() {
+    return Center(
+        child: InkWell(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        OrderHistoryDetailScreen(orderId: order.orderID),
+                  ));
+            },
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(10, 4, 2, 4),
+              height: 28,
+              decoration: BoxDecoration(
+                color: GREY_COLOR_0,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text('주문내역',
+                      style: TextStyles.getTextStyle(
+                          TextType.CAPTION, GREY_COLOR_3)),
+                  Image.asset('assets/images/3_menu_choice/arrow_right.png',
+                      width: 24, height: 24, color: GREY_COLOR_3),
+                ],
+              ),
+            )));
+  }
 
   Widget _buildDeliveryInfo() {
     return Padding(
@@ -228,45 +262,63 @@ class _DeliveryHistoryDetailScreenState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('배송 정보', style: TextStyles.getTextStyle(TextType.SUBTITLE_1, BLACK_COLOR_2)),
+          Text('배송 정보',
+              style:
+                  TextStyles.getTextStyle(TextType.SUBTITLE_1, BLACK_COLOR_2)),
           const SizedBox(height: 8.0),
           RichText(
             text: TextSpan(
               children: [
-                TextSpan(text: '주문번호: ', style: TextStyles.getTextStyle(TextType.BODY_2, GREY_COLOR_2)),
+                TextSpan(
+                    text: '주문번호: ',
+                    style:
+                        TextStyles.getTextStyle(TextType.BODY_2, GREY_COLOR_2)),
                 TextSpan(
                     text: order.orderID.toString(),
-                    style: TextStyles.getTextStyle(TextType.BUTTON, GREY_COLOR_2)),
+                    style:
+                        TextStyles.getTextStyle(TextType.BUTTON, GREY_COLOR_2)),
               ],
             ),
           ),
           RichText(
             text: TextSpan(
               children: [
-                TextSpan(text: '배송주소: ', style: TextStyles.getTextStyle(TextType.BODY_2, GREY_COLOR_2)),
                 TextSpan(
-                    text: address,
-                    style: TextStyles.getTextStyle(TextType.BUTTON, GREY_COLOR_2)),
+                    text: '배송주소: ',
+                    style:
+                        TextStyles.getTextStyle(TextType.BODY_2, GREY_COLOR_2)),
+                TextSpan(
+                    text: address.address,
+                    style:
+                        TextStyles.getTextStyle(TextType.BUTTON, GREY_COLOR_2)),
               ],
             ),
           ),
           RichText(
             text: TextSpan(
               children: [
-                TextSpan(text: '받는사람: ', style: TextStyles.getTextStyle(TextType.BODY_2, GREY_COLOR_2)),
+                TextSpan(
+                    text: '받는사람: ',
+                    style:
+                        TextStyles.getTextStyle(TextType.BODY_2, GREY_COLOR_2)),
                 TextSpan(
                     text: user.username,
-                    style: TextStyles.getTextStyle(TextType.BUTTON, GREY_COLOR_2)),
+                    style:
+                        TextStyles.getTextStyle(TextType.BUTTON, GREY_COLOR_2)),
               ],
             ),
           ),
           RichText(
             text: TextSpan(
               children: [
-                TextSpan(text: '연락처: ', style: TextStyles.getTextStyle(TextType.BODY_2, GREY_COLOR_2)),
+                TextSpan(
+                    text: '연락처: ',
+                    style:
+                        TextStyles.getTextStyle(TextType.BODY_2, GREY_COLOR_2)),
                 TextSpan(
                     text: user.phoneNumber,
-                    style: TextStyles.getTextStyle(TextType.BUTTON, GREY_COLOR_2)),
+                    style:
+                        TextStyles.getTextStyle(TextType.BUTTON, GREY_COLOR_2)),
               ],
             ),
           ),

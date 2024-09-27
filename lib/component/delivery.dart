@@ -22,12 +22,12 @@ class Delivery extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildDeliveryState(mealDelivery.orderState),
+            _buildDeliveryState(mealDelivery.deliveryState),
             const SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(mealDelivery.simpleOrderDateString, style: TextStyles.getTextStyle(TextType.BUTTON, GREY_COLOR_3),),
+                Text(mealDelivery.getDeliveryDateTimeStringByDot, style: TextStyles.getTextStyle(TextType.BUTTON, GREY_COLOR_3),),
                 InkWell(
                     onTap: (){
                       Navigator.push(
@@ -61,7 +61,7 @@ class Delivery extends StatelessWidget {
             ),
             const SizedBox(height: 2),
               Text(
-                '주문방식 - 메뉴명', //Todo: 반영하기
+                '${mealDelivery.getOrderTypeString} - 메뉴명', //Todo: 반영하기
                 style: TextStyles.getTextStyle(TextType.BODY_1, BLACK_COLOR),
               ),
             const SizedBox(height: 4),
@@ -70,15 +70,15 @@ class Delivery extends StatelessWidget {
     );
   }
 
-  Widget _buildDeliveryState(OrderState orderState){
-    Color color = orderState == OrderState.PENDING ? SECONDARY_2 : orderState == OrderState.DELIVERING ? PRIMARY_COLOR : SECONDARY_1;
+  Widget _buildDeliveryState( DeliveryState deliveryState){
+    Color color = deliveryState == DeliveryState.PENDING ? SECONDARY_2 : deliveryState == DeliveryState.INDELIVERING ? PRIMARY_COLOR : SECONDARY_1;
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
       decoration: BoxDecoration(
         border: Border.all(color: color, width: 1),
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Text(orderState == OrderState.PENDING ? '배송예정' : orderState == OrderState.DELIVERING ? '배송중' : '배송완료' , style: TextStyles.getTextStyle(TextType.BUTTON, color)),
+      child: Text(deliveryState == DeliveryState.PENDING ? '배송예정' : deliveryState == DeliveryState.INDELIVERING ? '배송중' : '배송완료' , style: TextStyles.getTextStyle(TextType.BUTTON, color)),
     );
   }
 }
