@@ -106,6 +106,8 @@ Future<Order> networkGetOrder(String orderId) async
   String accessToken = prefs.getString('access_token') ?? '';
   Uri uri = Uri.parse('$BASE_URL/api/v1/orders/$orderId');
 
+  print("$BASE_URL/api/v1/orders/$orderId");
+
   http.Response? response;
   Map<String, String> header = {
     'Content-Type': 'application/json',
@@ -131,7 +133,6 @@ Future<Order> networkGetOrder(String orderId) async
     if(response.statusCode == 200){
       var responseBody = jsonDecode(utf8.decode(response.bodyBytes));
       Order order = Order.init().fromMap(responseBody['result']);
-      print("orderId3: ${order.orderID}");
       return order;
       // await prefs.setString("access_token", responseBody['access']); //Todo: 데이터 보고 교체
       // await prefs.setString("refresh_token", responseBody['refresh']); //Todo: 데이터 보고 교체

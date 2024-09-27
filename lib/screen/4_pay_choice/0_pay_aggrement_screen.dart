@@ -151,7 +151,7 @@ class _PayAggrementScreenState extends State<PayAggrementScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(addressController.getSelectedAddress.getAddressString,
+                Text(addressController.selectedAddress.getAddressString,
                     style:
                         TextStyles.getTextStyle(TextType.BODY_2, GREY_COLOR_2)),
                 OutlinedButton(

@@ -24,7 +24,6 @@ Future<List<MealDelivery>> networkGetDeliveryList(Map<String,dynamic> query, Del
   SharedPreferences prefs = await SharedPreferences.getInstance(); // 저장소
   String accessToken = prefs.getString('access_token') ?? '';
   Uri uri = Uri.parse('$BASE_URL/api/v1/meal-deliveries${deliveryListRequestMode== DeliveryListRequestMode.BY_ORDER_ID ? '/order' : ''}');
-
   uri = uri.replace(queryParameters: query.map((key, value) => MapEntry(key, value.toString())));
 
   http.Response? response;
@@ -51,18 +50,29 @@ Future<List<MealDelivery>> networkGetDeliveryList(Map<String,dynamic> query, Del
       }
     }
     if(response.statusCode == 200){
-      var responseBody = jsonDecode(utf8.decode(response.bodyBytes));
+      var responseBody;
+      switch(deliveryListRequestMode)
+      {
+        case DeliveryListRequestMode.BY_ORDER_ID:
+          responseBody = jsonDecode(utf8.decode(response.bodyBytes))['result'];
+          break;
+        case DeliveryListRequestMode.ALL:
+          responseBody = jsonDecode(utf8.decode(response.bodyBytes))['result']['content'];
+          break;
+
+        default: throw Exception("잘못된 요청입니다.");
+      }
+
       List<MealDelivery> result = [];
 
-      if(deliveryListRequestMode == DeliveryListRequestMode.BY_ORDER_ID){
-        debugPrint(responseBody['result'].toString());
-      }
 
-      for (var data in responseBody['result']) {
-        MealDelivery mealDelivery = MealDelivery.init();
-        //Todo: mealDelivery 비정규화 필요?
-        result.add(mealDelivery.fromMap(data));
-      }
+
+       for (var data in responseBody) {
+         MealDelivery mealDelivery = MealDelivery.init();
+          //Todo: mealDelivery 비정규화 필요?
+         result.add(mealDelivery.fromMap(data));
+       }
+
       // await prefs.setString("access_token", responseBody['access']); //Todo: 데이터 보고 교체
       // await prefs.setString("refresh_token", responseBody['refresh']); //Todo: 데이터 보고 교체
       return result;
@@ -78,12 +88,31 @@ Future<List<MealDelivery>> networkGetDeliveryList(Map<String,dynamic> query, Del
 Future<MealDelivery?> networkGetDelivery(Map<String,dynamic>? query, DeliveryRequestMode mode) async {
   SharedPreferences prefs = await SharedPreferences.getInstance(); // 저장소
   String accessToken = prefs.getString('access_token') ?? '';
-  Uri uri = Uri.parse('$BASE_URL/api/v1/meal-deliveries/next-delivery');
 
-  if (query != null) {
-    uri = uri.replace(queryParameters: query.map((key, value) => MapEntry(key, value.toString())));
+  String uriString = "";
+
+  switch(mode) {
+    case DeliveryRequestMode.NEXT_DELIVERY:
+      uriString = '$BASE_URL/api/v1/meal-deliveries/next-delivery';
+      break;
+    case DeliveryRequestMode.RECENT_DELIVERED_DELIVERY:
+      uriString = '$BASE_URL/api/v1/meal-deliveries/recent-delivered';
+      break;
+    case DeliveryRequestMode.DELVERING_DELIVERY:
+      uriString = '$BASE_URL/api/v1/meal-deliveries/delivering';
+      break;
+    case DeliveryRequestMode.COMMON:
+      uriString = '$BASE_URL/api/v1/meal-deliveries/${query!['mealDeliveryId']}';
+      break;
   }
 
+  print(uriString);
+  Uri uri = Uri.parse(uriString);
+
+
+  if (mode != DeliveryRequestMode.COMMON && query != null) {
+    uri = uri.replace(queryParameters: query.map((key, value) => MapEntry(key, value.toString())));
+  }
 
   http.Response? response;
   Map<String, String> header = {
@@ -93,6 +122,7 @@ Future<MealDelivery?> networkGetDelivery(Map<String,dynamic>? query, DeliveryReq
   };
 
   try {
+
     response = await http.get(uri, headers: header);
     if (response == null) {
       throw Exception('리스폰스가 null입니다.');
@@ -109,9 +139,11 @@ Future<MealDelivery?> networkGetDelivery(Map<String,dynamic>? query, DeliveryReq
       }
     }
     if(response.statusCode == 200){
+
       var responseBody = jsonDecode(utf8.decode(response.bodyBytes));
       MealDelivery result = MealDelivery.init();
-      result = result.fromMap(responseBody);
+      print(responseBody['result']);
+      result = result.fromMap(responseBody['result']);
       // await prefs.setString("access_token", responseBody['access']); //Todo: 데이터 보고 교체
       // await prefs.setString("refresh_token", responseBody['refresh']); //Todo: 데이터 보고 교체
       return result;

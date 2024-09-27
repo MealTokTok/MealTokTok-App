@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hankkitoktok/component/show_warning_dialog.dart';
 import 'package:hankkitoktok/const/color.dart';
 import 'package:hankkitoktok/const/style2.dart';
 import 'package:hankkitoktok/controller/address_controller.dart';
@@ -16,13 +17,18 @@ class AddressCardOff extends StatelessWidget {
     super.key
   });
 
+  void deleteAddress(){
+    addressController.deleteAddress(address.deliveryAddressId);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(20),
       child: InkWell(
-        onTap:(){
-          addressController.setSelectedAddressIndex(addressController.addresses.indexOf(address));
+        onTap:()async{
+          print(1);
+          await addressController.setConfiguredAddress(address.deliveryAddressId);
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -44,7 +50,6 @@ class AddressCardOff extends StatelessWidget {
                     children: [
                       InkWell(
                         onTap: (){
-
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -59,7 +64,7 @@ class AddressCardOff extends StatelessWidget {
                       const SizedBox(width: 8),
                       InkWell(
                         onTap: (){
-
+                          showWarningDialog(context, address.address, "주소를 삭제할까요?", "닫기", "주소삭제",null,deleteAddress);
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),

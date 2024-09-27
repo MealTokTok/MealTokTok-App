@@ -62,7 +62,7 @@ class DeliveryController extends GetxController {
     Map<String, dynamic> query = {
       "orderId": orderId,
     };
-    debugPrint("nextDel");
+
 
     nextMealDelivery = await networkGetDelivery(query, DeliveryRequestMode.NEXT_DELIVERY);
 

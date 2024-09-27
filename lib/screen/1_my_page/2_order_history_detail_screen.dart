@@ -36,9 +36,10 @@ class _OrderHistoryDetailScreenState extends State<OrderHistoryDetailScreen> {
   void getOrderData() async{
     order = await networkGetOrder(widget.orderId);
     await order.setMealDeliveries();
+    //await order.setMealDeliveries();
     orderState = order.orderState!;
     int userId = order.userId;
-    user = (await networkGetUser(userId))!;
+    //user = (await networkGetUser(userId))!;
     setState(() {});
   }
 

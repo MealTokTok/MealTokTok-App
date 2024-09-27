@@ -24,12 +24,12 @@ class Dish extends BaseModel{
   @override
   Dish fromMap(Map<String, dynamic> map) {
     return Dish.init(
-      dishId: map['dishId'],
-      dishName: map['dishName'],
-      dishPrice: map['dishPrice']['amount'],
-      imgUrl: map['imgUrl'],
-      dishQuantity: map['dishQuantity'],
-      dishState: _getDishState(map['dishState'])
+      dishId: map['dishId'] ?? 0,
+      dishName: map['dishName'] ?? '',
+      dishPrice: map['dishPrice']['amount'] ?? 0,
+      imgUrl: map['imgUrl']?? '',
+      dishQuantity: map['dishQuantity'] ?? 0,
+      dishState: _getDishState(map['dishState']) ?? DishState.ON_SALE,
     );
   }
 

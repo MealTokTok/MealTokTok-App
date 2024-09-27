@@ -22,10 +22,9 @@ class Meal extends BaseModel {
   Meal fromMap(Map<String, dynamic> map) {
     return Meal.init(
       mealId: map['meal']['mealId'] ?? 0,
-      name: map['name'] ?? '',
-      price: map['price'] ?? 0,
-      dishList: List<Dish>.from(map['dishList']),
-      createdAt: DateTime.parse(map['createdAt']),
+      name: map['meal']['mealName'] ?? '',
+      price: map['meal']['mealPrice']['amount'] ?? 0,
+      dishList: (map['dishes'] as List).map((dishMap) => Dish.init().fromMap(dishMap)).toList(),
     );
   }
 

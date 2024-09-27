@@ -14,6 +14,7 @@ import 'package:hankkitoktok/models/meal/meal_delivery.dart';
 import 'package:hankkitoktok/models/meal/meal.dart';
 
 import 'package:hankkitoktok/screen/2_home/2_notification_screen.dart';
+import '../../models/address/address.dart';
 import '../../models/enums.dart';
 import 'package:hankkitoktok/const/style2.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -274,14 +275,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ));
               }).toList(),
-              onChanged: (String? value) {
-                setState(() {
-                  for (int i = 0; i < controller.getAddressList.length; i++) {
-                    if (controller.getAddressList[i] == value) {
-                      controller.selectedAddressIndex = i;
-                    }
+              onChanged: (String? value) async {
+
+                for (Address address in controller.addresses) {
+                  if (address.getAddressString == value) {
+                    await controller.setConfiguredAddress(address.deliveryAddressId);
                   }
-                });
+                }
+
+                setState(() {});
               });
         },
       ),

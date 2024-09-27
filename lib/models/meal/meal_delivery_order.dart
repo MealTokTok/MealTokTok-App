@@ -15,18 +15,19 @@ class MealDeliveryOrder extends MealDelivery {
   bool isChecked = false;
 
   MealDeliveryOrder.init({
-    int mealDeliveryId = 0,
-    String orderId = "",
-    OrderType orderType = OrderType.IMMEDIATE,
-    int mealId = 0,
-    DateTime? reservedDate,
-    Time reservedTime = Time.AFTERNOON,
-    bool includeRice = false,
-    bool hasFullDiningOption = false,
-    DeliveryState deliveryState = DeliveryState.PENDING,
-    DateTime? deliveryRequestTime,
-    DateTime? deliveryStartTime,
-    DateTime? deliveryCompleteTime,
+    mealDeliveryId = 0,
+    orderId = "",
+    orderType = OrderType.IMMEDIATE,
+    mealId = 0,
+    reservedDate,
+    reservedTime = Time.AFTERNOON,
+    includeRice = false,
+    hasFullDiningOption = false,
+    deliveryState = DeliveryState.PENDING,
+
+    deliveryRequestTime,
+    deliveryStartTime,
+    deliveryCompleteTime,
     this.isChecked = false,
     this.isVisible = false,
   }) : super.init(
@@ -34,12 +35,11 @@ class MealDeliveryOrder extends MealDelivery {
     orderId: orderId,
     orderType: orderType,
     mealId: mealId,
-    reservedDate: reservedDate ?? DateTime.now(),
-    // 기본값 처리
+    reservedDate: reservedDate,
     reservedTime: reservedTime,
+    deliveryState: deliveryState,
     includeRice: includeRice,
     hasFullDiningOption: hasFullDiningOption,
-    deliveryState: deliveryState,
     deliveryRequestTime: deliveryRequestTime,
     deliveryStartTime: deliveryStartTime,
     deliveryCompleteTime: deliveryCompleteTime,
@@ -48,18 +48,14 @@ class MealDeliveryOrder extends MealDelivery {
   @override
   Map<String, dynamic> toJson() {
     final DateFormat formatter = DateFormat('yyyy-MM-dd');
-    if (reservedDate == null) {
+    if(reservedDate == null){
       throw Exception('Ordered Meal 클래스: reservedDate가 null입니다.');
     }
     return {
       'mealId': meal.mealId,
       'reservedSchedule': {
-        'reservedDate': formatter.format(reservedDate!),
-        // DateTime을 String YYYY-MM-DD 로 변환
-        'reservedTime': reservedTime
-            .toString()
-            .split('.')
-            .last,
+        'reservedDate': formatter.format(reservedDate!),// DateTime을 String YYYY-MM-DD 로 변환
+        'reservedTime': reservedTime.toString().split('.').last,
         // enum 을 String 으로 변환
       },
       'includeRice': includeRice,

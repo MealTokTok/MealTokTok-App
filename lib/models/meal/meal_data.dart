@@ -13,7 +13,10 @@ Future<Meal> networkGetMeal(int mealId) async
 {
   SharedPreferences prefs = await SharedPreferences.getInstance(); // 저장소
   String accessToken = prefs.getString('access_token') ?? '';
+
+  //테스트용
   Uri uri = Uri.parse('$BASE_URL/api/v1/meals/$mealId');
+  if(mealId==1) uri = Uri.parse('$BASE_URL/api/v1/meals/12');
 
   http.Response? response;
   Map<String, String> header = {
@@ -39,9 +42,8 @@ Future<Meal> networkGetMeal(int mealId) async
     }
     if(response.statusCode == 200){
       var responseBody = jsonDecode(utf8.decode(response.bodyBytes));
-      debugPrint("meals");
-      debugPrint(responseBody.toString());
-      return Meal.init().fromMap(responseBody);
+      debugPrint(responseBody["result"].toString());
+      return Meal.init().fromMap(responseBody["result"]);
 
       // await prefs.setString("access_token", responseBody['access']); //Todo: 데이터 보고 교체
       // await prefs.setString("refresh_token", responseBody['refresh']); //Todo: 데이터 보고 교체
