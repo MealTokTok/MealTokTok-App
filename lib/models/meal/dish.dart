@@ -58,3 +58,47 @@ class Dish extends BaseModel{
   }
 
 }
+
+class Dish1 extends BaseModel {
+  int dishId;
+  String dishName;
+  String imgUrl;
+  int dishPrice;
+  int dishQuantity;
+  String dishState;
+
+  Dish1.init({
+    this.dishId = 0,
+    this.dishName = '',
+    this.imgUrl = '',
+    this.dishPrice = 0,
+    this.dishQuantity = 0,
+    this.dishState = 'ON_SALE',
+  });
+
+  @override
+  Dish1 fromMap(Map<String, dynamic> map) {
+    return Dish1.init(
+      dishId: map['dishId'],
+      dishName: map['dishName'],
+      imgUrl: map['imgUrl'],
+      dishPrice: map['dishPrice']['amount'],
+      dishQuantity: map['dishQuantity'],
+      dishState: map['dishState'],
+    );
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'dishId': dishId,
+      'dishName': dishName,
+      'imgUrl': imgUrl,
+      'dishPrice': {
+        'amount': dishPrice,
+      },
+      'dishQuantity': dishQuantity,
+      'dishState': dishState,
+    };
+  }
+}

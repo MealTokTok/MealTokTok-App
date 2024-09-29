@@ -47,14 +47,24 @@ class _CalendarState extends State<Calendar> {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: GREY_COLOR_4, width: 2),
+        border: Border.all(color: GREY_COLOR_4, width: 1),
       ),
       child: TableCalendar(
         firstDay: nextSunday, // 시작 날짜
         lastDay: nextSunday.add(const Duration(days: 6)), // 시작 날짜로부터 6일 후 (일요일 ~ 토요일)
         focusedDay: _focusedDate, // 현재 포커스된 날짜
         calendarFormat: CalendarFormat.week, // 주 단위로 보이기
-        headerVisible: false, // 헤더 안보이기
+        headerVisible: true, // 헤더 안보이기
+        headerStyle: HeaderStyle(
+          formatButtonVisible: false,
+          // 포맷 변경 버튼 비활성화
+          titleCentered: false,
+          // 제목(연도 및 월)을 가운데 정렬
+          titleTextStyle: TextStyles.getTextStyle(TextType.SUBTITLE_1, Colors.black),
+          leftChevronVisible: false,
+          // 이전 달로 이동하는 아이콘 비활성화
+          rightChevronVisible: false, // 다음 달로 이동하는 아이콘 비활성화
+        ),
         locale: 'ko_KR', // 한국어로 설정
         daysOfWeekHeight: 32, // 요일 높이
         // ---달력 스타일 설정---
@@ -65,6 +75,7 @@ class _CalendarState extends State<Calendar> {
         calendarStyle: CalendarStyle(
           defaultTextStyle:
               TextStyles.getTextStyle(TextType.BODY_2, BLACK_COLOR_2),
+          weekendTextStyle: TextStyles.getTextStyle(TextType.BODY_2, Color(0xFFFF0000)),
           selectedTextStyle:
               TextStyles.getTextStyle(TextType.BUTTON, BLACK_COLOR_2),
           selectedDecoration: BoxDecoration(

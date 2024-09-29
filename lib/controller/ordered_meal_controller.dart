@@ -271,22 +271,44 @@ class OrderedMealController extends GetxController {
     //Set을 선택한 이유: 중복제거
     Set<String> initialsSet = Set<String>();
 
-      for (var orderedMeals in orderedWeekMeals.values) {
-        for (var orderedMeal in orderedMeals) {
-          if(orderedMeal.isChecked == true && orderedMeal.isVisible == true){
-            initialsSet.add(dayOfWeekList[orderedMeal.reservedDate!.weekday - 1]);
-          }
+    for (var orderedMeals in orderedWeekMeals.values) {
+      for (var orderedMeal in orderedMeals) {
+        if(orderedMeal.isChecked == true && orderedMeal.isVisible == true){
+          initialsSet.add(dayOfWeekList[orderedMeal.reservedDate!.weekday - 1]);
         }
       }
-      // Set을 List로 변환
+    }
+    // Set을 List로 변환
     List<String> sortedInitials = initialsSet.toList();
-      //Set은 순서가 없기 때문에 따로 정렬 필요
+    //Set은 순서가 없기 때문에 따로 정렬 필요
     sortedInitials.sort((a, b) => dayOfWeekList.indexOf(a).compareTo(dayOfWeekList.indexOf(b)));
 
 
     //List<String>["월요일", "수요일", "목요일"] -> String 월요일, 수요일, 목요일
     return sortedInitials.join(', ');
 
+  }
+
+  int getCntFullDiningDaysOfWeek(){
+    List<String> dayOfWeekList = [
+      '월요일',
+      '화요일',
+      '수요일',
+      '목요일',
+      '금요일',
+      '토요일',
+      '일요일'
+    ];
+    Set<String> initialsSet = Set<String>();
+
+    for (var orderedMeals in orderedWeekMeals.values) {
+      for (var orderedMeal in orderedMeals) {
+        if(orderedMeal.isChecked == true && orderedMeal.isVisible == true){
+          initialsSet.add(dayOfWeekList[orderedMeal.reservedDate!.weekday - 1]);
+        }
+      }
+    }
+    return initialsSet.length;
   }
 
   OrderPost getOrderedMealsSelected(OrderType orderType){

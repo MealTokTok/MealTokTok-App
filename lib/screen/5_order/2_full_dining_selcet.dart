@@ -3,17 +3,25 @@ import 'package:hankkitoktok/component/calendar.dart';
 import 'package:hankkitoktok/component/full_dining_calendar.dart';
 import 'package:hankkitoktok/const/color.dart';
 import 'package:hankkitoktok/const/style2.dart';
+import 'package:hankkitoktok/models/enums.dart';
+import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
-
+import 'package:get/get.dart';
+import 'package:hankkitoktok/controller/ordered_meal_controller.dart';
 
 class FullDiningSelcet extends StatefulWidget {
-  const FullDiningSelcet({super.key});
+  OrderType orderType;
+
+  FullDiningSelcet({required this.orderType, super.key});
 
   @override
   State<FullDiningSelcet> createState() => _FullDiningSelcetState();
 }
 
 class _FullDiningSelcetState extends State<FullDiningSelcet> {
+  List<String> day = [];
+  final formatter = NumberFormat('#,###');
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,93 +43,108 @@ class _FullDiningSelcetState extends State<FullDiningSelcet> {
               ),
             ),
           )),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16.0,horizontal: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '풀대점 서비스 구매',
-                style: TextStyles.getTextStyle(TextType.TITLE_3, Colors.black)
-              ),
-              SizedBox(height: 12),
-              Container(
-                height: 37,
-                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-                decoration: BoxDecoration(
-                  color: SECONDARY_1.withAlpha(20), // 배경색 설정
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  '반찬 도시락을 선택한 끼니에 다회용기로 배송됩니다.',
-                  style: TextStyles.getTextStyle(TextType.BUTTON, SECONDARY_1),
-                ),
-              ),
-              SizedBox(height: 8),
+      body: GetBuilder<OrderedMealController>(
+        builder: (_orderedMealController) {
+          return SafeArea(
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('풀대점 서비스 구매',
+                      style: TextStyles.getTextStyle(
+                          TextType.TITLE_3, Colors.black)),
+                  SizedBox(height: 12),
+                  Container(
+                    height: 37,
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+                    decoration: BoxDecoration(
+                      color: SECONDARY_1.withAlpha(20), // 배경색 설정
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      '반찬 도시락을 선택한 끼니에 다회용기로 배송됩니다.',
+                      style:
+                          TextStyles.getTextStyle(TextType.BUTTON, SECONDARY_1),
+                    ),
+                  ),
+                  SizedBox(height: 8),
 //캘린더
-
-              FullDiningCalendar(
-                selectDate: (day) {
-                  // 선택된 날짜가 월, 수, 금인지 확인하는 로직
-                  return day.weekday == DateTime.monday ||
-                      day.weekday == DateTime.wednesday ||
-                      day.weekday == DateTime.friday;
-                },
-              ),
-              SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-
-                  Text(
-                    '수요일, 금요일, 토요일',
-                    style: TextStyles.getTextStyle(TextType.BODY_1, Colors.black)
+                  Calendar(
+                    selectDate: _orderedMealController.getSelectedDate,
                   ),
-                  Text(
-                    '총 3회',
-                    style: TextStyles.getTextStyle(TextType.BODY_1, Colors.black)
-                  ),
-                ],
-              ),
-              SizedBox(width: 8,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  // FullDiningCalendar(
+                  //   selectDate: (day) {
+                  //     // 선택된 날짜가 월, 수, 금인지 확인하는 로직
+                  //     return day.weekday == DateTime.monday ||
+                  //         day.weekday == DateTime.wednesday ||
+                  //         day.weekday == DateTime.friday;
+                  //   },
+                  // ),
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(_orderedMealController.getFullDiningDaysOfWeek(),
+                        style: TextStyles.getTextStyle(TextType.BODY_1, Colors.black),),
+                      Text(
+                        '총 ${_orderedMealController.getCntFullDiningDaysOfWeek()}회',
+                        style: TextStyles.getTextStyle(TextType.BODY_1, Colors.black),
+                      ),
 
-                children: [
-                  Text(
-                    '최종 금액',
-                    style:TextStyles.getTextStyle(TextType.TITLE_3, Colors.black)
+                    ],
+                  ),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //   children: [
+                  //     Text('수요일, 금요일, 토요일',
+                  //         style: TextStyles.getTextStyle(
+                  //             TextType.BODY_1, Colors.black)),
+                  //     Text('총 3회',
+                  //         style: TextStyles.getTextStyle(
+                  //             TextType.BODY_1, Colors.black)),
+                  //   ],
+                  // ),
+                  SizedBox(
+                    width: 8,
                   ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        '1,995 원',
-                        style: TextStyles.getTextStyle(TextType.TITLE_3, Colors.black)
-                      ),
-                      SizedBox(width: 8,),
-                      Text(
-                        '2,100원',
-                        style:  TextStyle(
-                          color: GRAY3,
-                          fontSize: 12,
-                          fontFamily: 'Pretendard Variable',
-                          fontWeight: FontWeight.w400,
-                          decoration: TextDecoration.lineThrough,
-                          height: 0.12,
-                          letterSpacing: -0.24,
-                        ),
-                      ),
+                      Text('최종 금액',
+                          style: TextStyles.getTextStyle(
+                              TextType.TITLE_3, Colors.black)),
+                      Row(
+                        children: [
+                          Text('${formatter.format(_getFullDiningPrice(_orderedMealController.getCntFullDiningDaysOfWeek()))} 원',
+                              style: TextStyles.getTextStyle(
+                                  TextType.TITLE_3, Colors.black)),
+                          SizedBox(
+                            width: 8,
+                          ),
+                          Text(
+                            '${formatter.format(_orderedMealController.getCntFullDiningDaysOfWeek()*700)} 원',
+                            style: TextStyle(
+                              color: GRAY3,
+                              fontSize: 12,
+                              fontFamily: 'Pretendard Variable',
+                              fontWeight: FontWeight.w400,
+                              decoration: TextDecoration.lineThrough,
+                              height: 0.12,
+                              letterSpacing: -0.24,
+                            ),
+                          ),
+                        ],
+                      )
                     ],
-                  )
-
+                  ),
                 ],
               ),
-
-            ],
-          ),
-        ),
-        
+            ),
+          );
+        },
       ),
       floatingActionButton: Padding(
         padding: EdgeInsets.fromLTRB(20, 8, 20, 8),
@@ -149,5 +172,25 @@ class _FullDiningSelcetState extends State<FullDiningSelcet> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
+  }
+  double _getFullDiningPrice(int number) {
+    switch (number) {
+      case 1:
+        return number*700;
+      case 2:
+        return number*700;
+      case 3:
+        return number*700*0.95;
+      case 4:
+        return number*700*0.95;
+      case 5:
+        return number*700*0.9;
+      case 6:
+        return number*700*0.9;
+      case 7:
+        return number*700*0.85;
+      default:
+        return 0;
+    }
   }
 }

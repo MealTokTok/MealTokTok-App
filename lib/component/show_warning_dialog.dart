@@ -51,7 +51,6 @@ void showWarningDialog(BuildContext context, String title, String content, Strin
           ),
           TextButton(
             onPressed: () {
-              rightButtonFunction();
               Navigator.of(context).pop();
               if(rightButtonFunction != null) rightButtonFunction();
             },

@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hankkitoktok/component/show_warning_dialog.dart';
 import 'package:hankkitoktok/const/color.dart';
 import 'package:hankkitoktok/const/style2.dart';
+import 'package:hankkitoktok/models/enums.dart';
+import 'package:hankkitoktok/screen/5_order/2_full_dining_selcet.dart';
 
 class FullDiningExplanation extends StatefulWidget {
-  const FullDiningExplanation({super.key});
+  OrderType orderType;
+  FullDiningExplanation({
+    required this.orderType,
+    super.key
+  });
 
   @override
   State<FullDiningExplanation> createState() => _FullDiningExplanationState();
@@ -26,7 +33,10 @@ class _FullDiningExplanationState extends State<FullDiningExplanation> {
             padding: EdgeInsets.all(8),
             child: IconButton(
               iconSize: 24,
-              onPressed: () {},
+              onPressed: () {
+
+                showWarningDialog(context, '풀대접 서비스를\n받지 않으실 건가요?', '돌아가기를 누르시면 풀대접 서비스는\n장바구니에 담기지 않아요.', '돌아가기','그만두기',null,null);
+              },
               icon: Image.asset(
                 'assets/images/1_my_page/left_arrow.png',
               ),
@@ -215,7 +225,14 @@ class _FullDiningExplanationState extends State<FullDiningExplanation> {
         child: Container(
           width: MediaQuery.of(context).size.width,
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => FullDiningSelcet(orderType: widget.orderType)
+                  )
+              );
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: PRIMARY_COLOR,
               foregroundColor: Colors.white,

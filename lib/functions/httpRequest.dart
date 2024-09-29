@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/base_model.dart';
 
 String BASE_URL = 'http://mealtoktok.p-e.kr';
-enum RequestType { POST, PATCH, DELETE }
+enum RequestType { POST, PUT, DELETE, PATCH }
 
 //POST, PATCH, DELETE 형식으로 요청을 받을 때
 Future<bool> networkRequest(String detailUri,RequestType requestType, Map<String,dynamic> data) async { //Todo: body 추가, return값 추가
@@ -64,10 +64,12 @@ Future<bool> networkRequest(String detailUri,RequestType requestType, Map<String
 Future<http.Response>? httpResponse(Uri uri, Map<String,String> header, RequestType requestType, Map<String,dynamic> data){
   if(requestType == RequestType.POST){
     return http.post(uri, headers: header, body:jsonEncode(data));
-  } else if(requestType == RequestType.PATCH){
-    return http.patch(uri, headers: header, body:jsonEncode(data));
+  } else if(requestType == RequestType.PUT){
+    return http.put(uri, headers: header, body:jsonEncode(data));
   } else if(requestType == RequestType.DELETE){
     return http.delete(uri, headers: header, body:jsonEncode(data));
+  } else if(requestType == RequestType.PATCH){
+    return http.patch(uri, headers: header, body:jsonEncode(data));
   } else {
     return null;
   }
@@ -216,6 +218,63 @@ Future<void> tokenRefresh(SharedPreferences prefs) async {
 
 /////////////////////////////////////////////////////
 
+//마스터 토큰용 GET 요청(전체조회)
+Future<List<T>> networkGetListRequest111<T extends BaseModel>(T model,String detailUri, Map<String,dynamic>? query) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance(); // 저장소
+  String accessToken = prefs.getString('access_token') ?? '';
+  Uri uri = Uri.parse('$BASE_URL/$detailUri');
+
+  if (query != null) {
+    uri = uri.replace(queryParameters: query);
+  }
+
+  http.Response? response;
+  Map<String, String> header = {
+    'Content-Type': 'application/json',
+    //'Authorization': 'Bearer $accessToken',
+    'Access-token': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzIzNDYyOTM5LCJleHAiOjE3NDkzODI5Mzl9.rmDSuxTSfjJplWLm-v1AxKrz_-9jt8u5RJeC4q2JW38'
+  };
+
+  try {
+    response = await http.get(uri, headers: header);
+    if (response == null) {
+      throw Exception('리스폰스가 null입니다.');
+    }
+
+    if (response.statusCode == 401) {
+      // access token이 만료되었을 경우,
+      await tokenRefresh(prefs); // refresh token으로 token을 refresh한 후 다시 요청
+      header['Authorization'] = 'Bearer ${prefs.getString('access_token')}';
+      response = await http.get(uri, headers: header);
+
+      if (response == null) {
+        throw Exception('리스폰스가 null입니다.');
+      }
+    }
+    if(response.statusCode == 200){
+      var responseBody = jsonDecode(utf8.decode(response.bodyBytes));
+      List<T> result = [];
+      for (var data in responseBody['result']) {
+        // 매번 새로운 인스턴스를 생성하여 사용
+        T newInstance = model.fromMap(data) as T;
+        result.add(newInstance);
+      }
+      for(T data in result){
+        print(data.toJson());
+      }
+
+      // await prefs.setString("access_token", responseBody['access']); //Todo: 데이터 보고 교체
+      // await prefs.setString("refresh_token", responseBody['refresh']); //Todo: 데이터 보고 교체
+      return result;
+    } else {
+      throw Exception(response.statusCode.toString());
+    }
+  }catch (e) {
+    debugPrint(e.toString());
+    throw Exception("네트워크 요청에 실패했습니다: $e");
+  }
+}
+
 //마스터 토큰용
 Future<T> networkGetRequest111<T extends BaseModel>(T model, String detailUri, Map<String, dynamic>? query, ) async {
   //SharedPreferences prefs = await SharedPreferences.getInstance(); // 저장소
@@ -336,3 +395,4 @@ Future<int> networkGetRequest222(String detailUri, Map<String, dynamic>? query, 
     throw Exception("네트워크 요청에 실패했습니다: $e");
   }
 }
+

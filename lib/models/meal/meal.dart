@@ -15,8 +15,7 @@ class Meal extends BaseModel {
     this.price = 0,
     this.dishList = const [],
     this.createdAt,
-});
-
+  });
 
   @override
   Meal fromMap(Map<String, dynamic> map) {
@@ -40,15 +39,14 @@ class Meal extends BaseModel {
     for (Dish dish in dishList) {
       dishString += '${dish.dishName}, ';
     }
-    if(dishString.length > 2){
+    if (dishString.length > 2) {
       return dishString.substring(0, dishString.length - 2);
-    }
-    else {
+    } else {
       return '';
     }
   }
 
-  List<String> getDishNames(){
+  List<String> getDishNames() {
     List<String> dishNames = [];
     for (Dish dish in dishList) {
       dishNames.add(dish.dishName);
@@ -56,7 +54,7 @@ class Meal extends BaseModel {
     return dishNames;
   }
 
-  List<String> getDishUrls(){
+  List<String> getDishUrls() {
     List<String> dishUrls = [];
     for (Dish dish in dishList) {
       dishUrls.add(dish.imgUrl);
@@ -65,3 +63,45 @@ class Meal extends BaseModel {
   }
 }
 
+class Meal1 extends BaseModel {
+  int mealId;
+  String mealName;
+  int mealPrice;
+  List<Dish1> dishes;
+
+  Meal1.init({
+    this.mealId = 0,
+    this.mealName = '',
+    this.mealPrice = 0,
+    this.dishes = const [],
+  });
+
+  @override
+  Meal1 fromMap(Map<String, dynamic> map) {
+    return Meal1.init(
+      mealId: map['meal']['mealId'],
+      mealName: map['meal']['mealName'],
+      mealPrice: map['meal']['mealPrice']['amount'],
+      dishes:
+          (map['dishes'] as List).map((dish) => Dish1.init().fromMap(dish)).toList(),
+    );
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'mealId': mealId,
+      'mealName': mealName,
+      'mealPrice': {'amount': mealPrice},
+      'dishes': dishes.map((dish) => dish.toJson()).toList(),
+    };
+  }
+
+  List<String> getDishUrls() {
+    List<String> dishUrls = [];
+    for (Dish1 dish in dishes) {
+      dishUrls.add(dish.imgUrl);
+    }
+    return dishUrls;
+  }
+}
