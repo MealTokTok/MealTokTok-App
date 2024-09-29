@@ -1,6 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hankkitoktok/const/color.dart';
+import 'package:hankkitoktok/functions/httpRequest.dart';
+import 'package:hankkitoktok/models/meal/meal.dart';
+import 'package:hankkitoktok/screen/3_menu_choice/1_choice_menu_screen_ver2.dart';
+import 'package:hankkitoktok/screen/3_menu_choice/1_side_dish_menu_update.dart';
 
 class MealMenuScreen extends StatefulWidget {
   const MealMenuScreen({super.key});
@@ -10,7 +15,20 @@ class MealMenuScreen extends StatefulWidget {
 }
 
 class _MealMenuScreenState extends State<MealMenuScreen> {
-  List mealList = [0, 1, 2, 3, 4, 5, 6, 7];
+  //List mealList = [0, 1, 2, 3, 4, 5, 6, 7];
+  List<Meal1> mealList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    mealList =
+        await networkGetListRequest111(Meal1.init(), 'api/v1/meals', null);
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +37,7 @@ class _MealMenuScreenState extends State<MealMenuScreen> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(48.0),
         child: AppBar(
+          automaticallyImplyLeading: false,
           backgroundColor: GRAY0,
           title: const Text('반찬 구성',
               style: TextStyle(
@@ -36,7 +55,13 @@ class _MealMenuScreenState extends State<MealMenuScreen> {
                 height: 32.0,
                 width: 68.0,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SelectMenuScreen()),
+                    );
+
+                  },
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.zero,
                     backgroundColor: PRIMARY_COLOR, // 버튼 배경 색상
@@ -45,12 +70,17 @@ class _MealMenuScreenState extends State<MealMenuScreen> {
                       borderRadius: BorderRadius.circular(8.0), // 둥근 모서리 반경
                     ),
                   ),
-
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(width: 24,height: 24,child: Icon(Icons.add, size: 20,),),
-
+                      Container(
+                        width: 24,
+                        height: 24,
+                        child: Icon(
+                          Icons.add,
+                          size: 20,
+                        ),
+                      ),
                       Text(
                         "추가",
                         style: TextStyle(
@@ -115,41 +145,65 @@ class _MealMenuScreenState extends State<MealMenuScreen> {
                               children: [
                                 Row(
                                   children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(24),
-                                        color: PRIMARY_COLOR,
-                                      ),
-                                      width: 72,
-                                      height: 72,
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(24),
-                                        color: PRIMARY_COLOR,
-                                      ),
-                                      width: 72,
-                                      height: 72,
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(24),
-                                        color: PRIMARY_COLOR,
-                                      ),
-                                      width: 72,
-                                      height: 72,
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(24),
-                                        color: PRIMARY_COLOR,
-                                      ),
-                                      width: 72,
-                                      height: 72,
-                                    ),
+                                    ...mealList[index].dishes.map((dish) {
+                                      return Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 4.0),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(24),
+                                            // color: PRIMARY_COLOR,
+                                          ),
+                                          width: 72,
+                                          height: 72,
+                                          child: Image.network(
+                                            dish.imgUrl,
+                                            fit: BoxFit.cover, // 이미지가 컨테이너에 맞게 채워지도록 설정
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                                    // Container(
+                                    //     decoration: BoxDecoration(
+                                    //       borderRadius: BorderRadius.circular(24),
+                                    //       //color: PRIMARY_COLOR,
+                                    //     ),
+                                    //     width: 72,
+                                    //     height: 72,
+                                    //     child: Image.network(
+                                    //       '${mealList[index].dishes[i].imgUrl}',
+                                    //       fit: BoxFit.cover, // 이미지가 컨테이너에 맞게 채워지도록 설정
+                                    //     ),
+                                    //   ),
+                                    //   const SizedBox(width: 4),
+                                    //
+                                    // Container(
+                                    //   decoration: BoxDecoration(
+                                    //     borderRadius: BorderRadius.circular(24),
+                                    //     color: PRIMARY_COLOR,
+                                    //   ),
+                                    //   width: 72,
+                                    //   height: 72,
+                                    // ),
+                                    // const SizedBox(width: 4),
+                                    // Container(
+                                    //   decoration: BoxDecoration(
+                                    //     borderRadius: BorderRadius.circular(24),
+                                    //     color: PRIMARY_COLOR,
+                                    //   ),
+                                    //   width: 72,
+                                    //   height: 72,
+                                    // ),
+                                    // const SizedBox(width: 4),
+                                    // Container(
+                                    //   decoration: BoxDecoration(
+                                    //     borderRadius: BorderRadius.circular(24),
+                                    //     color: PRIMARY_COLOR,
+                                    //   ),
+                                    //   width: 72,
+                                    //   height: 72,
+                                    // ),
                                   ],
                                 ),
                                 SizedBox(
@@ -167,7 +221,7 @@ class _MealMenuScreenState extends State<MealMenuScreen> {
 
                                       children: [
                                         Text(
-                                          '최애 조합 반찬',
+                                          '${mealList[index].mealName}',
                                           style: TextStyle(
                                             color: Colors.black,
                                             fontSize: 16,
@@ -178,7 +232,7 @@ class _MealMenuScreenState extends State<MealMenuScreen> {
                                           ),
                                         ),
                                         Text(
-                                          '6000원',
+                                          '${mealList[index].mealPrice}원',
                                           style: TextStyle(
                                             color: Colors.black,
                                             fontSize: 14,
@@ -194,7 +248,10 @@ class _MealMenuScreenState extends State<MealMenuScreen> {
                                       width: 48,
                                       //height: 29,
                                       child: OutlinedButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          Navigator.push(context, MaterialPageRoute(builder: (context)=>SelectMenuScreen1(meal: mealList[index],)));
+
+                                        },
                                         style: OutlinedButton.styleFrom(
                                           padding: EdgeInsets.zero,
                                           side: BorderSide(
