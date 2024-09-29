@@ -17,7 +17,7 @@ class MealInfo extends StatelessWidget {
     required this.orderNumberColor,
     super.key
   }){
-    meal = mealDelivery.orderedMeal.meal;
+    meal = mealDelivery.meal;
   }
 
   @override

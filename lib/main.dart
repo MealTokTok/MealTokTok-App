@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hankkitoktok/component/calendar.dart';
 import 'package:hankkitoktok/controller/delivery_controller.dart';
-import 'package:hankkitoktok/controller/list_view_scroll_controller.dart';
+import 'package:hankkitoktok/controller/history_controller.dart';
 import 'package:hankkitoktok/controller/ordered_meal_controller.dart';
 import 'package:hankkitoktok/controller/user_controller.dart';
 import 'package:hankkitoktok/screen/0_login_and_set_address/0_login_screen.dart';
@@ -20,7 +20,7 @@ import 'package:hankkitoktok/screen/3_menu_choice/1_choice_menu_screen.dart';
 import 'package:hankkitoktok/screen/3_menu_choice/2_order_screen.dart';
 import 'package:hankkitoktok/screen/4_my_page/0_my_page_home.dart';
 import 'package:hankkitoktok/screen/4_my_page/3_delete_id.dart';
-import 'package:hankkitoktok/screen/4_pay_choice/payment_test.dart';
+//import 'package:hankkitoktok/screen/4_pay_choice/payment_test.dart';
 import 'package:hankkitoktok/screen/5_order/1_full_dining_explanation.dart';
 import 'package:hankkitoktok/screen/test_screen.dart';
 import 'package:intl/intl.dart';
@@ -119,7 +119,7 @@ void _notificationSetting(){
 
 void _getControllerSetting(){
   Get.put(OrderedMealController());
-  Get.put(ListViewScrollController());
+  Get.put(HistoryController());
   Get.put(UserController());
   Get.put(AddressController());
   Get.put(DeliveryController());

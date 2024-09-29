@@ -6,7 +6,7 @@ import '../const/style2.dart';
 import '../const/color.dart';
 import '../controller/meal_controller.dart';
 import '../models/enums.dart';
-import '../models/meal/ordered_meal.dart';
+import '../models/meal/meal_delivery_order.dart';
 
 enum Mode { MEAL, RICE, WASHING }
 

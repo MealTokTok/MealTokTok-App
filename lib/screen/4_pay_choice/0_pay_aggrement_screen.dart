@@ -8,10 +8,12 @@ import 'package:get/get.dart';
 import 'package:hankkitoktok/functions/formatter.dart';
 import 'package:hankkitoktok/models/order/order_data.dart';
 import 'package:hankkitoktok/screen/0_login_and_set_address/3_view_address_screen.dart';
+import 'package:hankkitoktok/screen/4_pay_choice/pay_test.dart';
 import '../../component/tile.dart';
 import '../../controller/address_controller.dart';
 import '../../models/enums.dart';
 import '../../models/order/order_post.dart';
+import '../5_order/2_after_order_screen.dart';
 
 class PayAggrementScreen extends StatefulWidget {
   OrderPost orderPost;
@@ -149,7 +151,7 @@ class _PayAggrementScreenState extends State<PayAggrementScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(addressController.getSelectedAddress.getAddressString,
+                Text(addressController.selectedAddress.getAddressString,
                     style:
                         TextStyles.getTextStyle(TextType.BODY_2, GREY_COLOR_2)),
                 OutlinedButton(
@@ -257,7 +259,7 @@ class _PayAggrementScreenState extends State<PayAggrementScreen> {
             TextSpan(
                 children: [
                   TextSpan(text: (widget.orderPost.orderType == OrderType.IMMEDIATE) ? "일 결제": "주간 결제", style: TextStyles.getTextStyle(TextType.BODY_2, GREY_COLOR_2)),
-                  TextSpan(text:'${widget.orderPost.orderedMeals.length}회', style: TextStyles.getTextStyle(TextType.BUTTON, GREY_COLOR_2)),
+                  TextSpan(text:'${widget.orderPost.mealDeliveryOrders.length}회', style: TextStyles.getTextStyle(TextType.BUTTON, GREY_COLOR_2)),
                 ]
             )
             )
@@ -331,9 +333,15 @@ class _PayAggrementScreenState extends State<PayAggrementScreen> {
                 //Todo: 결제 -> 결제완료 콜백 -> 주문완료 처리?
                 debugPrint(widget.orderPost.toJson().toString());
                 String id = await orderPost(widget.orderPost.toJson());
-                //Todo: 주문완료 페이지로 이동(id 전달)
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AfterOrderScreen(orderId: id))
+                    // builder: (context) => PayTest(id: id))
+                );
               }
             },
+
             style: ElevatedButton.styleFrom(
               elevation: 0,
               minimumSize: const Size(double.infinity, 48),
