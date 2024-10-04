@@ -1,33 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hankkitoktok/const/color.dart';
+import 'package:hankkitoktok/const/style2.dart';
+import 'package:hankkitoktok/functions/httpRequest.dart';
+import 'package:hankkitoktok/models/meal/dish.dart';
+import 'package:hankkitoktok/models/meal/dish_category.dart';
+import 'package:hankkitoktok/screen/3_menu_choice/0_meal_menu_screen.dart';
 
-class SideDish{
-  String name ='';
-  String type ='';
-  String src = '';
-  SideDish({String name='', String type='', String src = ''}){
-    this.name= name;
-    this.type= type;
-    this.src= src;
-  }
-}
+List<Dish1> listSideDish = [];
 
-List<SideDish> listSideDish = [];
-
-List<SideDish> sampleSideDishes = [
-  SideDish(name: '고추장볶음', type: '볶음', src: r'assets/image/3_menu_choice/gochujangbokkeum.jpg'),
-  SideDish(name: '메추리알조림', type: '조림', src: r'assets/image/quailEggJorim.jpg'),
-  SideDish(name: '오이무침', type: '무침', src: r'assets/image/cucumberMuchim.jpg'),
-  SideDish(name: '깍두기', type: '김치/젓갈', src: r'assets/image/kaktugi.jpg'),
-  SideDish(name: '무생채', type: '무침', src: r'assets/image/musaengchae.jpg'),
-  SideDish(name: '감자조림', type: '조림', src: r'assets/image/potatoJorim.jpg'),
-  SideDish(name: '김치볶음', type: '볶음', src: 'https://example.com/kimchiBokkeum.jpg'),
-  SideDish(name: '오징어젓갈', type: '김치/젓갈', src: 'https://example.com/squidJeotgal.jpg'),
-  SideDish(name: '배추김치', type: '김치/젓갈', src: 'https://example.com/baechuKimchi.jpg'),
-  SideDish(name: '양파절임', type: '절임', src: 'https://example.com/onionPickles.jpg'),
-];
-
+List<Dish1> sampleSideDishes = [];
 
 class SelectMenuScreen extends StatefulWidget {
   @override
@@ -35,22 +18,60 @@ class SelectMenuScreen extends StatefulWidget {
 }
 
 class _SelectMenuState extends State<SelectMenuScreen> {
-  String obentoName = ''; // 도시락 이름
-  String sideDishType = '';
-  List<SideDish> selectedSideDish = []; // 선택된 사이드디쉬 리스트
-  List<SideDish> listSideDish = sampleSideDishes; // 화면에 표시할 사이드디쉬 리스트
-  List<SideDish> allListSideDish = sampleSideDishes; // 모든 사이드디쉬
+  // String obentoName = ''; // 도시락 이름
+  // String sideDishType = '';
+  // List<Dish1> selectedSideDish = []; // 선택된 사이드디쉬 리스트
+  // List<Dish1> listSideDish = sampleSideDishes; // 화면에 표시할 사이드디쉬 리스트
+  // List<Dish1> allListSideDish = sampleSideDishes; // 모든 사이드디쉬
 
-  void searchSideDish() {
-    setState(() {
-      if (sideDishType != '') {
-        listSideDish = allListSideDish
-            .where((sideDish) => sideDish.type == sideDishType)
-            .toList();
-      } else {
-        listSideDish = allListSideDish; // 필터 해제 시 모든 사이드디쉬를 표시
+  // void searchSideDish() {
+  //   setState(() {
+  //     if (sideDishType != '') {
+  //       listSideDish = allListSideDish
+  //           .where((sideDish) => sideDish.type == sideDishType)
+  //           .toList();
+  //     } else {
+  //       listSideDish = allListSideDish; // 필터 해제 시 모든 사이드디쉬를 표시
+  //     }
+  //   });
+  // }
+  //모든 반찬 들여오기
+  List<Dish1> selectedSideDish = [];
+  List<Dish1> listSideDish = [];
+
+  int sideDishType = 0;
+  List<DishCategory> listDishCategory = [];
+
+  TextEditingController dishSearch = TextEditingController();
+  TextEditingController dishName = TextEditingController();
+  int mealPrice = 0;
+  List<int> dishIds = [];
+  String textValue = "";
+  String selectedCategory = '';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    try {
+      listDishCategory = await networkGetListRequest111(
+          DishCategory.init(), 'api/v1/dish-categories', null);
+      setState(() {}); // 카테고리 업데이트 후 화면 갱신
+
+      // 선택된 카테고리의 반찬 리스트를 가져옴 (예: 첫 번째 카테고리로 테스트)
+      if (listDishCategory.isNotEmpty) {
+        listSideDish = await networkGetListRequest111(
+            Dish1.init(),
+            'api/v1/stores/1/categories/${listDishCategory[0].categoryId}/dishes',
+            null);
+        setState(() {}); // 반찬 리스트 업데이트 후 화면 갱신
       }
-    });
+    } catch (e) {
+      print('Error fetching data: $e');
+    }
   }
 
   @override
@@ -58,298 +79,311 @@ class _SelectMenuState extends State<SelectMenuScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: Text("메뉴 구성", style: TextStyle(fontSize: 18)),
-        centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.chevron_left),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ),
+          title: Text(
+            "메뉴 구성",
+            style: TextStyles.getTextStyle(TextType.BODY_1, Colors.black),
+          ),
+          centerTitle: true,
+          leading: Container(
+            height: 24,
+            width: 24,
+            padding: EdgeInsets.all(8),
+            child: IconButton(
+              iconSize: 24,
+              onPressed: () {},
+              icon: Image.asset(
+                'assets/images/1_my_page/left_arrow.png',
+              ),
+            ),
+          )),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.fromLTRB(20, 16, 20, 64),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('반찬 도시락 이름'),
-            SizedBox(height: 5),
-            TextField(
-              cursorColor: Color(0xFF999999),
+            Text(
+              '반찬 도시락 이름',
+              style: TextStyles.getTextStyle(TextType.TITLE_3, Colors.black),
+            ),
+            SizedBox(height: 4),
+            // Expanded(
+            //   child: Container(
+            //     //width: 375,
+            //     //너비 자유롭게 되도록 설정해둬야 함
+            //     height: 48,
+            //    child:
+            TextFormField(
+              maxLength: 10,
+              controller: dishName,
+              textAlignVertical: TextAlignVertical.top,
+              textAlign: TextAlign.start,
+              style: TextStyles.getTextStyle(TextType.BUTTON, Colors.black),
               decoration: InputDecoration(
-                contentPadding: EdgeInsets.symmetric(vertical: 10.0),
-                hintText: "      이름을 입력해주세요.                               (0/10)",
-                hintStyle: TextStyle(
-                  color: Color(0xFF999999),
-                ),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                labelText: "이름을 입력해주세요.",
+                labelStyle: TextStyles.getTextStyle(TextType.BUTTON, GRAY3),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15.0),
+                  borderRadius: BorderRadius.circular(12.0),
                   borderSide: BorderSide(
-                    color: Color(0xFF999999),
+                    color: GRAY1,
+
+                    //color: isAvailable != null && isAvailable!.isAvailable ? GRAY1 : SECONDARY,
+                    width: 1.6,
                   ),
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15.0),
+                  borderRadius: BorderRadius.circular(12.0),
                   borderSide: BorderSide(
-                    color: Color(0xFF999999),
+                    color: GRAY1,
+
+                    // color: isAvailable != null && isAvailable!.isAvailable ? GRAY1 : SECONDARY,
+                    width: 1.6,
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15.0),
+                  borderRadius: BorderRadius.circular(12.0),
                   borderSide: BorderSide(
-                    color: Color(0xFF999999),
+                    color: GRAY1,
+                    //color: isAvailable != null && isAvailable!.isAvailable ? GRAY1 : SECONDARY,
+                    width: 1.6,
                   ),
                 ),
+                counterText: "",
+                suffix: Text(
+                  "(${textValue.length}/10)",
+                  style: TextStyles.getTextStyle(TextType.BODY_2, GRAY2),
+                ),
+                floatingLabelBehavior: FloatingLabelBehavior.never,
               ),
+              onChanged: (value) {
+                setState(() {
+                  textValue = value;
+                });
+              },
+              validator: (value) {
+                //띄워쓰기 입력시 거절 추가
+                if (value == null || value.isEmpty) {
+                  return '이름을 입력해주세요.';
+                }
+                // if (int.tryParse(value) == null) {
+                //   return '';
+                // }
+                return null;
+              },
             ),
-            SizedBox(height: 16),
-            Text('원하는 반찬 4개를 선택해주세요.'),
-            SizedBox(height: 16),
+            //   ),
+            //
+            // ),
+            SizedBox(height: 40),
+            Text(
+              '원하는 반찬 4개를 선택해주세요.(중복선택 가능)',
+              style: TextStyles.getTextStyle(TextType.TITLE_3, Colors.black),
+            ),
+            SizedBox(height: 4),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: selectedSideDish.isEmpty
                   ? [Container(width: 50, height: 97)]
                   : selectedSideDish.map((sideDish) {
-                return Column(children: [
-                  Row(children: [
-                    SizedBox(width: 4),
-                    Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: Stack(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(10.0),
-                              child: Image.asset(
-                                sideDish.src,
-                                width: 70,
-                                height: 70,
-                                fit: BoxFit.cover,
+                      return Column(children: [
+                        Row(children: [
+                          //SizedBox(width: 4),
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: Stack(clipBehavior: Clip.none, children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(12.0),
+                                child: Image.network(
+                                  sideDish.imgUrl,
+                                  width: 72,
+                                  height: 72,
+                                  fit: BoxFit.cover,
+                                ),
+                                // child: Image.asset(
+                                //   'assets/images/3_menu_choice/rice.png',
+                                //   width: 72,
+                                //   height: 72,
+                                //   fit: BoxFit.cover,
+                                // ),
                               ),
-                            ),
-                            Positioned(
-                              top: 0.0,
-                              right: 0.0,
-                              child: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    selectedSideDish.remove(sideDish);
-                                  });// X 버튼을 눌렀을 때 실행할 동작
-                                },
-                                child: Container(
-                                  width: 24,
-                                  height: 24,
-                                  decoration: BoxDecoration(
-                                    color: Colors.black.withOpacity(0.6),
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Icon(
-                                    Icons.close,
-                                    color: Colors.white,
-                                    size: 16,
+                              Positioned(
+                                top: -9,
+                                right: -9,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      selectedSideDish.remove(sideDish);
+                                    }); // X 버튼을 눌렀을 때 실행할 동작
+                                  },
+                                  child: Container(
+                                    width: 18,
+                                    height: 18,
+                                    child: Image.asset(
+                                      'assets/images/3_menu_choice/cancel.png',
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ]
-                      ),
-                    ),
-                    SizedBox(width: 4),
-                  ]),
-                  Text(sideDish.name,
-                      style: TextStyle(
-                          fontSize: 13, fontStyle: FontStyle.normal)),
-                ]);
-              }).toList(),
+                            ]),
+                          ),
+                          SizedBox(width: 4),
+                        ]),
+                        SizedBox(width: 4),
+                        Container(
+                          width: 72,
+                          child: Text(
+                            sideDish.dishName,
+                            style: TextStyles.getTextStyle(
+                                TextType.BODY_2, Colors.black),
+                            textAlign: TextAlign.start,
+                          ),
+                        ),
+                      ]);
+                    }).toList(),
             ),
-            SizedBox(height: 16),
-            TextField(
-              onChanged: (value) {
-                // 반찬 이름 받아서 밑에 이미지 띄우기
-              },
-              cursorColor: Color(0xFF999999),
+            SizedBox(height: 20),
+            //Expanded(
+            //child: Container(
+            //width: 375,
+            //너비 자유롭게 되도록 설정해둬야 함
+            //height: 48,
+            //child:
+            TextFormField(
+              maxLength: 10,
+              controller: dishSearch,
+              textAlignVertical: TextAlignVertical.top,
+              textAlign: TextAlign.start,
+              style: TextStyles.getTextStyle(TextType.BUTTON, Colors.black),
               decoration: InputDecoration(
-                contentPadding: EdgeInsets.symmetric(vertical: 10.0),
-                prefixIcon: Icon(Icons.search),
-                hintText: "반찬명을 검색해주세요.",
-                hintStyle: TextStyle(
-                  color: Color(0xFF999999),
+                prefixIcon: IconButton(
+                  onPressed: () async {
+                    try {
+                      listSideDish = await networkGetListRequest111(
+                        Dish1.init(),
+                        'api/v1/stores/1/dishes/search',
+                        {
+                          'keyword': dishSearch.text,
+                        },
+                      );
+                      setState(() {}); // 새로운 반찬 리스트가 업데이트된 후 화면 갱신
+                    } catch (e) {
+                      print('Error loading side dishes: $e');
+                    }
+                  },
+                  icon: Image.asset(
+                    width: 24,
+                    'assets/images/1_my_page/search.png',
+                  ),
                 ),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                labelText: "반찬명을 검색해주세요.",
+                labelStyle: TextStyles.getTextStyle(TextType.BUTTON, GRAY3),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15.0),
+                  borderRadius: BorderRadius.circular(12.0),
                   borderSide: BorderSide(
-                    color: Color(0xFF999999),
+                    color: GRAY1,
+
+                    //color: isAvailable != null && isAvailable!.isAvailable ? GRAY1 : SECONDARY,
+                    width: 1.6,
                   ),
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15.0),
+                  borderRadius: BorderRadius.circular(12.0),
                   borderSide: BorderSide(
-                    color: Color(0xFF999999),
+                    color: GRAY1,
+
+                    // color: isAvailable != null && isAvailable!.isAvailable ? GRAY1 : SECONDARY,
+                    width: 1.6,
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15.0),
+                  borderRadius: BorderRadius.circular(12.0),
                   borderSide: BorderSide(
-                    color: Color(0xFF999999),
+                    color: GRAY1,
+                    //color: isAvailable != null && isAvailable!.isAvailable ? GRAY1 : SECONDARY,
+                    width: 1.6,
                   ),
                 ),
+                counterText: "",
+                floatingLabelBehavior: FloatingLabelBehavior.never,
               ),
+              validator: (value) {
+                //띄워쓰기 입력시 거절 추가
+                if (value == null || value.isEmpty) {
+                  return '반찬명을 입력해주세요.';
+                }
+                // if (int.tryParse(value) == null) {
+                //   return '';
+                // }
+                return null;
+              },
             ),
-            SizedBox(height: 16),
+            //),
+
+            //),
+            SizedBox(height: 18),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Row(
                     children: [
-                      Expanded(
-                        child: TextButton(
-                          onPressed: () {
-                            setState(() {
-                              if (sideDishType == '볶음')
-                                sideDishType = '';
-                              else
-                                sideDishType = '볶음';
-                            });
-                            searchSideDish();
-                          },
-                          style: TextButton.styleFrom(
-                            backgroundColor: sideDishType == '볶음'
-                                ? Colors.orange
-                                : Color(0xFFE9E9E9),
-                            foregroundColor: sideDishType == '볶음'
-                                ? Colors.white
-                                : Colors.black,
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                              BorderRadius.circular(8.0), // 둥근 모서리 적용
+                      ...listDishCategory.map((category) {
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 6.0),
+                          child: Expanded(
+                            child: TextButton(
+                              onPressed: () async {
+                                try {
+                                  listSideDish = await networkGetListRequest111(
+                                    Dish1.init(),
+                                    'api/v1/stores/1/categories/${category.categoryId}/dishes',
+                                    null,
+                                  );
+                                  setState(() {
+                                    selectedCategory = category.categoryName;
+                                  }); // 새로운 반찬 리스트가 업데이트된 후 화면 갱신
+                                } catch (e) {
+                                  print('Error loading side dishes: $e');
+                                }
+                              },
+                              style: TextButton.styleFrom(
+                                backgroundColor: selectedCategory == category.categoryName
+                                    ? PRIMARY_COLOR
+                                    : GRAY1,
+                                foregroundColor:
+                                selectedCategory == category.categoryName ? GRAY0 : GRAY4,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.circular(8.0), // 둥근 모서리 적용
+                                ),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 4.0, horizontal: 12),
+                              ),
+                              child: Text(
+                                '${category.categoryName}',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontFamily: 'Pretendard Variable',
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
                             ),
-                            padding: EdgeInsets.symmetric(vertical: 4.0),
                           ),
-                          child: Text('볶음'),
-                        ),
-                      ),
-                      SizedBox(width: 8.0),
-                      Expanded(
-                        child: TextButton(
-                          onPressed: () {
-                            setState(() {
-                              if (sideDishType == '조림')
-                                sideDishType = '';
-                              else
-                                sideDishType = '조림';
-                            });
-                            searchSideDish();
-                          },
-                          style: TextButton.styleFrom(
-                            backgroundColor: sideDishType == '조림'
-                                ? Colors.orange
-                                : Color(0xFFE9E9E9),
-                            foregroundColor: sideDishType == '조림'
-                                ? Colors.white
-                                : Colors.black,
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                              BorderRadius.circular(8.0), // 둥근 모서리 적용
-                            ),
-                            padding: EdgeInsets.symmetric(vertical: 4.0),
-                          ),
-                          child: Text('조림'),
-                        ),
-                      ),
-                      SizedBox(width: 8.0),
-                      Expanded(
-                        child: TextButton(
-                          onPressed: () {
-                            setState(() {
-                              if (sideDishType == '무침')
-                                sideDishType = '';
-                              else
-                                sideDishType = '무침';
-                            });
-                            searchSideDish();
-                          },
-                          style: TextButton.styleFrom(
-                            backgroundColor: sideDishType == '무침'
-                                ? Colors.orange
-                                : Color(0xFFE9E9E9),
-                            foregroundColor: sideDishType == '무침'
-                                ? Colors.white
-                                : Colors.black,
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                              BorderRadius.circular(8.0), // 둥근 모서리 적용
-                            ),
-                            padding: EdgeInsets.symmetric(vertical: 4.0),
-                          ),
-                          child: Text('무침'),
-                        ),
-                      ),
-                      SizedBox(width: 8.0),
-                      Expanded(
-                        child: TextButton(
-                          onPressed: () {
-                            setState(() {
-                              if (sideDishType == '절임')
-                                sideDishType = '';
-                              else
-                                sideDishType = '절임';
-                            });
-                            searchSideDish();
-                          },
-                          style: TextButton.styleFrom(
-                            backgroundColor: sideDishType == '절임'
-                                ? Colors.orange
-                                : Color(0xFFE9E9E9),
-                            foregroundColor: sideDishType == '절임'
-                                ? Colors.white
-                                : Colors.black,
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                              BorderRadius.circular(8.0), // 둥근 모서리 적용
-                            ),
-                            padding: EdgeInsets.symmetric(vertical: 4.0),
-                          ),
-                          child: Text('절임'),
-                        ),
-                      ),
-                      SizedBox(width: 8.0),
-                      Expanded(
-                        child: TextButton(
-                          onPressed: () {
-                            setState(() {
-                              if (sideDishType == '김치/젓갈')
-                                sideDishType = '';
-                              else
-                                sideDishType = '김치/젓갈';
-                            });
-                            searchSideDish();
-                          },
-                          style: TextButton.styleFrom(
-                            backgroundColor: sideDishType == '김치/젓갈'
-                                ? Colors.orange
-                                : Color(0xFFE9E9E9),
-                            foregroundColor: sideDishType == '김치/젓갈'
-                                ? Colors.white
-                                : Colors.black,
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                              BorderRadius.circular(8.0), // 둥근 모서리 적용
-                            ),
-                            padding: EdgeInsets.symmetric(
-                                vertical: 4.0),
-                          ),
-                          child: Text('김치/젓갈'),
-                        ),
-                      ),
+                        );
+                      }).toList(),
                     ],
                   ),
-                  SizedBox(height: 15.0),
+                  SizedBox(height: 20.0),
                   Expanded(
                     child: GridView.builder(
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 3,
-                        crossAxisSpacing: 8.0,
-                        mainAxisSpacing: 8.0,
+                        crossAxisSpacing: 12.0,
+                        mainAxisSpacing: 16.0,
                       ),
                       itemCount: listSideDish.length,
                       itemBuilder: (context, index) {
@@ -359,58 +393,112 @@ class _SelectMenuState extends State<SelectMenuScreen> {
                             Expanded(
                               child: InkWell(
                                 onTap: () {
-                                  if (selectedSideDish.length < 4 &&
-                                      !selectedSideDish.contains(sideDish)) {
+                                  if (selectedSideDish.length < 4) {
                                     setState(() {
                                       selectedSideDish.add(sideDish);
                                     });
                                     print(
-                                        'Selected Side Dish: ${sideDish.name}');
+                                        'Selected Side Dish: ${sideDish.dishName}');
                                   }
                                 },
                                 child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(15.0),
-                                  child: Image.asset(
-                                    sideDish.src,
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  child: Image.network(
+                                    width: 104,
+                                    height: 104,
+                                    sideDish.imgUrl,
                                     fit: BoxFit.cover,
                                   ),
                                 ),
                               ),
                             ),
-                            SizedBox(height: 5),
-                            Text(
-                              sideDish.name,
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            SizedBox(height: 4),
+                            Container(
+                              width: double.infinity,
+                              child: Text(
+                                sideDish.dishName,
+                                style: TextStyles.getTextStyle(
+                                    TextType.BODY_2, Colors.black),
+                                textAlign: TextAlign.start,
+                              ),
                             ),
                           ],
                         );
                       },
                     ),
                   ),
+                  SizedBox(
+                    height: 16,
+                  )
                 ],
               ),
             ),
           ],
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: TextButton(
-          onPressed: () {
-            //다음 페이지로 넘어가는 기능
-          },
-          style: TextButton.styleFrom(
-            backgroundColor: Colors.orange,
-            foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0), // 둥근 모서리 적용
+      floatingActionButton: Padding(
+        padding: EdgeInsets.fromLTRB(20, 8, 20, 8),
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          child: ElevatedButton(
+            onPressed: () async {
+              for (int i = 0; i < selectedSideDish.length; i++) {
+                mealPrice += selectedSideDish[i].dishPrice;
+                dishIds.add(selectedSideDish[i].dishId);
+              }
+              await networkRequest('api/v1/meals', RequestType.POST, {
+                "mealName": dishName.text,
+                "mealPrice": mealPrice,
+                "dishIds": dishIds
+              });
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => MealMenuScreen()));
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: PRIMARY_COLOR,
+              foregroundColor: Colors.white,
+              fixedSize: Size.fromHeight(48),
+              //minimumSize: Size(50, 48),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
+              padding: EdgeInsets.all(12),
+              elevation: 0.0,
+              shadowColor: Colors.transparent,
+            ),
+            child: Text(
+              "반찬 도시락 추가",
+              style: TextStyles.getTextStyle(TextType.BUTTON, Colors.white),
             ),
           ),
-          child: Text('반찬 도시락 구매'),
         ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      // bottomNavigationBar: Padding(
+      //   padding: const EdgeInsets.all(16.0),
+      //   child: TextButton(
+      //     onPressed: () async {
+      //       for (int i = 0; i < selectedSideDish.length; i++) {
+      //         mealPrice += selectedSideDish[i].dishPrice;
+      //         dishIds.add(selectedSideDish[i].dishId);
+      //       }
+      //       await networkRequest('api/v1/meals', RequestType.POST, {
+      //         "mealName": dishName.text,
+      //         "mealPrice": mealPrice,
+      //         "dishIds": dishIds
+      //       });
+      //       Navigator.push(context,
+      //           MaterialPageRoute(builder: (context) => MealMenuScreen()));
+      //     },
+      //     style: TextButton.styleFrom(
+      //       backgroundColor: Colors.orange,
+      //       foregroundColor: Colors.white,
+      //       shape: RoundedRectangleBorder(
+      //         borderRadius: BorderRadius.circular(8.0), // 둥근 모서리 적용
+      //       ),
+      //     ),
+      //     child: Text('반찬 도시락 추가'),
+      //   ),
+      // ),
     );
   }
 }
-

@@ -34,7 +34,6 @@ enum ScreenStatus {
   ADDRESS_EMPTY
 }
 
-
 class HomeScreen extends StatefulWidget {
   int testStatus = 1;
 
@@ -46,7 +45,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   //--------sampleData----------
-
 
   String _dropdownValue = '';
   String _buttonString = '반찬도시락 메뉴담기';
@@ -331,7 +329,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return AppBar(
       surfaceTintColor: Colors.transparent,
-
       title: GetBuilder<AddressController>(
         builder: (controller) {
           return DropdownButton(
@@ -459,7 +456,6 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             Text('배달 주소를\n설정하지 않았어요!',
                 style: TextStyles.getTextStyle(TextType.TITLE_2, BLACK_COLOR)),
             Text('배달 주소를 설정하고\n반찬도시락을 주문해보세요!',
@@ -515,7 +511,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ? Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-
                           Text('다회용기를 보냉백에 넣어\n문앞에 놔주세요',
                               style: TextStyles.getTextStyle(
                                   TextType.BUTTON, BLACK_COLOR)),
@@ -538,14 +533,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           Text(
                             '식사 후 귀찮은 설거지까지\n한끼톡톡에서 다!',
-
                             style: TextStyles.getTextStyle(
                                 TextType.BUTTON, BLACK_COLOR),
                           ),
                           const SizedBox(height: 10),
                           RichText(
                               text: TextSpan(children: [
-
                             TextSpan(text: '한끼 풀대접', style: noName),
                             TextSpan(
                                 text: ' 오픈!',
@@ -610,7 +603,6 @@ class _HomeScreenState extends State<HomeScreen> {
           }
         },
         child: Center(
-
             child: Text(_buttonString,
                 style: TextStyles.getTextStyle(TextType.BUTTON, WHITE_COLOR))));
   }
@@ -620,7 +612,6 @@ class _HomeScreenState extends State<HomeScreen> {
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           Text(_mainTitle,
               style: TextStyles.getTextStyle(TextType.TITLE_2, BLACK_COLOR_2)),
           const SizedBox(height: 16),
@@ -632,7 +623,6 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Padding(
           padding: EdgeInsets.only(top: 32),
           child: Image(
-
               image: AssetImage('assets/images/2_home/main_after_delivery.png'),
               width: 112,
               height: 116)),
@@ -761,7 +751,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                   child: Row(
                     children: [
-
                       Text("수정",
                           style: TextStyles.getTextStyle(
                               TextType.BUTTON, GREY_COLOR_3)),

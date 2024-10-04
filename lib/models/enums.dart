@@ -83,6 +83,27 @@ enum DeliveryState {
   DELIVERED,
 }
 
+enum CollectingState {
+  NOT_COLLECTED,
+  COLLECT_REQUESTED,
+  COLLECTED
+}
+
+CollectingState stringToCollecting(String value) {
+  if(value == 'NOT_COLLECTED'){
+    return CollectingState.NOT_COLLECTED;
+  }
+  else if(value == 'COLLECT_REQUESTED'){
+    return CollectingState.COLLECT_REQUESTED;
+  }
+  else if(value == 'COLLECTED'){
+    return CollectingState.COLLECTED;
+  }
+  else{
+    throw Exception('Invalid CollectingState');
+  }
+}
+
 
 OrderState stringToOrderState(String value) {
   if(value == 'ORDERED'){

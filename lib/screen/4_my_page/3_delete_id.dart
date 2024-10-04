@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hankkitoktok/const/color.dart';
 import 'package:hankkitoktok/const/style2.dart';
+import 'package:hankkitoktok/functions/httpRequest.dart';
 
 class DeleteID extends StatefulWidget {
   @override
@@ -9,7 +10,94 @@ class DeleteID extends StatefulWidget {
 
 class _DeleteIDState extends State<DeleteID> {
   bool isAgreed = false;
-  String? selectedReason;
+  //String? selectedReason;
+  OverlayEntry? _dropdownOverlay;
+  final LayerLink _layerLink = LayerLink();
+  String _selectedValue = '선택해주세요.';
+  bool _isDropdownOpen = false;
+
+  List<String> items = [
+    '반찬 서비스가 불만족해요. (종류, 맛, 신선도 등)',
+    '배달 서비스가 불만족해요. (잦은 배달지연, 오배송 등)',
+    '고객 서비스가 불만족해요. (불친절한 응대, 응대 지연 등)',
+    '앱 기능이 불만족해요. (버그, 속도 저하 등)',
+    '더 이상 어플이 필요하지 않아요. (주소지 변경, 개인사유 등)',
+    '기타',
+  ];
+
+  void _toggleDropdown() {
+    if (_isDropdownOpen) {
+      _removeDropdown();
+    } else {
+      _showDropdown();
+    }
+    setState(() {
+      _isDropdownOpen = !_isDropdownOpen;
+    });
+  }
+
+  void _showDropdown() {
+    _dropdownOverlay = _createOverlayEntry();
+    Overlay.of(context)!.insert(_dropdownOverlay!);
+  }
+
+  void _removeDropdown() {
+    _dropdownOverlay?.remove();
+    _dropdownOverlay = null;
+  }
+
+  OverlayEntry _createOverlayEntry() {
+    return OverlayEntry(
+      builder: (context) => Positioned(
+        width: MediaQuery.of(context).size.width * 0.9,
+        child: CompositedTransformFollower(
+          link: _layerLink,
+          showWhenUnlinked: false,
+          offset: Offset(0, 60), // position of dropdown
+          child: Material(
+            elevation: 0,
+            //borderRadius: BorderRadius.circular(12),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+                border: Border.all(
+                    color: GRAY1,
+                    width: 1.6// Set border color to gray
+                ),
+              ),
+              child: Column(
+                children: items.map((item) {
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _selectedValue = item;
+                        _removeDropdown();
+                        _isDropdownOpen = false;
+                      });
+                    },
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          child: Text(item, style: TextStyles.getTextStyle(TextType.BUTTON, Color(0xFF646464)),),
+                        ),
+                        Divider(
+                          color: GRAY1,
+                          height: 1.6,
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,46 +201,70 @@ class _DeleteIDState extends State<DeleteID> {
                     TextStyles.getTextStyle(TextType.SUBTITLE_1, Colors.black),
               ),
               SizedBox(height: 8),
-              DropdownButtonFormField<String>(
-                // icon: Image.asset(
-                //   'assets/images/1_my_page/down_arrow.png',width: 24, height: 24
-                // ),
+              CompositedTransformTarget(
+                link: _layerLink,
+                child: GestureDetector(
+                  onTap: _toggleDropdown,
+                  child: Container(
+                    padding:
+                    const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: GRAY1, width: 1.6),
 
-                decoration: InputDecoration(
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: GRAY1, width: 1.6),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(_selectedValue,  style: _selectedValue=='선택해주세요.'?TextStyles.getTextStyle(TextType.BUTTON, GRAY3):TextStyles.getTextStyle(TextType.BUTTON, Colors.black),),
+                        _isDropdownOpen?Image.asset('assets/images/1_my_page/down_arrow.png',height: 24,width: 24,
+                        ):Image.asset('assets/images/1_my_page/up_arrow.png',height: 24,width: 24,
+                        )
+                      ],
+                    ),
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: GRAY1, width: 1.6),
-                  ),
-                  contentPadding: EdgeInsets.all(12),
                 ),
-                hint: Text(
-                  '선택해주세요.',
-                  style: TextStyles.getTextStyle(TextType.BUTTON, GRAY3),
-                ),
-                value: selectedReason,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    selectedReason = newValue;
-                  });
-                },
-                items: <String>[
-                  '반찬 서비스가 불만족해요.(종류, 맛, 신선도 등)',
-                  '배달 서비스가 불만족해요.(잦은 배달지연, 오배송 등)',
-                  '고객 서비스가 불반족해요.(불친절한 응대, 응대 지연 등)',
-                  '앱기능이 불만족해요.(버그, 속도 저하 등)',
-                  '더이상 어플이 필요하지 않아요.(주소지 변경, 개인사유 등)',
-                  '기타',
-                ].map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
               ),
+              // DropdownButtonFormField<String>(
+              //   // icon: Image.asset(
+              //   //   'assets/images/1_my_page/down_arrow.png',width: 24, height: 24
+              //   // ),
+              //
+              //   decoration: InputDecoration(
+              //     enabledBorder: OutlineInputBorder(
+              //       borderRadius: BorderRadius.circular(12),
+              //       borderSide: const BorderSide(color: GRAY1, width: 1.6),
+              //     ),
+              //     focusedBorder: OutlineInputBorder(
+              //       borderRadius: BorderRadius.circular(12),
+              //       borderSide: const BorderSide(color: GRAY1, width: 1.6),
+              //     ),
+              //     contentPadding: EdgeInsets.all(12),
+              //   ),
+              //   hint: Text(
+              //     '선택해주세요.',
+              //     style: TextStyles.getTextStyle(TextType.BUTTON, GRAY3),
+              //   ),
+              //   value: selectedReason,
+              //   onChanged: (String? newValue) {
+              //     setState(() {
+              //       selectedReason = newValue;
+              //     });
+              //   },
+              //   items: <String>[
+              //     '반찬 서비스가 불만족해요.(종류, 맛, 신선도 등)',
+              //     '배달 서비스가 불만족해요.(잦은 배달지연, 오배송 등)',
+              //     '고객 서비스가 불반족해요.(불친절한 응대, 응대 지연 등)',
+              //     '앱기능이 불만족해요.(버그, 속도 저하 등)',
+              //     '더이상 어플이 필요하지 않아요.(주소지 변경, 개인사유 등)',
+              //     '기타',
+              //   ].map<DropdownMenuItem<String>>((String value) {
+              //     return DropdownMenuItem<String>(
+              //       value: value,
+              //       child: Text(value),
+              //     );
+              //   }).toList(),
+              // ),
             ],
           ),
         ),
@@ -219,8 +331,14 @@ class _DeleteIDState extends State<DeleteID> {
                 height: 48,
                 child: ElevatedButton(
                   onPressed: isAgreed
-                      ? () {
+                      ? () async{
                           // 탈퇴 처리 로직 추가
+                    await networkRequest('api/v1/user/my}', RequestType.DELETE, {
+
+                      "reason ": _selectedValue,
+
+
+                    });
                         }
                       : null,
                   style: ElevatedButton.styleFrom(

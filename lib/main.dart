@@ -4,11 +4,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hankkitoktok/component/calendar.dart';
-
 import 'package:hankkitoktok/controller/delivery_controller.dart';
 
 import 'package:hankkitoktok/controller/history_controller.dart';
-
 import 'package:hankkitoktok/controller/ordered_meal_controller.dart';
 import 'package:hankkitoktok/controller/user_controller.dart';
 import 'package:hankkitoktok/screen/0_login_and_set_address/0_login_screen.dart';
@@ -122,12 +120,10 @@ void _notificationSetting(){
 
 void _getControllerSetting(){
   Get.put(OrderedMealController());
-  Get.put(ListViewScrollController());
   Get.put(HistoryController());
   Get.put(UserController());
   Get.put(AddressController());
   Get.put(DeliveryController());
-
 }
 
 void main() async {
@@ -202,8 +198,8 @@ class MyApp extends StatelessWidget {
         //   page: () => CommunityScreen(),
         // ),
       ],
-      home: TestScreen(),
 
+      home: MyPageHome(),
 
 
     );

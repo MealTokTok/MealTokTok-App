@@ -1,81 +1,3 @@
-// import 'package:hankkitoktok/models/base_model.dart';
-//
-// class User extends BaseModel{
-//   String? uid;
-//   String? email;
-//   String? name;
-//   String? photoUrl;
-//   String? provider;
-//   String? token;
-//
-//   User({
-//     this.uid,
-//     this.email,
-//     this.name,
-//     this.photoUrl,
-//     this.provider,
-//     this.token,
-//   });
-//
-//   User.fromMap(Map<String, dynamic> map) {
-//     uid = map['uid'];
-//     email = map['email'];
-//     name = map['name'];
-//     photoUrl = map['photoUrl'];
-//     provider = map['provider'];
-//     token = map['token'];
-//   }
-//
-//   @override
-//   BaseModel fromMap(Map<String, dynamic> map) {
-//     return User.fromMap(map);
-//   }
-//
-//   @override
-//   Map<String, dynamic> toJson() {
-//     return {
-//       'uid': uid,
-//       'email': email,
-//       'name': name,
-//       'photoUrl': photoUrl,
-//       'provider': provider,
-//       'token': token,
-//     };
-//   }
-// }
-//////////////////////////////////////////////////////////////////////////////
-// class User {
-//    int? userId;
-//    String? username;
-//    String? nickname;
-//    String? email;
-//    String? phoneNumber;
-//    String? profileImageUrl;
-//    String? birth;
-//
-//   User({
-//      this.userId,
-//      this.username,
-//      this.nickname,
-//      this.email,
-//      this.phoneNumber,
-//      this.profileImageUrl,
-//      this.birth,
-//   });
-//
-//   factory User.fromJson(Map<String, dynamic> json) {
-//     return User(
-//       userId: json['userId'],
-//       username: json['username'],
-//       nickname: json['nickname'],
-//       email: json['email'],
-//       phoneNumber: json['phoneNumber'],
-//       profileImageUrl: json['profileImageUrl'],
-//       birth: json['birth'],
-//     );
-//   }
-// }
-
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -140,7 +62,7 @@ class User extends BaseModel{
 
 class IsAvailable extends BaseModel{
   final bool isAvailable;
-
+  IsAvailable.init({this.isAvailable = false,});
   IsAvailable({
     required this.isAvailable,
   });

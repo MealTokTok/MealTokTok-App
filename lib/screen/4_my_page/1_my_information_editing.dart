@@ -297,7 +297,7 @@ class _MyInformationEditngState extends State<MyInformationEditng> {
                 ),
                   //constraints: BoxConstraints(),
                   onPressed: () {
-                    showWarningDialog(context, '로그아웃 하실 건가요?', '다시 로그인하시면 \'한끼톡톡\'서비스를\n이어서 이용하실 수 있습니다.', '돌아가기','로그아웃', _Logout);
+                    showWarningDialog(context, '로그아웃 하실 건가요?', '다시 로그인하시면 \'한끼톡톡\'서비스를\n이어서 이용하실 수 있습니다.', '돌아가기','로그아웃',null,_Logout);
                   },
                   child:  Text("로그아웃", style: TextStyles.getTextStyle(TextType.BUTTON, GRAY3)),),
 

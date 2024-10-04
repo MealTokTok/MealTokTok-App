@@ -5,6 +5,7 @@ import 'package:hankkitoktok/const/style.dart';
 import 'package:hankkitoktok/const/style2.dart';
 import 'package:hankkitoktok/functions/httpRequest.dart';
 import 'package:hankkitoktok/models/user/user.dart';
+import 'package:hankkitoktok/screen/4_my_page/1_my_information_editing.dart';
 
 class MyNicknameEditing extends StatefulWidget {
   final User? user;
@@ -16,9 +17,11 @@ class MyNicknameEditing extends StatefulWidget {
 }
 
 class _MyNicknameEditingState extends State<MyNicknameEditing> {
-  IsAvailable? isAvailable;
+  IsAvailable? isAvailable=IsAvailable(isAvailable: true) ;
   final TextEditingController _nickname = TextEditingController();
+  String availableNickname='';
   String textValue = "";
+  bool checkNum = false;
 
   Future<void> fetchChangeAvailable() async {
     Map<String, dynamic> queryParams = {
@@ -27,6 +30,11 @@ class _MyNicknameEditingState extends State<MyNicknameEditing> {
 
     isAvailable = await networkGetRequest111(IsAvailable(isAvailable: false),
         'api/v1/user/nickname/change-available', queryParams);
+    checkNum=true;
+    if(isAvailable!.isAvailable){
+       availableNickname=_nickname.text;
+      debugPrint(availableNickname);
+    }
     setState(() {});
   }
 
@@ -83,9 +91,8 @@ class _MyNicknameEditingState extends State<MyNicknameEditing> {
             Row(
               children: [
                 Expanded(
-
                   child: Container(
-                    width: 375,
+                    //width: 375,
                     //너비 자유롭게 되도록 설정해둬야 함
                     height: 48,
                     child: TextFormField(
@@ -102,26 +109,35 @@ class _MyNicknameEditingState extends State<MyNicknameEditing> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12.0),
                           borderSide: BorderSide(
-                            color: GRAY1,
+                            //color: GRAY1,
 
-                            //color: isAvailable != null && isAvailable!.isAvailable ? GRAY1 : SECONDARY,
+                            color:
+                                isAvailable != null && isAvailable!.isAvailable
+                                    ? GRAY1
+                                    : checkNum==false? GRAY1 : SECONDARY,
                             width: 1.6,
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12.0),
                           borderSide: BorderSide(
-                            color: GRAY1,
+                            //color: GRAY1,
 
-                            // color: isAvailable != null && isAvailable!.isAvailable ? GRAY1 : SECONDARY,
+                            color:
+                                isAvailable != null && isAvailable!.isAvailable
+                                    ? GRAY1
+                                    : checkNum==false? GRAY1 : SECONDARY,
                             width: 1.6,
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12.0),
                           borderSide: BorderSide(
-                            color: GRAY1,
-                            //color: isAvailable != null && isAvailable!.isAvailable ? GRAY1 : SECONDARY,
+                            //color: GRAY1,
+                            color:
+                                isAvailable != null && isAvailable!.isAvailable
+                                    ? GRAY1
+                                    : checkNum==false? GRAY1 : SECONDARY,
                             width: 1.6,
                           ),
                         ),
@@ -150,13 +166,14 @@ class _MyNicknameEditingState extends State<MyNicknameEditing> {
                     ),
                   ),
                 ),
-
                 SizedBox(
                   width: 8,
                 ),
                 ElevatedButton(
                   onPressed: () {
                     fetchChangeAvailable();
+
+
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: GRAY1,
@@ -184,14 +201,10 @@ class _MyNicknameEditingState extends State<MyNicknameEditing> {
             SizedBox(
               height: 4,
             ),
-
-            if (_nickname.text == widget.user!.nickname)
-              Text(
-                '기존 닉네임과 동일합니다.',
-                style: TextStyles.getTextStyle(TextType.BUTTON, SECONDARY),
-              ),
+            // if( _nickname.text==widget.user!.nickname)
+            //   Text('기존 닉네임과 동일합니다.', style: TextStyles.getTextStyle(TextType.BUTTON, SECONDARY),),
             if ((_nickname.text != widget.user!.nickname) &&
-                isAvailable != null)
+                isAvailable != null && checkNum!)
               isAvailable!.isAvailable
                   ? Text(
                       '사용가능한 닉네임입니다.',
@@ -211,9 +224,18 @@ class _MyNicknameEditingState extends State<MyNicknameEditing> {
         child: Container(
           width: MediaQuery.of(context).size.width,
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: isAvailable!.isAvailable  && checkNum!
+                ? () async {
+                    await networkRequest(
+                        'api/v1/user/my/nickname', RequestType.PATCH, {
+                      "nickname": availableNickname,
+                    });
+                    debugPrint(availableNickname);
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>MyInformationEditng(user: widget.user)),);
+                  }
+                : () {},
             style: ElevatedButton.styleFrom(
-              backgroundColor: GRAY2,
+              backgroundColor: isAvailable!.isAvailable && checkNum! ? PRIMARY_COLOR: GRAY2,
               foregroundColor: Colors.white,
               fixedSize: Size.fromHeight(48),
               //minimumSize: Size(50, 48),

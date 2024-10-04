@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:hankkitoktok/controller/ordered_meal_controller.dart';
 import 'package:hankkitoktok/controller/tmpdata.dart';
 import 'package:hankkitoktok/screen/3_menu_choice/tmp_full_service_screen.dart';
+import 'package:hankkitoktok/screen/5_order/1_full_dining_explanation.dart';
 import 'package:intl/intl.dart';
 import '../../const/style2.dart';
 import '../../component/calendar.dart';
@@ -610,10 +611,16 @@ class _OrderScreenState extends State<OrderScreen> {
                                     child: ElevatedButton(
                                         onPressed: () {
                                           //TODO: 풀대접 서비스 페이지 보기
+                                          // Navigator.push(
+                                          //     context,
+                                          //     MaterialPageRoute(
+                                          //       builder: (context) => TmpFullServiceScreen(orderType: _orderType)
+                                          //     )
+                                          // );
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                builder: (context) => TmpFullServiceScreen(orderType: _orderType)
+                                                  builder: (context) => FullDiningExplanation(orderType: _orderType)
                                               )
                                           );
                                         },

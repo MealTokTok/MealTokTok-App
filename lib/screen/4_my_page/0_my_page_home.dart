@@ -2,7 +2,7 @@ import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:hankkitoktok/const/color.dart";
 import "package:hankkitoktok/const/style.dart";
-
+import "package:hankkitoktok/const/style2.dart";
 import "package:hankkitoktok/controller/user_controller.dart";
 import "package:hankkitoktok/functions/httpRequest.dart";
 import "package:hankkitoktok/models/delivery/delivery_status.dart";
@@ -20,12 +20,14 @@ class MyPageHome extends StatefulWidget {
 
 class _MyPageHomeState extends State<MyPageHome> {
   //int userId;
-
+  int? _pending;
+  int? _deliveryRequested;
+  int? _delivering;
+  int? _delivered;
+  int? _fulldining;
   UserController _userController = Get.find();
-  Pending? _pending;
-  DeliveryRequested? _deliveryRequested;
-  Delivering? _delivering;
-  Delivered? _delivered;
+
+  //UserController _userController = Get.put(UserController());
 
   // User _user = User(
   //   userId: 0,
@@ -40,7 +42,7 @@ class _MyPageHomeState extends State<MyPageHome> {
   Map<String, dynamic>? queryParams;
 
   Map<String, dynamic> _queryParams(String query) {
-    return queryParams={
+    return queryParams = {
       'deliveryState': query,
     };
   }
@@ -48,12 +50,71 @@ class _MyPageHomeState extends State<MyPageHome> {
   @override
   void initState() {
     super.initState();
+    fetchData();
+  }
 
+  Future<void> fetchData() async {
+    //_user = await networkGetRequest111(User(userId: 0, username: '', nickname: '', email: '', phoneNumber: '', profileImageUrl: '', birth: ''), 'api/v1/user/my',null );
+    _pending = await networkGetRequest222(
+        'api/v1/meal-deliveries/count', _queryParams('PENDING'));
+    _deliveryRequested = await networkGetRequest222(
+        'api/v1/meal-deliveries/count', _queryParams('DELIVERY_REQUESTED'));
+    _delivering = await networkGetRequest222(
+        'api/v1/meal-deliveries/count', _queryParams('DELIVERING'));
+    _delivered = await networkGetRequest222(
+        'api/v1/meal-deliveries/count', _queryParams('DELIVERED'));
+    _fulldining = await networkGetRequest222(
+        'api/v1/full-dinings/full-dinings/collect-requested/count', null);
+    debugPrint("User data: ${_userController.user.nickname}");
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: GRAY0,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: GRAY0,
+        elevation: 0,
+        // 그림자 없앰
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // "My" 텍스트
+            Text('My',
+                style: TextStyles.getTextStyle(TextType.TITLE_2, Colors.black)),
+            // 아이콘들
+            Row(
+              children: [
+                // 쇼핑카트 아이콘
+                IconButton(
+                    onPressed: () {
+                      // 장바구니 버튼 동작
+                    },
+                    icon: Image.asset(
+                      'assets/images/2_home/app_bar_cart.png',
+                      // Add your image asset here
+                      height: 32,
+                      fit: BoxFit.cover,
+                    )),
+                // 알림 아이콘
+                IconButton(
+                  onPressed: () {
+                    // 알림 버튼 동작
+                  },
+                  icon: Image.asset(
+                    'assets/images/2_home/app_bar_alarm.png',
+                    height: 32,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        centerTitle: false, // 왼쪽 정렬
+      ),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.fromLTRB(20, 16, 20, 16),
@@ -77,7 +138,9 @@ class _MyPageHomeState extends State<MyPageHome> {
                     "님",
                     style: myPageDfault,
                   ),
-                  SizedBox(width: 8,),
+                  SizedBox(
+                    width: 8,
+                  ),
                   IconButton(
                       padding: EdgeInsets.zero, // 패딩 설정
                       constraints: BoxConstraints(),
@@ -85,8 +148,9 @@ class _MyPageHomeState extends State<MyPageHome> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-
-                            builder: (context) => MyInformationEditng(user: _userController.user,),
+                            builder: (context) => MyInformationEditng(
+                              user: _userController.user,
+                            ),
                           ),
                         );
                       },
@@ -125,11 +189,15 @@ class _MyPageHomeState extends State<MyPageHome> {
                                     backgroundColor: GRAY0,
                                     foregroundColor: GRAY3,
                                     fixedSize: Size.fromHeight(28),
-                                   //minimumSize: Size(65, 28),
+                                    //minimumSize: Size(65, 28),
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8)
+                                        borderRadius: BorderRadius.circular(8)),
+                                    padding: const EdgeInsets.only(
+                                      top: 4.0,
+                                      bottom: 4.0,
+                                      left: 8.0,
+                                      right: 2.0,
                                     ),
-                                    padding: const EdgeInsets.only(top: 4.0, bottom: 4.0, left: 8.0,right: 2.0, ),
                                     elevation: 0.0,
                                     shadowColor: Colors.transparent,
                                   ),
@@ -218,23 +286,21 @@ class _MyPageHomeState extends State<MyPageHome> {
                                     Text(
                                       "1",
                                       style: TextStyle(
-                                        color: Colors.black
-                                            ,
+                                        color: Colors.black,
                                         fontSize: 18,
                                         fontFamily: 'Pretendard Variable',
                                         fontWeight: FontWeight.w600,
-                                         letterSpacing: -0.36,
+                                        letterSpacing: -0.36,
                                       ),
                                     ),
                                     Text(
                                       "배송완료",
                                       style: TextStyle(
-                                        color: Colors.black
-                                            ,
+                                        color: Colors.black,
                                         fontSize: 12,
                                         fontFamily: 'Pretendard Variable',
                                         fontWeight: FontWeight.w500,
-                                         letterSpacing: -0.24,
+                                        letterSpacing: -0.24,
                                       ),
                                     ),
                                   ],
@@ -255,6 +321,46 @@ class _MyPageHomeState extends State<MyPageHome> {
                       //   onPressed: () {},
                       //   child: Text("배달 주소 관리"),
                       // ),),
+                      Padding(
+                          padding: EdgeInsets.symmetric(vertical: 16),
+                          child: TextButton(
+                            onPressed: () {
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder: (context) => ,
+                              //   ),
+                              //);
+                            },
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "반납해야 할 다회용기",
+                                  style: myPageDfault,
+                                ),
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 4.0, horizontal: 16.0), // 안쪽 여백
+                                  decoration: BoxDecoration(
+                                    color: PRIMARY_COLOR, // 배경색
+                                    borderRadius:
+                                        BorderRadius.circular(12.0), // 둥근 모서리
+                                  ),
+                                  child: Text(
+                                    '${_fulldining}건', // 텍스트 내용
+                                    style: TextStyles.getTextStyle(TextType.BUTTON, Colors.black)
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )),
+                      Divider(
+                        color: GRAY1,
+                      ),
                       Padding(
                         padding: EdgeInsets.symmetric(vertical: 16),
                         child: Text(
