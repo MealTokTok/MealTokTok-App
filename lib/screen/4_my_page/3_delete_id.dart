@@ -218,9 +218,8 @@ class _DeleteIDState extends State<DeleteID> {
                       children: [
                         Text(_selectedValue,  style: _selectedValue=='선택해주세요.'?TextStyles.getTextStyle(TextType.BUTTON, GRAY3):TextStyles.getTextStyle(TextType.BUTTON, Colors.black),),
                         _isDropdownOpen?Image.asset('assets/images/1_my_page/down_arrow.png',height: 24,width: 24,
-                        ):Image.asset('assets/images/1_my_page/down_arrow.png',height: 24,width: 24,
+                        ):Image.asset('assets/images/1_my_page/up_arrow.png',height: 24,width: 24,
                         )
-                        //todo: 위쪽 화살표로 수정!!!!
                       ],
                     ),
                   ),
