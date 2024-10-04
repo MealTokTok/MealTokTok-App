@@ -96,7 +96,13 @@ class Meal1 extends BaseModel {
       'dishes': dishes.map((dish) => dish.toJson()).toList(),
     };
   }
-
+  List<String> getDishNames() {
+    List<String> dishNames = [];
+    for (Dish1 dish in dishes) {
+      dishNames.add(dish.dishName);
+    }
+    return dishNames;
+  }
   List<String> getDishUrls() {
     List<String> dishUrls = [];
     for (Dish1 dish in dishes) {

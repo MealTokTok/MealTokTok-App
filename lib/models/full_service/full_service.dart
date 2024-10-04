@@ -19,7 +19,9 @@ class DiningData extends BaseModel {
       fullDiningId: map['fullDiningId'],
       mealDeliveryId: map['mealDeliveryId'],
       collectState: map['collectState'],
-      collectedDateTime: DateTime.parse(map['collectedDateTime']),
+      collectedDateTime: map['collectedDateTime'] != null
+          ? DateTime.parse(map['collectedDateTime'])
+          : null,
     );
   }
 
@@ -29,7 +31,7 @@ class DiningData extends BaseModel {
       'fullDiningId': fullDiningId,
       'mealDeliveryId': mealDeliveryId,
       'collectState': collectState,
-      'collectedDateTime': collectedDateTime.toString(),
+      'collectedDateTime': collectedDateTime?.toString(),
     };
   }
 }
