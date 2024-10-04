@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hankkitoktok/controller/meal_controller.dart';
-import 'package:hankkitoktok/models/meal/ordered_meal.dart';
+import 'package:hankkitoktok/models/meal/meal_delivery_order.dart';
 import 'package:hankkitoktok/models/enums.dart';
 
 import '../models/meal/meal.dart';
@@ -11,8 +12,8 @@ import '../models/order/order_post.dart';
 class OrderedMealController extends GetxController {
 
 
-  Map<DateTime, List<OrderedMeal>> orderedDayMeals = <DateTime, List<OrderedMeal>>{};
-  Map<DateTime, List<OrderedMeal>> orderedWeekMeals = <DateTime, List<OrderedMeal>>{};
+  Map<DateTime, List<MealDeliveryOrder>> orderedDayMeals = <DateTime, List<MealDeliveryOrder>>{};
+  Map<DateTime, List<MealDeliveryOrder>> orderedWeekMeals = <DateTime, List<MealDeliveryOrder>>{};
 
 
   bool getSelectedDate(DateTime day) {
@@ -46,6 +47,7 @@ class OrderedMealController extends GetxController {
         if(orderedMeal.isChecked == false) continue;
         sum += orderedMeal.meal.price;
         if(orderedMeal.includeRice) sum += 1000;
+        if(orderedMeal.hasFullDiningOption) sum += 2000;
       }
     }
     return sum;
@@ -75,13 +77,13 @@ class OrderedMealController extends GetxController {
 
     for(int i=0;i<7;i++){
       orderedWeekMeals[nextSunday] = [];
-      orderedWeekMeals[nextSunday]!.add(OrderedMeal.init(
+      orderedWeekMeals[nextSunday]!.add(MealDeliveryOrder.init(
           reservedDate: DateTime(
               nextSunday.year,nextSunday.month,nextSunday.day, 0, 0),
           reservedTime: Time.AFTERNOON,
           mealId: defaultMealId
       ));
-      orderedWeekMeals[nextSunday]!.add(OrderedMeal.init(
+      orderedWeekMeals[nextSunday]!.add(MealDeliveryOrder.init(
           reservedDate: DateTime(
               nextSunday.year,nextSunday.month,nextSunday.day, 0, 0),
           reservedTime: Time.EVENING,
@@ -100,14 +102,14 @@ class OrderedMealController extends GetxController {
     );
 
     orderedDayMeals[currentDay] = [];
-    orderedDayMeals[currentDay]!.add(OrderedMeal.init(
+    orderedDayMeals[currentDay]!.add(MealDeliveryOrder.init(
         reservedDate: DateTime(
             currentDay.year, currentDay.month, currentDay.day, 0, 0),
         reservedTime: Time.AFTERNOON,
         isVisible: (DateTime.now().hour < 10) ? true : false,
         mealId: defaultMealId
     ));
-    orderedDayMeals[currentDay]!.add(OrderedMeal.init(
+    orderedDayMeals[currentDay]!.add(MealDeliveryOrder.init(
         reservedDate: DateTime(
             currentDay.year, currentDay.month, currentDay.day, 0, 0),
         reservedTime: Time.EVENING,
@@ -117,14 +119,14 @@ class OrderedMealController extends GetxController {
 
     currentDay = currentDay.add(const Duration(days: 1));
     orderedDayMeals[currentDay] = [];
-    orderedDayMeals[currentDay]!.add(OrderedMeal.init(
+    orderedDayMeals[currentDay]!.add(MealDeliveryOrder.init(
       reservedDate: DateTime(currentDay.year, currentDay.month,
           currentDay.day + 1, 0, 0),
       reservedTime: Time.AFTERNOON,
       isVisible: true,
       mealId: defaultMealId
     ));
-    orderedDayMeals[currentDay]!.add(OrderedMeal.init(
+    orderedDayMeals[currentDay]!.add(MealDeliveryOrder.init(
       reservedDate: DateTime(currentDay.year, currentDay.month,
           currentDay.day, 0, 0),
       reservedTime: Time.EVENING,
@@ -133,14 +135,14 @@ class OrderedMealController extends GetxController {
     ));
     currentDay = currentDay.add(const Duration(days: 1));
     orderedDayMeals[currentDay] = [];
-    orderedDayMeals[currentDay]!.add(OrderedMeal.init(
+    orderedDayMeals[currentDay]!.add(MealDeliveryOrder.init(
         reservedDate: DateTime(currentDay.year, currentDay.month,
             currentDay.day, 0, 0),
         reservedTime: Time.AFTERNOON,
         isVisible: (DateTime.now().hour < 16) ? false : true,
         mealId: defaultMealId
     ));
-    orderedDayMeals[currentDay]!.add(OrderedMeal.init(
+    orderedDayMeals[currentDay]!.add(MealDeliveryOrder.init(
         reservedDate: DateTime(currentDay.year, currentDay.month,
             currentDay.day, 0, 0),
         reservedTime: Time.EVENING,
@@ -150,6 +152,7 @@ class OrderedMealController extends GetxController {
     update();
 
   }
+
 
   void updateVisible(DateTime dateTime){
     for (var element in orderedWeekMeals[dateTime]!) {
@@ -161,6 +164,7 @@ class OrderedMealController extends GetxController {
     update();
   }
 
+  //메뉴션택 업데이트
   void updateChecked(OrderType orderType, DateTime dateTime, Time time){
     if(orderType == OrderType.IMMEDIATE){
       for (var element in orderedDayMeals[dateTime]!) {
@@ -177,6 +181,33 @@ class OrderedMealController extends GetxController {
       }
     }
     update();
+  }
+
+  //풀서비스 업데이트
+  void updateFullServiceSelected(OrderType orderType)
+  {
+      for (var element in orderedWeekMeals.values) {
+        for (var orderedMeal in element) {
+          if(orderedMeal.isChecked == true){
+            orderedMeal.hasFullDiningOption = !orderedMeal.hasFullDiningOption;
+          }
+        }
+      }
+    update();
+  }
+
+  // 풀서비스 선택 여부
+  bool getFullServiceSelected(){
+    if(orderedWeekMeals.isEmpty) return false;
+    //선택한 메뉴 모두가 풀대접 서비스를 받는 경우 true, 아니면 false 반환
+    for (var element in orderedWeekMeals.values) {
+      for (var orderedMeal in element) {
+        if(orderedMeal.isChecked == true && orderedMeal.hasFullDiningOption == false){
+          return false;
+        }
+      }
+    }
+    return true;
   }
 
   void updateRice(OrderType orderType, DateTime dateTime, Time time){
@@ -219,8 +250,47 @@ class OrderedMealController extends GetxController {
   }
 
 
+  //주문내역 요일 반환 (월요일, 수요일, 목요일) 형식
+  String getFullDiningDaysOfWeek(){
+
+    //요일을 문자열로 저장
+    List<String> dayOfWeekList = [
+      '월요일',
+      '화요일',
+      '수요일',
+      '목요일',
+      '금요일',
+      '토요일',
+      '일요일'
+    ];
+
+    //최종 문자열
+    String result = '';
+
+    //선택한 요일을 저장할 Set
+    //Set을 선택한 이유: 중복제거
+    Set<String> initialsSet = Set<String>();
+
+      for (var orderedMeals in orderedWeekMeals.values) {
+        for (var orderedMeal in orderedMeals) {
+          if(orderedMeal.isChecked == true && orderedMeal.isVisible == true){
+            initialsSet.add(dayOfWeekList[orderedMeal.reservedDate!.weekday - 1]);
+          }
+        }
+      }
+      // Set을 List로 변환
+    List<String> sortedInitials = initialsSet.toList();
+      //Set은 순서가 없기 때문에 따로 정렬 필요
+    sortedInitials.sort((a, b) => dayOfWeekList.indexOf(a).compareTo(dayOfWeekList.indexOf(b)));
+
+
+    //List<String>["월요일", "수요일", "목요일"] -> String 월요일, 수요일, 목요일
+    return sortedInitials.join(', ');
+
+  }
+
   OrderPost getOrderedMealsSelected(OrderType orderType){
-    List<OrderedMeal> result = [];
+    List<MealDeliveryOrder> result = [];
     if(orderType == OrderType.IMMEDIATE){
       for (var orderedMeals in orderedDayMeals.values) {
         for (var orderedMeal in orderedMeals) {
@@ -241,7 +311,7 @@ class OrderedMealController extends GetxController {
     }
     return OrderPost.init(
       orderType: orderType,
-      orderedMeals: result,
+      mealDeliveryOrders: result,
     );
   }
 }

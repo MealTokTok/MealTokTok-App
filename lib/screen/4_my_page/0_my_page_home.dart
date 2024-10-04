@@ -2,11 +2,14 @@ import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:hankkitoktok/const/color.dart";
 import "package:hankkitoktok/const/style.dart";
+
+import "package:hankkitoktok/controller/user_controller.dart";
 import "package:hankkitoktok/functions/httpRequest.dart";
 import "package:hankkitoktok/models/delivery/delivery_status.dart";
 import "package:hankkitoktok/models/user/user.dart";
-import "package:hankkitoktok/models/user/user_data.dart";
+import "package:hankkitoktok/models/user/auth_data.dart";
 import "package:hankkitoktok/screen/4_my_page/1_my_information_editing.dart";
+import 'package:get/get.dart';
 
 class MyPageHome extends StatefulWidget {
   const MyPageHome({super.key});
@@ -17,11 +20,12 @@ class MyPageHome extends StatefulWidget {
 
 class _MyPageHomeState extends State<MyPageHome> {
   //int userId;
-  User? _user;
-  int? _pending;
-  int? _deliveryRequested;
-  int? _delivering;
-  int? _delivered;
+
+  UserController _userController = Get.find();
+  Pending? _pending;
+  DeliveryRequested? _deliveryRequested;
+  Delivering? _delivering;
+  Delivered? _delivered;
 
   // User _user = User(
   //   userId: 0,
@@ -44,16 +48,7 @@ class _MyPageHomeState extends State<MyPageHome> {
   @override
   void initState() {
     super.initState();
-    fetchData();
-  }
 
-  Future<void> fetchData() async {
-    //_user = await networkGetRequest111(User(userId: 0, username: '', nickname: '', email: '', phoneNumber: '', profileImageUrl: '', birth: ''), 'api/v1/user/my',null );
-    _pending=await networkGetRequest222('api/v1/meal-deliveries/count',_queryParams('PENDING') );
-   _deliveryRequested=await networkGetRequest222('api/v1/meal-deliveries/count',_queryParams('DELIVERY_REQUESTED') );
-   _delivering=await networkGetRequest222('api/v1/meal-deliveries/count',_queryParams('DELIVERING') );
-    _delivered=await networkGetRequest222('api/v1/meal-deliveries/count',_queryParams('DELIVERED') );
-    setState(() {});
   }
 
   @override
@@ -67,7 +62,8 @@ class _MyPageHomeState extends State<MyPageHome> {
               Row(
                 children: [
                   Text(
-                    "${_user!.nickname} ",
+
+                    "${_userController.user.nickname} ",
                     style: TextStyle(
                       color: Color(0xFF131313),
                       fontSize: 18,
@@ -89,7 +85,8 @@ class _MyPageHomeState extends State<MyPageHome> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => MyInformationEditng(user: _user,),
+
+                            builder: (context) => MyInformationEditng(user: _userController.user,),
                           ),
                         );
                       },
@@ -168,7 +165,7 @@ class _MyPageHomeState extends State<MyPageHome> {
                                 Column(
                                   children: [
                                     Text(
-                                      "$_pending",
+                                      "0",
                                       style: myPageRecordGrayNum,
                                     ),
                                     Text(
@@ -185,7 +182,7 @@ class _MyPageHomeState extends State<MyPageHome> {
                                 Column(
                                   children: [
                                     Text(
-                                      "$_deliveryRequested",
+                                      "0",
                                       style: myPageRecordGrayNum,
                                     ),
                                     Text(
@@ -202,7 +199,7 @@ class _MyPageHomeState extends State<MyPageHome> {
                                 Column(
                                   children: [
                                     Text(
-                                      "$_delivering",
+                                      "0",
                                       style: myPageRecordGrayNum,
                                     ),
                                     Text(
@@ -219,7 +216,7 @@ class _MyPageHomeState extends State<MyPageHome> {
                                 Column(
                                   children: [
                                     Text(
-                                      "$_delivered",
+                                      "1",
                                       style: TextStyle(
                                         color: Colors.black
                                             ,

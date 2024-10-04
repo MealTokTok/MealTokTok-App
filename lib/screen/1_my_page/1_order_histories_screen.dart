@@ -12,7 +12,7 @@ import '../../const/style2.dart';
 
 import 'package:get/get.dart';
 
-import '../../controller/list_view_scroll_controller.dart';
+import '../../controller/history_controller.dart';
 
 enum HistoryType { PAYMENT, DELIVERY }
 
@@ -24,12 +24,12 @@ class OrderHistoriesScreen extends StatefulWidget {
 }
 
 class _OrderHistoriesScreenState extends State<OrderHistoriesScreen> {
-  late final ListViewScrollController listViewScrollController;
+  late final HistoryController historyController;
 
   @override
   void initState() {
     // TODO: 네트워크 요청으로 결제내역 받기
-    listViewScrollController = Get.put(ListViewScrollController());
+    historyController = Get.put(HistoryController());
     super.initState();
   }
 
@@ -59,7 +59,7 @@ class _OrderHistoriesScreenState extends State<OrderHistoriesScreen> {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text(listViewScrollController.dropdownValue.value,
+                              Text(historyController.dropdownValue.value,
                                   style: TextStyles.getTextStyle(
                                       TextType.BUTTON, GREY_COLOR_2)),
                               Image.asset(
@@ -70,7 +70,7 @@ class _OrderHistoriesScreenState extends State<OrderHistoriesScreen> {
                             ],
                           ),
                         ),
-                        items: listViewScrollController.dropdownValues
+                        items: historyController.dropdownValues
                             .map((String value) {
                           return DropdownMenuItem(
                             value: value,
@@ -81,7 +81,7 @@ class _OrderHistoriesScreenState extends State<OrderHistoriesScreen> {
                         }).toList(),
                         onChanged: (value) {
                           if (value != null) {
-                            listViewScrollController.dropdownValue.value =
+                            historyController.dropdownValue.value =
                                 value;
                           }
                         },
@@ -127,13 +127,13 @@ class _OrderHistoriesScreenState extends State<OrderHistoriesScreen> {
           child: TabBarView(
             children: <Widget>[
               Obx(
-                  () =>listViewScrollController.orderHistories.isNotEmpty ? ListView.separated(
+                  () =>historyController.orderHistories.isNotEmpty ? ListView.separated(
                     controller:
-                    listViewScrollController.orderScrollController.value,
-                    itemCount: listViewScrollController.orderHistories.length,
+                    historyController.orderScrollController.value,
+                    itemCount: historyController.orderHistories.length,
                     itemBuilder: (context, index) {
                       return Payment(
-                        order: listViewScrollController.orderHistories[index],
+                        order: historyController.orderHistories[index],
                       );
                     },
                     separatorBuilder: (context, index) {
@@ -145,14 +145,14 @@ class _OrderHistoriesScreenState extends State<OrderHistoriesScreen> {
                   ) : _buildEmptyListView(HistoryType.PAYMENT),
               ),
               Obx(
-                  ()=>listViewScrollController.mealDeliveryHistories.isNotEmpty ? ListView.separated(
+                  ()=>historyController.mealDeliveryHistories.isNotEmpty ? ListView.separated(
                     controller:
-                    listViewScrollController.deliveryScrollController.value,
+                    historyController.deliveryScrollController.value,
                     itemCount:
-                    listViewScrollController.mealDeliveryHistories.length,
+                    historyController.mealDeliveryHistories.length,
                     itemBuilder: (context, index) {
                       return Delivery(
-                        mealDelivery: listViewScrollController
+                        mealDelivery: historyController
                             .mealDeliveryHistories[index],
                       );
                     },
@@ -171,6 +171,7 @@ class _OrderHistoriesScreenState extends State<OrderHistoriesScreen> {
     ));
   }
 
+  //주문정보 또는 배손정보가 없을 때
   Widget _buildEmptyListView(HistoryType historyType) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20),

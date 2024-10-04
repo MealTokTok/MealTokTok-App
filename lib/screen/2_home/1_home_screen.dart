@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:get/get.dart';
+import 'package:hankkitoktok/component/mealinfo.dart';
 import 'package:hankkitoktok/component/four_image.dart';
 import 'package:hankkitoktok/const/color.dart';
 import 'package:hankkitoktok/controller/address_controller.dart';
@@ -19,16 +20,26 @@ import 'package:hankkitoktok/screen/2_home/2_notification_screen.dart';
 enum ScreenStatus { AFTER_DELIVERY, MENU_EMPTY, MENU_SELECTED, ON_DELIVERY }
 
 import 'package:hankkitoktok/screen/2_home/2_notification_screen.dart';
+import '../../models/address/address.dart';
 import '../../models/enums.dart';
 import 'package:hankkitoktok/const/style2.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-enum ScreenStatus { AFTER_DELIVERY, MENU_EMPTY, MENU_SELECTED, ON_DELIVERY , ADDRESS_EMPTY}
 
 
-enum TimeStatus { LUNCH, DINNER }
+enum ScreenStatus {
+  AFTER_DELIVERY,
+  MENU_EMPTY,
+  MENU_SELECTED,
+  ON_DELIVERY,
+  ADDRESS_EMPTY
+}
 
 
 class HomeScreen extends StatefulWidget {
+  int testStatus = 1;
+
+  HomeScreen({required this.testStatus, super.key});
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -37,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
   //--------sampleData----------
 
 
-  String _dropdownValue= '';
+  String _dropdownValue = '';
   String _buttonString = '반찬도시락 메뉴담기';
   String _mainTitle = '반찬도시락\n메뉴를 선택해볼까요?';
   String _subTitle = '원하는 반찬을 선택하고 주문하면 \n든든한 한끼가 되어줄게요!';
@@ -80,6 +91,67 @@ class _HomeScreenState extends State<HomeScreen> {
   late final UserController _userController;
   late final DeliveryController _deliveryController;
   late final MealController _mealController;
+
+  // void _checkMenu() {
+  //   if (widget.testStatus == 1) {
+  //     //Todo 조건: menu empty
+  //     setState(() {
+  //       screenStatus = ScreenStatus.MENU_EMPTY;
+  //       _mainTitle = '반찬도시락\n메뉴를 선택해볼까요?';
+  //       _subTitle = '원하는 반찬을 선택하고 주문하면 \n든든한 한끼가 되어줄게요!';
+  //       _buttonString = '반찬도시락 메뉴담기';
+  //     });
+  //   }
+  //   if (widget.testStatus == 2) {
+  //     //Todo 조건: mealmenu is not empty
+  //     setState(() {
+  //       screenStatus = ScreenStatus.MENU_SELECTED;
+  //       _buttonString = '주문하기';
+  //       });
+  //     }
+  //         if (widget.testStatus == 3) {
+  //       // Todo 조건: 배송 중, 점심
+  //
+  //       setState(() {
+  //         screenStatus = ScreenStatus.ON_DELIVERY;
+  //         timeStatus = Time.AFTERNOON;
+  //         _mainTitle = '주문하신 반찬도시락이\n배송중입니다!';
+  //         _subTitle = '12시~1시 사이에 배송됩니다!';
+  //         _buttonString = '배송 조회';
+  //       });
+  //     }
+  //     if (widget.testStatus == 4) {
+  //       // Todo: 조건: 배송 중, 저녁
+  //       setState(() {
+  //         screenStatus = ScreenStatus.ON_DELIVERY;
+  //         timeStatus = Time.EVENING;
+  //         _mainTitle = '주문하신 반찬도시락이\n배송중입니다!';
+  //         _subTitle = '6시~7시 사이에 배송됩니다!';
+  //         _buttonString = '배송 조회';
+  //       });
+  //     }
+  //     // if (widget.testStatus == 5) {
+  //     //   // Todo: 조건: 배송 후, 점심
+  //     //   setState(() {
+  //     //     screenStatus = ScreenStatus.AFTER_DELIVERY;
+  //     //     timeStatus = Time.AFTERNOON;
+  //     //     _mainTitle = '주문하신 반찬도시락\n배달이 완료되었습니다!';
+  //     //     _subTitle = '맛있는 점심식사 되세요!';
+  //     //     _buttonString = '배송 내역';
+  //     //   });
+  //     // }
+  //     // if (widget.testStatus == 6) {
+  //     //   // Todo: 조건: 배송 후, 저녁
+  //     //   setState(() {
+  //     //     screenStatus = ScreenStatus.AFTER_DELIVERY;
+  //     //     timeStatus = Time.EVENING;
+  //     //     _mainTitle = '주문하신 반찬도시락\n배달이 완료되었습니다!';
+  //     //     _subTitle = '맛있는 저녁식사 되세요!';
+  //     //     _buttonString = '배송 내역';
+  //     //   });
+  //     // }
+  //   }
+
   void _checkMenu() {
     if (_mealController.getMeals.isEmpty) {
       //Todo 조건: menu empty
@@ -89,10 +161,12 @@ class _HomeScreenState extends State<HomeScreen> {
         _subTitle = '원하는 반찬을 선택하고 주문하면 \n든든한 한끼가 되어줄게요!';
         _buttonString = '반찬도시락 메뉴담기';
       });
-      return ;
+      return;
     }
     if (_deliveryController.deliveringMealDelivery != null) {
-      if(_deliveryController.deliveringMealDelivery!.orderedMeal.reservedTime == Time.AFTERNOON){
+      if (_deliveryController
+              .deliveringMealDelivery!.reservedTime ==
+          Time.AFTERNOON) {
         // Todo 조건: 배송 중, 점심
         setState(() {
           screenStatus = ScreenStatus.ON_DELIVERY;
@@ -101,8 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
           _subTitle = '12시~1시 사이에 배송됩니다!';
           _buttonString = '배송 조회';
         });
-      }
-      else {
+      } else {
         // Todo 조건: 배송 중, 저녁
         setState(() {
           screenStatus = ScreenStatus.ON_DELIVERY;
@@ -113,8 +186,10 @@ class _HomeScreenState extends State<HomeScreen> {
         });
       }
     }
-    if(_deliveryController.recentDeliveredMealDelivery != null) {
-      if(_deliveryController.recentDeliveredMealDelivery!.orderedMeal.reservedTime == Time.AFTERNOON){
+    if (_deliveryController.recentDeliveredMealDelivery != null) {
+      if (_deliveryController
+              .recentDeliveredMealDelivery!.reservedTime ==
+          Time.AFTERNOON) {
         // Todo 조건: 배송 후, 점심
         setState(() {
           screenStatus = ScreenStatus.AFTER_DELIVERY;
@@ -123,8 +198,7 @@ class _HomeScreenState extends State<HomeScreen> {
           _subTitle = '맛있는 점심식사 되세요!';
           _buttonString = '배송 내역';
         });
-      }
-      else{
+      } else {
         // Todo 조건: 배송 중, 저녁
         setState(() {
           screenStatus = ScreenStatus.AFTER_DELIVERY;
@@ -135,7 +209,8 @@ class _HomeScreenState extends State<HomeScreen> {
         });
       }
     }
-    if(_deliveryController.deliveringMealDelivery == null && _deliveryController.recentDeliveredMealDelivery == null) {
+    if (_deliveryController.deliveringMealDelivery == null &&
+        _deliveryController.recentDeliveredMealDelivery == null) {
       //Todo 조건: mealmenu is not empty
       setState(() {
         screenStatus = ScreenStatus.MENU_SELECTED;
@@ -232,7 +307,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     screenStatus == ScreenStatus.ON_DELIVERY
                         ? _buildOnDelivery()
                         : screenStatus == ScreenStatus.AFTER_DELIVERY
-                            ? _buildAfterDelivery(_deliveryController.recentDeliveredMealDelivery!)
+                            ? MealInfo(
+                                mealDelivery: _deliveryController
+                                    .recentDeliveredMealDelivery!,
+                                orderNumberColor: GREY_COLOR_4)
                             : screenStatus == ScreenStatus.MENU_EMPTY
                                 ? _buildMenuEmpty()
                                 : _buildMenuList(mealMenuList),
@@ -271,21 +349,23 @@ class _HomeScreenState extends State<HomeScreen> {
                         const SizedBox(width: 8),
                         controller.getAddressList.isNotEmpty
                             ? Text(
-                          value,
-                          style: TextStyles.getTextStyle(TextType.SUBTITLE_1, BLACK_COLOR),
-                        )
+                                value,
+                                style: TextStyles.getTextStyle(
+                                    TextType.SUBTITLE_1, BLACK_COLOR),
+                              )
                             : const Text(''),
                       ],
                     ));
               }).toList(),
-              onChanged: (String? value) {
-                setState(() {
-                  for(int i = 0; i < controller.getAddressList.length; i++){
-                    if(controller.getAddressList[i] == value){
-                      controller.selectedAddressIndex = i;
-                    }
+              onChanged: (String? value) async {
+
+                for (Address address in controller.addresses) {
+                  if (address.getAddressString == value) {
+                    await controller.setConfiguredAddress(address.deliveryAddressId);
                   }
-                });
+                }
+
+                setState(() {});
               });
         },
       ),
@@ -379,10 +459,13 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('배달 주소를\n설정하지 않았어요!', style: dialogTitleStyle),
-            Text('배달 주소를 설정하고\n반찬도시락을 주문해보세요!', style: dialogContentStyle),
-            const SizedBox(height: 10),
-            Center(
+
+            Text('배달 주소를\n설정하지 않았어요!',
+                style: TextStyles.getTextStyle(TextType.TITLE_2, BLACK_COLOR)),
+            Text('배달 주소를 설정하고\n반찬도시락을 주문해보세요!',
+                style: TextStyles.getTextStyle(TextType.BODY_2, GREY_COLOR_2)),
+            const SizedBox(height: 4),
+            const Center(
               child: Image(
                 image: AssetImage(
                     'assets/images/2_home/alert_dialog_delivery.png'),
@@ -432,17 +515,21 @@ class _HomeScreenState extends State<HomeScreen> {
                     ? Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            '다회용기를 보냉백에 넣어\n문앞에 놔주세요',
-                            style: bannerStyle1,
-                          ),
+
+                          Text('다회용기를 보냉백에 넣어\n문앞에 놔주세요',
+                              style: TextStyles.getTextStyle(
+                                  TextType.BUTTON, BLACK_COLOR)),
                           const SizedBox(height: 10),
                           RichText(
                               text: TextSpan(children: [
-                            TextSpan(text: '반납할 ', style: bannerStyle4),
+                            TextSpan(
+                                text: '반납할 ',
+                                style: TextStyles.getTextStyle(
+                                    TextType.TITLE_2, BLACK_COLOR)),
                             TextSpan(
                                 text: '다회용기 $containerCount개',
-                                style: bannerStyle5),
+                                style: TextStyles.getTextStyle(
+                                    TextType.TITLE_2, PRIMARY_COLOR)),
                           ]))
                         ],
                       )
@@ -451,21 +538,35 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           Text(
                             '식사 후 귀찮은 설거지까지\n한끼톡톡에서 다!',
-                            style: bannerStyle1,
+
+                            style: TextStyles.getTextStyle(
+                                TextType.BUTTON, BLACK_COLOR),
                           ),
                           const SizedBox(height: 10),
                           RichText(
                               text: TextSpan(children: [
-                            TextSpan(text: '한끼 풀대접', style: bannerStyle2),
-                            TextSpan(text: ' 오픈!', style: bannerStyle3),
+
+                            TextSpan(text: '한끼 풀대접', style: noName),
+                            TextSpan(
+                                text: ' 오픈!',
+                                style: TextStyles.getTextStyle(
+                                    TextType.TITLE_2, BLACK_COLOR)),
                           ]))
                         ],
                       ),
-                Image(
-                  image: AssetImage('assets/images/2_home/banner_image.png'),
-                  width: 120,
-                  height: 120,
-                )
+                (containerCount > 0)
+                    ? const Image(
+                        image: AssetImage(
+                            'assets/images/2_home/banner_full_service.png'),
+                        width: 87,
+                        height: 80,
+                      )
+                    : const Image(
+                        image:
+                            AssetImage('assets/images/2_home/banner_image.png'),
+                        width: 100,
+                        height: 80,
+                      ),
               ],
             )
 
@@ -509,10 +610,9 @@ class _HomeScreenState extends State<HomeScreen> {
           }
         },
         child: Center(
-            child: Text(
-          _buttonString,
-          style: buttonTextStyle,
-        )));
+
+            child: Text(_buttonString,
+                style: TextStyles.getTextStyle(TextType.BUTTON, WHITE_COLOR))));
   }
 
   Widget _buildAfterDeliveryTitle() {
@@ -520,24 +620,22 @@ class _HomeScreenState extends State<HomeScreen> {
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            _mainTitle,
-            style: mainTitleStyle,
-          ),
+
+          Text(_mainTitle,
+              style: TextStyles.getTextStyle(TextType.TITLE_2, BLACK_COLOR_2)),
           const SizedBox(height: 16),
-          Text(
-            _subTitle,
-            style: mainSubtitleStyle,
-          ),
+          Text(_subTitle,
+              style: TextStyles.getTextStyle(TextType.BODY_2, BLACK_COLOR)),
         ],
       ),
       const Expanded(
         child: Padding(
           padding: EdgeInsets.only(top: 32),
           child: Image(
-              image: AssetImage('assets/images/2_home/main_on_delivery.png')),
-        ),
-      )
+
+              image: AssetImage('assets/images/2_home/main_after_delivery.png'),
+              width: 112,
+              height: 116)),
     ]);
   }
 
@@ -609,6 +707,7 @@ class _HomeScreenState extends State<HomeScreen> {
     ]);
   }
 
+
   Widget _buildMenuEmpty() {
     return const SizedBox(
       height: 304,
@@ -651,14 +750,21 @@ class _HomeScreenState extends State<HomeScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("내가 담은 반찬 도시락", style: menuListTitleStyle),
+
+              Text("내가 담은 반찬 도시락",
+                  style:
+                      TextStyles.getTextStyle(TextType.TITLE_3, BLACK_COLOR)),
+
               InkWell(
                   onTap: () {
                     //Todo: 메뉴 수정 페이지로 이동
                   },
                   child: Row(
                     children: [
-                      Text("수정", style: menuListTextButtonStyle),
+
+                      Text("수정",
+                          style: TextStyles.getTextStyle(
+                              TextType.BUTTON, GREY_COLOR_3)),
                       const Image(
                         image:
                             AssetImage('assets/images/2_home/arrow_right.png'),

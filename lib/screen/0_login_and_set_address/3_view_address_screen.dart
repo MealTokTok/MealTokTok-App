@@ -8,11 +8,17 @@ import 'package:hankkitoktok/const/style2.dart';
 import 'package:get/get.dart';
 
 import '../../controller/address_controller.dart';
+import '../../models/address/address.dart';
 
-class ViewAddressScreen extends StatelessWidget {
-  final AddressController _addressController = Get.find<AddressController>();
+class ViewAddressScreen extends StatefulWidget {
+  const ViewAddressScreen({super.key});
 
-  ViewAddressScreen({super.key});
+  @override
+  State<ViewAddressScreen> createState() => _ViewAddressScreenState();
+}
+
+class _ViewAddressScreenState extends State<ViewAddressScreen> {
+  bool isEdit = false;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +42,11 @@ class ViewAddressScreen extends StatelessWidget {
       surfaceTintColor: Colors.transparent,
       actions: [
         TextButton(
-            onPressed: () {},
+            onPressed: () {
+              setState(() {
+                isEdit = !isEdit;
+              });
+            },
             child: Text("편집",
                 style: TextStyles.getTextStyle(TextType.BUTTON, BLACK_COLOR_2)))
       ],
@@ -70,20 +80,27 @@ class ViewAddressScreen extends StatelessWidget {
   }
 
   Widget _buildAddressList() {
-    return ListView.separated(
-      shrinkWrap: true,
-      itemCount: _addressController.addresses.length,
-      itemBuilder: (context, index) {
-        return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: GetBuilder<AddressController>(
-                builder: (controller) => AddressCard(
-                    address: controller.addresses[index],
-                    isSelected: controller.selectedAddressIndex == index)));
-      },
-      separatorBuilder: (context, index) {
-        return const Divider(height: 1, color: GREY_COLOR_4);
-      },
-    );
+    return GetBuilder<AddressController>(
+        builder: (controller) => Column(
+              children: [
+                AddressCardOn(
+                  address: controller.selectedAddress,
+                  isEdit: isEdit,
+                ),
+                const Divider(height: 1, color: GREY_COLOR_4),
+                for (var address in controller.addresses)
+                  if(address.addressStatus == AddressStatus.NOT_CONFIGURED)
+                  Column(
+                    children: [
+                      AddressCardOff(
+                        address: address,
+                        addressController: controller,
+                        isEdit: isEdit,
+                      ),
+                      const Divider(height: 1, color: GREY_COLOR_4),
+                    ],
+                  )
+              ],
+            ));
   }
 }

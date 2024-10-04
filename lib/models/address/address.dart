@@ -1,7 +1,8 @@
 import 'package:hankkitoktok/models/base_model.dart';
 
 enum AddressStatus{
-  CONFIGURED
+  CONFIGURED,
+  NOT_CONFIGURED
 }
 
 class Address extends BaseModel{

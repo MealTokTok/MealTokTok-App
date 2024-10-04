@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hankkitoktok/controller/ordered_meal_controller.dart';
 import 'package:hankkitoktok/controller/tmpdata.dart';
+import 'package:hankkitoktok/screen/3_menu_choice/tmp_full_service_screen.dart';
 import 'package:intl/intl.dart';
 import '../../const/style2.dart';
 import '../../component/calendar.dart';
@@ -15,7 +16,7 @@ import '../../controller/meal_controller.dart';
 import '../../functions/formatter.dart';
 import '../../models/enums.dart';
 import '../../models/meal/meal.dart';
-import '../../models/meal/ordered_meal.dart';
+import '../../models/meal/meal_delivery_order.dart';
 import '../../models/order/order_post.dart';
 import '../4_pay_choice/0_pay_aggrement_screen.dart';
 
@@ -310,7 +311,7 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   Widget _buildSelectMenu() {
-    Widget buildSelectMenuDetails(OrderedMeal orderedMeal, String time,
+    Widget buildSelectMenuDetails(MealDeliveryOrder mealDeliveryOrder, String time,
         OrderedMealController orderedMealController) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -320,7 +321,7 @@ class _OrderScreenState extends State<OrderScreen> {
               children: [
                 TextSpan(
                   text: DateFormat('EEEE', 'ko_KR')
-                      .format(orderedMeal.reservedDate!),
+                      .format(mealDeliveryOrder.reservedDate!),
                   style: TextStyles.getTextStyle(
                       TextType.SUBTITLE_1, BLACK_COLOR_2),
                 ),
@@ -334,8 +335,8 @@ class _OrderScreenState extends State<OrderScreen> {
           const SizedBox(height: 8),
           MenuCards(
             orderType: _orderType,
-            reservedDate: orderedMeal.reservedDate!,
-            time: orderedMeal.reservedTime,
+            reservedDate: mealDeliveryOrder.reservedDate!,
+            time: mealDeliveryOrder.reservedTime,
             orderedMealController: orderedMealController,
           ),
           const SizedBox(height: 12),
@@ -473,7 +474,18 @@ class _OrderScreenState extends State<OrderScreen> {
       child: SizedBox(
         child: ElevatedButton(
           onPressed: () {
-            if((_orderType == OrderType.IMMEDIATE ? _orderedMealController.menuPriceDay() : _orderedMealController.menuPriceWeek()) > 0){
+
+            if(_orderType == OrderType.IMMEDIATE && _orderedMealController.menuPriceDay() > 0){
+              //Todo:  바로 결제 페이지 이동
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => PayAggrementScreen(orderPost: _orderedMealController.getOrderedMealsSelected(_orderType))
+                  )
+              );
+            }
+
+            else if(_orderType == OrderType.SCHEDULED && _orderedMealController.menuPriceWeek()> 0){
               showModalBottomSheet<void>(
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
@@ -483,8 +495,9 @@ class _OrderScreenState extends State<OrderScreen> {
                 ),
                 context: context,
                 builder: (BuildContext context) {
-                  return SizedBox(
-                      height: 360,
+                  return Container(
+                      color: WHITE_COLOR,
+                      height: 380, //Todo: 원래는 360 -> 디자인팀에 문의
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -600,7 +613,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                builder: (context) => PayAggrementScreen(orderPost: _orderedMealController.getOrderedMealsSelected(_orderType))
+                                                builder: (context) => TmpFullServiceScreen(orderType: _orderType)
                                               )
                                           );
                                         },

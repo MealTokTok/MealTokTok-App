@@ -6,7 +6,7 @@ import 'package:hankkitoktok/models/meal/meal_delivery.dart';
 
 import '../models/full_service/full_service_data.dart';
 import '../models/meal/meal_delivery_data.dart';
-import '../models/meal/ordered_meal.dart';
+import '../models/meal/meal_delivery_order.dart';
 import '../models/order/order_data.dart';
 
 //주문 정보와 다음 배송 정보를 가져오는 컨트롤러 (해당 정보들은 사용자 시나리오에 따라 null일 수 있음)
@@ -55,16 +55,16 @@ class DeliveryController extends GetxController {
 
   //다음 배송 정보 가져오기
   Future<void> initNextMealDelivery() async {
-    int? orderId;
+    String? orderId;
     if(recentOrder != null) orderId = recentOrder!.orderID;
     if(orderId == null) return;
 
     Map<String, dynamic> query = {
       "orderId": orderId,
     };
-    debugPrint("nextDel");
 
-    nextMealDelivery = await networkGetNextDelivery(query, RequestMode.NEXT_DELIVERY);
+
+    nextMealDelivery = await networkGetDelivery(query, DeliveryRequestMode.NEXT_DELIVERY);
 
     update();
   }
@@ -73,14 +73,14 @@ class DeliveryController extends GetxController {
   Future<void> initDeliveringMealDelivery() async {
     debugPrint("delivering");
 
-    deliveringMealDelivery = await networkGetNextDelivery(null, RequestMode.DELVERING_DELIVERY);
+    deliveringMealDelivery = await networkGetDelivery(null, DeliveryRequestMode.DELVERING_DELIVERY);
     update();
   }
 
   //최근 배송 완료된 배송 정보 가져오기
   Future<void> initDeliveredMealDelivery() async {
     debugPrint("delivered");
-    recentDeliveredMealDelivery = await networkGetNextDelivery(null, RequestMode.RECENT_DELIVERED_DELIVERY);
+    recentDeliveredMealDelivery = await networkGetDelivery(null, DeliveryRequestMode.RECENT_DELIVERED_DELIVERY);
     update();
   }
 

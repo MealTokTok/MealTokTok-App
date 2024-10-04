@@ -1,6 +1,7 @@
 import 'package:hankkitoktok/models/base_model.dart';
 import 'package:hankkitoktok/models/enums.dart';
-import '../meal/ordered_meal.dart';
+import '../meal/meal_delivery.dart';
+import '../meal/meal_delivery_order.dart';
 
 class OrderPost{
   int orderId;
@@ -8,7 +9,7 @@ class OrderPost{
   OrderState orderState;
   DateTime? orderTime;
 
-  List<OrderedMeal> orderedMeals = [];
+  List<MealDeliveryOrder> mealDeliveryOrders = [];
   String specialInstruction = '';
   int mealPrice;
   int deliveryPrice;
@@ -20,15 +21,18 @@ class OrderPost{
     this.orderType = OrderType.IMMEDIATE,
     this.orderState = OrderState.ORDERED,
     this.orderTime,
-    required this.orderedMeals,
+    required this.mealDeliveryOrders,
     this.specialInstruction = '',
     this.mealPrice = 0,
     this.deliveryPrice = 0,
     this.fullServicePrice = 0,
     this.totalPrice = 0,
   }){
-    for(var orderedMeal in orderedMeals){
-      mealPrice += orderedMeal.orderedMealPrice;
+    for(var mealDeliveryOrder in mealDeliveryOrders){
+      mealPrice += mealDeliveryOrder.orderedMealPrice;
+      if(mealDeliveryOrder.hasFullDiningOption){
+        fullServicePrice += 2000;
+      }
       deliveryPrice += 2000;
       //Todo: fullServicePrice 계산
     }
@@ -41,7 +45,7 @@ class OrderPost{
       'orderType': orderType.toString().split('.').last,
       'orderState': orderState.toString().split('.').last,
       'orderTime': orderTime.toString(),
-      'orderedMeals': orderedMeals.map((e) => e.toJson()).toList(),
+      'orderedMeals': mealDeliveryOrders.map((e) => e.toJson()).toList(),
       'mealPrice': mealPrice,
       'deliveryPrice': deliveryPrice,
       'fullServicePrice': fullServicePrice,
@@ -51,7 +55,7 @@ class OrderPost{
 
   List<MealDetail> get combinedMenuList {
     List<MealDetail> mealDetails = [];
-    for (var item in orderedMeals) {
+    for (var item in mealDeliveryOrders) {
       mealDetails.add(item.getMealDetail());
     }
 
