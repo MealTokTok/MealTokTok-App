@@ -83,6 +83,7 @@ class _MyNicknameEditingState extends State<MyNicknameEditing> {
             Row(
               children: [
                 Expanded(
+
                   child: Container(
                     width: 375,
                     //너비 자유롭게 되도록 설정해둬야 함
@@ -149,6 +150,7 @@ class _MyNicknameEditingState extends State<MyNicknameEditing> {
                     ),
                   ),
                 ),
+
                 SizedBox(
                   width: 8,
                 ),
@@ -182,6 +184,7 @@ class _MyNicknameEditingState extends State<MyNicknameEditing> {
             SizedBox(
               height: 4,
             ),
+
             if (_nickname.text == widget.user!.nickname)
               Text(
                 '기존 닉네임과 동일합니다.',

@@ -50,3 +50,82 @@ Future<User?> networkGetUser(int userId) async {
     return null;
   }
 }
+
+
+//로그인
+Future<bool> login(String accessToken, String idToken, String deviceToken) async {
+  Uri authUri = Uri.parse('$BASE_URL/api/v1/auth/oauth/login'); // HTTPS 사용 권장
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  Map<String, String> queryParams = {
+    'accessToken': accessToken,
+    'idToken': idToken,
+    'device-token': deviceToken,
+  };
+
+  try {
+    http.Response authResponse = await http.get(
+      authUri.replace(queryParameters: queryParams),
+      headers: {
+        'accept': '*/*',
+        'Content-Type': 'application/json',
+      },
+
+    );
+
+    if (authResponse.statusCode == 200) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var responseHeader = authResponse.headers;
+      var responseBody = jsonDecode(utf8.decode(authResponse.bodyBytes));
+      debugPrint('성공');
+      debugPrint(responseBody.toString());
+
+      if(responseHeader['access-token']==null || responseHeader['refresh-token']==null){
+        throw Exception('토큰이 없습니다.');
+      }
+
+      prefs.setString("access_token", responseHeader['access-token']!);
+      prefs.setString("refresh_token", responseHeader['refresh-token']!);
+
+      return true;
+
+
+    } else {
+      // 에러 처리
+      var errorResponse = jsonDecode(utf8.decode(authResponse.bodyBytes));
+      throw Exception('로그인 실패: ${errorResponse['responseCode']}');
+
+
+    }
+  } catch (e) {
+    // 네트워크 요청 실패 시 처리
+    debugPrint('Error making authentication request: $e');
+    return false;
+  }
+}
+
+//로그아웃
+Future<bool> logout() async {
+  try {
+    SharedPreferences.getInstance().then((prefs) {
+      prefs.remove('access_token');
+      prefs.remove('refresh_token');
+    });
+    return true;
+  } catch (e) {
+    debugPrint('로그아웃 실패: $e');
+    return false;
+  }
+}
+
+//Map을 String으로 변환
+//테스트에만 사용
+String mapToString(Map<String, String> map) {
+  StringBuffer buffer = StringBuffer();
+  map.forEach((key, value) {
+    buffer.write('$key: $value\n');
+  });
+  return buffer.toString();
+}
+
+

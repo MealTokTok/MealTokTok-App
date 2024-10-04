@@ -2,6 +2,7 @@ import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:hankkitoktok/const/color.dart";
 import "package:hankkitoktok/const/style.dart";
+
 import "package:hankkitoktok/controller/user_controller.dart";
 import "package:hankkitoktok/functions/httpRequest.dart";
 import "package:hankkitoktok/models/delivery/delivery_status.dart";
@@ -9,6 +10,7 @@ import "package:hankkitoktok/models/user/user.dart";
 import "package:hankkitoktok/models/user/auth_data.dart";
 import "package:hankkitoktok/screen/4_my_page/1_my_information_editing.dart";
 import 'package:get/get.dart';
+
 class MyPageHome extends StatefulWidget {
   const MyPageHome({super.key});
 
@@ -18,6 +20,7 @@ class MyPageHome extends StatefulWidget {
 
 class _MyPageHomeState extends State<MyPageHome> {
   //int userId;
+
   UserController _userController = Get.find();
   Pending? _pending;
   DeliveryRequested? _deliveryRequested;
@@ -45,6 +48,7 @@ class _MyPageHomeState extends State<MyPageHome> {
   @override
   void initState() {
     super.initState();
+
   }
 
   @override
@@ -58,6 +62,7 @@ class _MyPageHomeState extends State<MyPageHome> {
               Row(
                 children: [
                   Text(
+
                     "${_userController.user.nickname} ",
                     style: TextStyle(
                       color: Color(0xFF131313),
@@ -80,6 +85,7 @@ class _MyPageHomeState extends State<MyPageHome> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
+
                             builder: (context) => MyInformationEditng(user: _userController.user,),
                           ),
                         );
@@ -342,3 +348,4 @@ class _MyPageHomeState extends State<MyPageHome> {
     );
   }
 }
+

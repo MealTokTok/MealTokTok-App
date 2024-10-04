@@ -3,7 +3,9 @@ import "package:hankkitoktok/component/show_warning_dialog.dart";
 import "package:hankkitoktok/const/color.dart";
 import "package:hankkitoktok/const/style.dart";
 import "package:hankkitoktok/const/style2.dart";
+import "package:hankkitoktok/convention.dart";
 import "package:hankkitoktok/models/user/user.dart";
+import "package:hankkitoktok/models/user/user_data.dart";
 import "package:hankkitoktok/screen/4_my_page/2_my_nickname_editing.dart";
 import "package:hankkitoktok/screen/4_my_page/3_delete_id.dart";
 
@@ -295,7 +297,7 @@ class _MyInformationEditngState extends State<MyInformationEditng> {
                 ),
                   //constraints: BoxConstraints(),
                   onPressed: () {
-                    showWarningDialog(context, '로그아웃 하실 건가요?', '다시 로그인하시면 \'한끼톡톡\'서비스를\n이어서 이용하실 수 있습니다.', '돌아가기','로그아웃',null,null);
+                    showWarningDialog(context, '로그아웃 하실 건가요?', '다시 로그인하시면 \'한끼톡톡\'서비스를\n이어서 이용하실 수 있습니다.', '돌아가기','로그아웃', _Logout);
                   },
                   child:  Text("로그아웃", style: TextStyles.getTextStyle(TextType.BUTTON, GRAY3)),),
 
@@ -322,4 +324,18 @@ class _MyInformationEditngState extends State<MyInformationEditng> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
+  void _Logout()  {
+    _handleLogoutServiceUser();
+    Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()),
+    );
+  }
+
+
+  void _handleLogoutServiceUser() async {
+    bool tmp = await logout();
+  }
+
 }

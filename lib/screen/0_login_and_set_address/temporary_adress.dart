@@ -75,6 +75,8 @@ class _TemporaryAdressState extends State<TemporaryAddress> {
               isUser=await getIsUser(idToken);
               if(isUser==true){
                 debugPrint('유저ㅇㅇ');
+                debugPrint('{$accessToken}');
+                debugPrint('{$idToken}');
               }
               else{
                 debugPrint('유저ㄴㄴ');
