@@ -8,16 +8,23 @@ import 'package:hankkitoktok/controller/address_controller.dart';
 import 'package:hankkitoktok/controller/delivery_controller.dart';
 import 'package:hankkitoktok/controller/meal_controller.dart';
 import 'package:hankkitoktok/controller/tmpdata.dart';
+import 'package:hankkitoktok/const/style.dart';
+import 'package:hankkitoktok/functions/httpRequest.dart';
+
 
 import 'package:hankkitoktok/controller/user_controller.dart';
 import 'package:hankkitoktok/models/meal/meal_delivery.dart';
 import 'package:hankkitoktok/models/meal/meal.dart';
+import 'package:hankkitoktok/screen/2_home/2_notification_screen.dart';
+
+enum ScreenStatus { AFTER_DELIVERY, MENU_EMPTY, MENU_SELECTED, ON_DELIVERY }
 
 import 'package:hankkitoktok/screen/2_home/2_notification_screen.dart';
 import '../../models/address/address.dart';
 import '../../models/enums.dart';
 import 'package:hankkitoktok/const/style2.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+
 
 enum ScreenStatus {
   AFTER_DELIVERY,
@@ -44,6 +51,35 @@ class _HomeScreenState extends State<HomeScreen> {
   String _mainTitle = '반찬도시락\n메뉴를 선택해볼까요?';
   String _subTitle = '원하는 반찬을 선택하고 주문하면 \n든든한 한끼가 되어줄게요!';
   ScreenStatus screenStatus = ScreenStatus.MENU_EMPTY;
+  TimeStatus timeStatus = TimeStatus.LUNCH;
+  int cartCount = 1;
+  int alarmCount = 0;
+  int containerCount = 30;
+
+  int testStatus = 1;
+
+  //--------sampleData----------
+
+  List<Meal> mealMenuListEmpty = [];
+  late MealDelivery mealDelivery;
+
+  void getMealDelivery() async {
+    mealDelivery = await networkGetRequest(
+        MealDelivery.init(
+            orderedMeal: OrderedMeal.init(reservedDate: DateTime(0))),
+        "detail",
+        null);
+  }
+
+  void _checkAddress() {
+    if (addressList.isEmpty) {
+      WidgetsBinding.instance?.addPostFrameCallback((_) {
+        _showAddressDialog();
+      });
+    }
+  }
+
+
   Time timeStatus = Time.AFTERNOON;
   int cartCount = 1;
   int alarmCount = 0;
@@ -181,11 +217,56 @@ class _HomeScreenState extends State<HomeScreen> {
         _buttonString = '주문하기';
       });
     }
+    if (testStatus == 3) {
+      // Todo 조건: 배송 중, 점심
+
+      setState(() {
+        screenStatus = ScreenStatus.ON_DELIVERY;
+        timeStatus = TimeStatus.LUNCH;
+        _mainTitle = '주문하신 반찬도시락이\n배송중입니다!';
+        _subTitle = '12시~1시 사이에 배송됩니다!';
+        _buttonString = '배송 조회';
+      });
+    }
+    if (testStatus == 4) {
+      // Todo: 조건: 배송 중, 저녁
+      setState(() {
+        screenStatus = ScreenStatus.ON_DELIVERY;
+        timeStatus = TimeStatus.DINNER;
+        _mainTitle = '주문하신 반찬도시락이\n배송중입니다!';
+        _subTitle = '6시~7시 사이에 배송됩니다!';
+        _buttonString = '배송 조회';
+      });
+    }
+    if (testStatus == 5) {
+      // Todo: 조건: 배송 후, 점심
+      setState(() {
+        screenStatus = ScreenStatus.AFTER_DELIVERY;
+        timeStatus = TimeStatus.LUNCH;
+        _mainTitle = '주문하신 반찬도시락\n배달이 완료되었습니다!';
+        _subTitle = '맛있는 점심식사 되세요!';
+        _buttonString = '배송 내역';
+      });
+    }
+    if (testStatus == 6) {
+      // Todo: 조건: 배송 후, 점심
+      setState(() {
+        screenStatus = ScreenStatus.AFTER_DELIVERY;
+        timeStatus = TimeStatus.DINNER;
+        _mainTitle = '주문하신 반찬도시락\n배달이 완료되었습니다!';
+        _subTitle = '맛있는 저녁식사 되세요!';
+        _buttonString = '배송 내역';
+      });
+    }
+
   }
 
   @override
   void initState() {
     // TODO: 처음 들어갔을 때, 사용자 정보 가져오기
+
+    //TODO: MealDelivery로 화면 Status 결정
+    _checkAddress();
     //TODO: MealDelivery로 화면 Status 결정
     _userController = Get.find();
     _deliveryController = Get.find();
@@ -576,6 +657,47 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget _buildAfterDelivery(MealDelivery mealDelivery) {
+    Meal meal = mealDelivery.orderedMeal.meal;
+
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        Text("배송된 반찬도시락", style: menuListTitleStyle),
+        Text("주문번호 ${mealDelivery.orderId}", style: menuListTextButtonStyle),
+      ]),
+      const SizedBox(height: 16),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          buildFourImage(meal.getDishUrls(), 80, 80),
+          const SizedBox(width: 16), //
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                meal.name,
+                style: orderMenuTitleStyle,
+                overflow: TextOverflow.ellipsis,
+              ),
+              Text(
+                "${meal.price}원",
+                style: orderPriceStyle,
+              ),
+              //객체 안에있는 리스트 수 만큼 메뉴 텍스트 추가
+              for (int i = 0; i < meal.getDishNames().length; i++)
+                Text(
+                  meal.getDishNames()[i],
+                  style: orderMenuStyle,
+                ),
+            ],
+          ),
+        ],
+      ),
+      const SizedBox(height: 32),
+    ]);
+  }
+
+
   Widget _buildMenuEmpty() {
     return const SizedBox(
       height: 304,
@@ -618,9 +740,11 @@ class _HomeScreenState extends State<HomeScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+
               Text("내가 담은 반찬 도시락",
                   style:
                       TextStyles.getTextStyle(TextType.TITLE_3, BLACK_COLOR)),
+
               InkWell(
                   onTap: () {
                     //Todo: 메뉴 수정 페이지로 이동

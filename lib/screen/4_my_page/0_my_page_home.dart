@@ -123,6 +123,7 @@ class _MyPageHomeState extends State<MyPageHome> {
               Row(
                 children: [
                   Text(
+
                     "${_userController.user.nickname} ",
                     style: TextStyle(
                       color: Color(0xFF131313),
@@ -232,7 +233,7 @@ class _MyPageHomeState extends State<MyPageHome> {
                                 Column(
                                   children: [
                                     Text(
-                                      "$_pending",
+                                      "0",
                                       style: myPageRecordGrayNum,
                                     ),
                                     Text(
@@ -249,7 +250,7 @@ class _MyPageHomeState extends State<MyPageHome> {
                                 Column(
                                   children: [
                                     Text(
-                                      "$_deliveryRequested",
+                                      "0",
                                       style: myPageRecordGrayNum,
                                     ),
                                     Text(
@@ -266,7 +267,7 @@ class _MyPageHomeState extends State<MyPageHome> {
                                 Column(
                                   children: [
                                     Text(
-                                      "$_delivering",
+                                      "0",
                                       style: myPageRecordGrayNum,
                                     ),
                                     Text(
@@ -283,7 +284,7 @@ class _MyPageHomeState extends State<MyPageHome> {
                                 Column(
                                   children: [
                                     Text(
-                                      "$_delivered",
+                                      "1",
                                       style: TextStyle(
                                         color: Colors.black,
                                         fontSize: 18,
@@ -453,3 +454,4 @@ class _MyPageHomeState extends State<MyPageHome> {
     );
   }
 }
+
