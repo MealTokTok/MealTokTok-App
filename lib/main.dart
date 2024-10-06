@@ -41,6 +41,7 @@ import 'firebase_options.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hankkitoktok/controller/meal_controller.dart';
 // ...
+
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("백그라운드 메시지 처리.. ${message.notification!.body!}");
 }
@@ -199,7 +200,7 @@ class MyApp extends StatelessWidget {
         // ),
       ],
 
-      home: MyPageHome(),
+      home: TestScreen(),
 
 
     );

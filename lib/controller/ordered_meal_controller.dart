@@ -34,7 +34,7 @@ class OrderedMealController extends GetxController {
       for (var orderedMeal in orderedMeals) {
         if(orderedMeal.isChecked == false) continue;
 
-        sum += orderedMeal.meal.price;
+        sum += orderedMeal.meal.mealPrice;
         if(orderedMeal.includeRice) sum += 1000;
       }
     }
@@ -45,7 +45,7 @@ class OrderedMealController extends GetxController {
     for (var orderedMeals in orderedWeekMeals.values) {
       for (var orderedMeal in orderedMeals) {
         if(orderedMeal.isChecked == false) continue;
-        sum += orderedMeal.meal.price;
+        sum += orderedMeal.meal.mealPrice;
         if(orderedMeal.includeRice) sum += 1000;
         if(orderedMeal.hasFullDiningOption) sum += 2000;
       }

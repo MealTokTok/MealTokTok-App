@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:get/get_rx/get_rx.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/address/address.dart';
 import '../models/address/address_data.dart';
@@ -21,11 +19,6 @@ class AddressController extends GetxController{
   void onInit() async {
     // TODO: implement onInit
     await initAddresses();
-    for(var address in addresses){
-      if(address.addressStatus == AddressStatus.CONFIGURED){
-        selectedAddress = address;
-      }
-    }
     super.onInit();
   }
 
@@ -33,30 +26,25 @@ class AddressController extends GetxController{
     debugPrint('initAddresses');
     addresses = await addressGetList();
     orgAddressList();
+    update();
   }
 
   void orgAddressList(){
     int idx = 0;
     List<Address> notConfiguredAddress = [];
     for(var address in addresses){
-      if(address.addressStatus != AddressStatus.CONFIGURED){
-        notConfiguredAddress.add(address);
-      }else{
+      if(address.addressStatus == AddressStatus.CONFIGURED){
         selectedAddress = address;
         selectedAddressIndex = idx;
+      }else{
+        notConfiguredAddress.add(address);
       }
     }
     addresses = notConfiguredAddress;
-    update();
   }
 
   void setAddresses(List<Address> addresses){
     this.addresses = addresses;
-    update();
-  }
-
-  void setSelectedAddressIndex(int index){
-    //기존 선택된 주소를 보이게 하고 새로 선택된 주소를 안보이게 함
     update();
   }
 
@@ -68,12 +56,9 @@ class AddressController extends GetxController{
     return addressList;
   }
 
-  Future<bool> setConfiguredAddress(int addressId)async{
-
-    bool result = await networkPatchAddress(addressId);
-
-    if(result) await initAddresses();
-    return result;
+  Future<void> setConfiguredAddress(int addressId)async{
+    await networkPatchAddress(addressId);
+    await initAddresses();
   }
 
   Future<void> deleteAddress(int addressId)async{

@@ -5,17 +5,26 @@ import 'meal_delivery_order.dart';
 import '../base_model.dart';
 import '../enums.dart';
 
+enum SeparatorType {
+  HYPHEN,
+  DOT,
+  KOREAN,
+}
+
+// 날짜, 시간을 정렬해서 표시하기위한 클래스
 class MealDetail {
   String title;
   String subTitle;
   int mealPrice;
   int priority;
+  int date;
 
   MealDetail.init({
     this.title = '',
     this.subTitle = '',
     this.mealPrice = 0,
     this.priority = 0,
+    this.date = 0,
   });
 }
 
@@ -112,67 +121,67 @@ class MealDelivery extends BaseModel{
     meal = await networkGetMeal(mealId);
   }
 
-  // String get simpleOrderDateString {
-  //   if(orderTime == null) throw Exception('MealDelivery 클래스: orderTime이 null입니다.');
-  //   return '${orderTime!.year}.${orderTime!.month}.${orderTime!.day}';
-  // }
-
-  //2024-07-03
-  String getDeliveryDateTimeString() {
+  // separatorType : 구분자 타입
+  // year : 년도 표시 여부
+  // time : 시간 표시 여부
+  // dayOfWeek : 요일 표시 여부
+  String getReservedDate(SeparatorType separatorType, bool year, bool time, bool dayOfWeek){
+    String res = '';
     if(reservedDate == null){
       return "";
     }
-    return "${reservedDate!.year}-${reservedDate!.month}-${reservedDate!.day}";
+    if(year){
+      res += "${reservedDate!.year}";
+    }
+    switch(separatorType){
+      case SeparatorType.HYPHEN:
+        res += "-";
+        break;
+      case SeparatorType.DOT:
+        res += ".";
+        break;
+      case SeparatorType.KOREAN:
+        res += "년 ";
+        break;
+    }
+    res += "${reservedDate!.month}";
+    switch(separatorType){
+      case SeparatorType.HYPHEN:
+        res += "-";
+        break;
+      case SeparatorType.DOT:
+        res += ".";
+        break;
+      case SeparatorType.KOREAN:
+        res += "월 ";
+        break;
+    }
+    res += "${reservedDate!.day}";
+    if(separatorType == SeparatorType.KOREAN){
+      res += "일 ";
+    }
+    if(time){
+      res += " - ${reservedTime == Time.AFTERNOON ? '점심' : '저녁'}";
+    }
+    if(dayOfWeek){
+      res += DateFormat('EEEE','ko-KR').format(reservedDate!);
+    }
+    return res;
   }
+
+
 
   // 월요일-점심(도시락 이름)
   String get getMealString {
     if(reservedDate == null){
       return "";
     }
-    // 월요일-점심 도시락 이름
-    List<String> days = ['월', '화', '수', '목', '금', '토', '일'];
+    // 월-점심 도시락 이름
+    List<String> days = ['일', '월', '화', '수', '목', '금', '토'];
     String dayOfWeekString = days[reservedDate!.weekday % 7];
 
 
-    return "$dayOfWeekString-${reservedTime == Time.AFTERNOON ? '점심' : '저녁'}(${meal.name})";
-  }
-  //2024. 07. 03
-  String get getDeliveryDateTimeStringByDot{
-    if(reservedDate == null){
-      return "";
-    }
-    return "${reservedDate!.year}. ${reservedDate!.month}. ${reservedDate!.day}";
-  }
-
-  //2024.07.03 - 점심
-  String get getDeliveryDateTimeString2{
-    if(reservedDate == null){
-      return "";
-    }
-    return "${reservedDate!.year}.${reservedDate!.month}.${reservedDate!.day} - ${reservedTime == Time.AFTERNOON ? '점심' : '저녁'}";
-  }
-
-  //7월 3일
-  String get getDateString {
-    if(reservedDate == null){
-      return "";
-    }
-    return "${reservedDate!.month}월 ${reservedDate!.day}일";
-  }
-
-
-  //수요일
-  String get getDayOfWeekString {
-    if(reservedDate == null){
-      return "";
-    }
-    return DateFormat('EEEE','ko-KR').format(reservedDate!);
-  }
-
-  //잠심
-  String get getTimeString{
-    return reservedTime == Time.AFTERNOON ? '점심' : '저녁';
+    return "$dayOfWeekString-${reservedTime == Time.AFTERNOON ? '점심' : '저녁'}(${meal.mealName})";
   }
 
   String get getMenuString {
@@ -181,7 +190,7 @@ class MealDelivery extends BaseModel{
   }
 
   int get orderedMealPrice {
-    int price = meal.price;
+    int price = meal.mealPrice;
     if (includeRice) {
       price += 1000;
     }
@@ -195,9 +204,11 @@ class MealDelivery extends BaseModel{
     } else {
       priority = 1;
     }
-
+    int date = 0;
+    if(reservedDate!=null){
+      date = reservedDate!.day;
+    }
     priority += dayOfWeek.index * 2;
-
 
 
     return MealDetail.init(
@@ -205,6 +216,7 @@ class MealDelivery extends BaseModel{
       subTitle: getMenuString,
       mealPrice: orderedMealPrice,
       priority: priority,
+      date: date,
     );
   }
 
@@ -212,19 +224,10 @@ class MealDelivery extends BaseModel{
     return dayOfWeek.toString().split('.').last;
   }
 
-  //7월 3일 수요일 - 점심
-  String orderedReservedDateTimeString() {
-    return "${reservedDate!.month}월 ${reservedDate!.day}일 $getDayOfWeekString - $getTimeString";
-  }
-
-  // 다음 배송은 7월 3일 점심
-  String get getNextDeliveryString {
-    return "다음 배송은 ${DateFormat('M월 d일').format(reservedDate!)} $getTimeString";
-  }
 
   //메뉴명 입니다!
   String get getNextDeliveryMenuString {
-    return "${meal.name}입니다!";
+    return "${meal.mealName}입니다!";
   }
 
   String get getOrderTypeString {

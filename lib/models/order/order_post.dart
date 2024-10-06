@@ -71,7 +71,7 @@ class OrderPost{
     Set<String> initialsSet = Set<String>();
 
     for (var item in combinedMenuList) {
-      initialsSet.add(dayOfWeekList[(item.priority)~/2]);
+      initialsSet.add("${item.date}일(${dayOfWeekList[(item.priority)~/2]})");
     }
     List<String> sortedInitials = initialsSet.toList();
     sortedInitials.sort((a, b) => dayOfWeekList.indexOf(a).compareTo(dayOfWeekList.indexOf(b)));
@@ -87,23 +87,18 @@ class OrderPost{
     return '${orderTime!.year}.${orderTime!.month}.${orderTime!.day}';
   }
 
-
-
-
-
-
   // 월요일 - 저녁
   //수요일 - 점심, 저녁
   List<String> get getOrderTimeList {
 
     List<String> dayOfWeekList = [
+      '일요일',
       '월요일',
       '화요일',
       '수요일',
       '목요일',
       '금요일',
-      '토요일',
-      '일요일'
+      '토요일'
     ];
 
     List<int> dayOfWeekIndexList = [0,0,0,0,0,0,0];
