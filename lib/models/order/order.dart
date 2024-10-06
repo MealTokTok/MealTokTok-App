@@ -9,6 +9,7 @@ class Order extends BaseModel{
   OrderType orderType; // 주문타입 (일 결제, 주간 결제)
   OrderState? orderState; // 주문상태 (주문완료, 배송중, 배송완료)
   String specialInstruction; //요청사항
+  DateTime? orderTime; // 주문닐짜
 
   int userId;
   int addressId; // 배송주소
@@ -21,7 +22,7 @@ class Order extends BaseModel{
   int totalMealDeliveryCount;
   int remainingMealDeliveryCount;
 
-  DateTime? orderTime; // 주문닐짜
+
 
 
   List<MealDelivery> mealDeliveries = []; // 주문한 도시락 리스트(주간 결제일 경우 2개이상, 일 결제일 경우 1개이상)
@@ -30,7 +31,7 @@ class Order extends BaseModel{
     this.orderID = "",
     this.orderType = OrderType.IMMEDIATE,
     this.orderState = OrderState.ORDERED,
-    this.specialInstruction = '',
+    this.specialInstruction = '요청사항 없음',
     this.userId = 0,
     this.addressId = 0,
     this.mealPrice = 0,
@@ -55,6 +56,8 @@ class Order extends BaseModel{
       deliveryPrice: map['orderPrice']?['deliveryPrice']?['amount'] ?? 0,
       fullServicePrice: map['orderPrice']?['fullServicePrice']?['amount'] ?? 0,
       totalPrice: map['orderPrice']?['totalPrice']?['amount'] ?? 0,
+      totalMealDeliveryCount: map['totalMealDeliveryCount'] ?? 0,
+      remainingMealDeliveryCount: map['remainingMealDeliveryCount'] ?? 0,
       orderTime: map['orderTime'] != null ? DateTime.parse(map['orderTime']) : null,
     );
   }
@@ -118,14 +121,15 @@ class Order extends BaseModel{
     return mealDetails;
   }
 
-  //수, 금, 토
+  //Todo: 리팩토링 시 구조변경
+  //날짜(수), 날짜(금), 날짜(토)
   String get dayOfWeekInitial {
     List<String> dayOfWeekList = ['일', '월', '화', '수', '목', '금', '토'];
 
     Set<String> initialsSet = Set<String>();
 
     for (var item in combinedMenuList) {
-      initialsSet.add(dayOfWeekList[(item.priority)~/2]);
+      initialsSet.add("${item.date}일(${dayOfWeekList[(item.priority)~/2]})");
     }
     List<String> sortedInitials = initialsSet.toList();
     sortedInitials.sort((a, b) => dayOfWeekList.indexOf(a).compareTo(dayOfWeekList.indexOf(b)));
@@ -134,33 +138,27 @@ class Order extends BaseModel{
 
   //2024년 06월 29일 오후 14:20
   String get orderDateString {
-    if(orderTime == null){
-      return '';
-    }
+    if(orderTime == null) return '';
     return '${orderTime!.year}년 ${orderTime!.month}월 ${orderTime!.day}일 ${orderTime!.hour}:${orderTime!.minute}';
   }
   //2024.06.29
   String get simpleOrderDateString {
+    if(orderTime == null) return '';
     return '${orderTime!.year}.${orderTime!.month}.${orderTime!.day}';
   }
-
-
-
-
-
 
   // 월요일 - 저녁
   //수요일 - 점심, 저녁
   List<String> get getOrderTimeList {
 
     List<String> dayOfWeekList = [
+      '일요일',
       '월요일',
       '화요일',
       '수요일',
       '목요일',
       '금요일',
-      '토요일',
-      '일요일'
+      '토요일'
     ];
 
     List<int> dayOfWeekIndexList = [0,0,0,0,0,0,0];

@@ -127,7 +127,7 @@ class _MenuCardsState extends State<MenuCards> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      _mealController.getMeals[index].name,
+                                      _mealController.getMeals[index].mealName,
                                       style: TextStyles.getTextStyle(
                                           TextType.SUBTITLE_1, BLACK_COLOR_2),
                                     ),
@@ -144,7 +144,7 @@ class _MenuCardsState extends State<MenuCards> {
                                     ),
                                   ]),
                               Text(
-                                '${_mealController.getMeals[index].price}원',
+                                '${_mealController.getMeals[index].mealPrice}원',
                                 style: TextStyles.getTextStyle(
                                     TextType.BODY_2, BLACK_COLOR_2),
                               ),
@@ -159,7 +159,7 @@ class _MenuCardsState extends State<MenuCards> {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                           for (Dish dish in _mealController
-                                              .getMeals[index].dishList)
+                                              .getMeals[index].dishes)
                                             Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,

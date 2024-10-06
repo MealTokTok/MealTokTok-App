@@ -25,7 +25,14 @@ class MealInfo extends StatelessWidget {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         Text("배송된 반찬도시락", style: TextStyles.getTextStyle(TextType.TITLE_3, BLACK_COLOR),),
-        Text("주문번호 ${mealDelivery.orderId}", style: TextStyles.getTextStyle(TextType.BUTTON, orderNumberColor),),
+        SizedBox(
+          width: MediaQuery.of(context).size.width * 0.5,
+          child: Text(
+            "주문번호 ${mealDelivery.orderId}",
+            style: TextStyles.getTextStyle(TextType.BUTTON, orderNumberColor),
+            overflow: TextOverflow.ellipsis,
+          ),
+        )
       ]),
       const SizedBox(height: 16),
       Row(
@@ -37,12 +44,12 @@ class MealInfo extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                meal.name,
+                meal.mealName,
                 style: TextStyles.getTextStyle(TextType.SUBTITLE_1, BLACK_COLOR),
                 overflow: TextOverflow.ellipsis,
               ),
               Text(
-                "${meal.price}원",
+                "${meal.mealPrice}원",
                 style: TextStyles.getTextStyle(TextType.BUTTON, GREY_COLOR_2),
               ),
               //객체 안에있는 리스트 수 만큼 메뉴 텍스트 추가

@@ -40,6 +40,7 @@ Future<List<Address>> addressGetList() async {
     if(response.statusCode == 200){
       var responseBody = jsonDecode(utf8.decode(response.bodyBytes));
       List<Address> result = [];
+      print(responseBody['result']);
       for(var data in responseBody['result']){
         Address address = Address.init();
         result.add(address.fromMap(data));

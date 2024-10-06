@@ -10,9 +10,9 @@ import 'package:hankkitoktok/models/meal/dish_category.dart';
 import 'package:hankkitoktok/models/meal/meal.dart';
 import 'package:hankkitoktok/screen/3_menu_choice/0_meal_menu_screen.dart';
 
-List<Dish1> listSideDish = [];
+List<Dish> listSideDish = [];
 
-List<Dish1> sampleSideDishes = [];
+List<Dish> sampleSideDishes = [];
 
 class SelectMenuScreen1 extends StatefulWidget {
   Meal1 meal;
@@ -25,9 +25,9 @@ class SelectMenuScreen1 extends StatefulWidget {
 class _SelectMenuState extends State<SelectMenuScreen1> {
   // String obentoName = ''; // 도시락 이름
   // String sideDishType = '';
-  // List<Dish1> selectedSideDish = []; // 선택된 사이드디쉬 리스트
-  // List<Dish1> listSideDish = sampleSideDishes; // 화면에 표시할 사이드디쉬 리스트
-  // List<Dish1> allListSideDish = sampleSideDishes; // 모든 사이드디쉬
+  // List<Dish> selectedSideDish = []; // 선택된 사이드디쉬 리스트
+  // List<Dish> listSideDish = sampleSideDishes; // 화면에 표시할 사이드디쉬 리스트
+  // List<Dish> allListSideDish = sampleSideDishes; // 모든 사이드디쉬
 
   // void searchSideDish() {
   //   setState(() {
@@ -41,8 +41,8 @@ class _SelectMenuState extends State<SelectMenuScreen1> {
   //   });
   // }
   //모든 반찬 들여오기
-  List<Dish1> selectedSideDish = [];
-  List<Dish1> listSideDish = [];
+  List<Dish> selectedSideDish = [];
+  List<Dish> listSideDish = [];
 
   int sideDishType = 0;
   List<DishCategory> listDishCategory = [];
@@ -69,7 +69,7 @@ class _SelectMenuState extends State<SelectMenuScreen1> {
       // 선택된 카테고리의 반찬 리스트를 가져옴 (예: 첫 번째 카테고리로 테스트)
       if (listDishCategory.isNotEmpty) {
         listSideDish = await networkGetListRequest111(
-            Dish1.init(),
+            Dish.init(),
             'api/v1/stores/1/categories/${listDishCategory[0].categoryId}/dishes',
             null);
         setState(() {}); // 반찬 리스트 업데이트 후 화면 갱신
@@ -294,7 +294,7 @@ class _SelectMenuState extends State<SelectMenuScreen1> {
                   onPressed: () async {
                     try {
                       listSideDish = await networkGetListRequest111(
-                        Dish1.init(),
+                        Dish.init(),
                         'api/v1/stores/1/dishes/search',
                         {
                           'keyword': dishSearch.text,
@@ -372,7 +372,7 @@ class _SelectMenuState extends State<SelectMenuScreen1> {
                               onPressed: () async {
                                 try {
                                   listSideDish = await networkGetListRequest111(
-                                    Dish1.init(),
+                                    Dish.init(),
                                     'api/v1/stores/1/categories/${category.categoryId}/dishes',
                                     null,
                                   );

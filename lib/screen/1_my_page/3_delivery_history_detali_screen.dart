@@ -161,7 +161,7 @@ class _DeliveryHistoryDetailScreenState
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(mealDelivery.getDeliveryDateTimeString2,
+                        Text(mealDelivery.getReservedDate(SeparatorType.DOT, true, true, false),
                             style: TextStyles.getTextStyle(
                                 TextType.SMALL, GREY_COLOR_2)),
                         Row(
@@ -173,10 +173,10 @@ class _DeliveryHistoryDetailScreenState
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(mealDelivery.meal.name,
+                                Text(mealDelivery.meal.mealName,
                                     style: TextStyles.getTextStyle(
                                         TextType.SUBTITLE_1, BLACK_COLOR)),
-                                Text("${mealDelivery.meal.price.toString()}원",
+                                Text("${mealDelivery.meal.mealPrice.toString()}원",
                                     style: TextStyles.getTextStyle(
                                         TextType.BUTTON, GREY_COLOR_2)),
                                 for (String dishName
@@ -211,7 +211,8 @@ class _DeliveryHistoryDetailScreenState
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(nextMealDelivery!.getNextDeliveryString,
+                //다음 배송은 7월 3일 점심
+                Text("다음 배송은 ${nextMealDelivery!.getReservedDate(SeparatorType.KOREAN, false, true, false)}",
                     style: TextStyles.getTextStyle(
                         TextType.BODY_2, BLACK_COLOR_2)),
                 Text(nextMealDelivery!.getNextDeliveryMenuString,

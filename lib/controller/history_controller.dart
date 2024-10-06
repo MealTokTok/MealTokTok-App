@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:hankkitoktok/controller/tmpdata.dart';
 
+import '../models/meal/meal_data.dart';
 import '../models/meal/meal_delivery.dart';
 import '../models/order/order.dart';
 import '../models/order/order_data.dart';
@@ -38,16 +39,18 @@ class HistoryController extends GetxController {
       ]
     };
 
-    List<Order> tmp = await orderGetList(query);
-    orderHistories.addAll(tmp);
+    List<Order> newOrders = await orderGetList(query);
+
+
+
+    orderHistories.addAll(newOrders);
     orderPage++;
   }
 
+  //스크롤을 내렸을 때 배송정보 추가 요청
   void addDelivery() async {
-    // mealDeliveryHistories.addAll(mealDeliveries);
-    // mealDeliveryHistories.addAll(mealDeliveries);
-    // mealDeliveryHistories.addAll(mealDeliveries);
-    // mealDeliveryHistories.addAll(mealDeliveries);
+
+    //최대 12개까지 추가하는 쿼리
     Map<String, dynamic> query = {
       "page":deliveryPage.toString(),
       "size": "12",
@@ -58,8 +61,11 @@ class HistoryController extends GetxController {
         }
       ]
     };
-    List<MealDelivery> tmp = await networkGetDeliveryList(query, DeliveryListRequestMode.ALL);
-    mealDeliveryHistories.addAll(tmp);
+    List<MealDelivery> newMealDeliveries = await networkGetDeliveryList(query, DeliveryListRequestMode.ALL);
+    for(MealDelivery mealDelivery in newMealDeliveries){
+      mealDelivery.meal = await networkGetMeal(mealDelivery.mealId);
+    }
+    mealDeliveryHistories.addAll(newMealDeliveries);
     deliveryPage++;
   }
 

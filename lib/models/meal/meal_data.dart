@@ -42,7 +42,6 @@ Future<Meal> networkGetMeal(int mealId) async
     }
     if(response.statusCode == 200){
       var responseBody = jsonDecode(utf8.decode(response.bodyBytes));
-      debugPrint(responseBody["result"].toString());
       return Meal.init().fromMap(responseBody["result"]);
 
       // await prefs.setString("access_token", responseBody['access']); //Todo: 데이터 보고 교체

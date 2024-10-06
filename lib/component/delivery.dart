@@ -27,7 +27,7 @@ class Delivery extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(mealDelivery.getDeliveryDateTimeStringByDot, style: TextStyles.getTextStyle(TextType.BUTTON, GREY_COLOR_3),),
+                Text(mealDelivery.getReservedDate(SeparatorType.DOT, true, false, false), style: TextStyles.getTextStyle(TextType.BUTTON, GREY_COLOR_3),),
                 InkWell(
                     onTap: (){
                       Navigator.push(
@@ -56,12 +56,13 @@ class Delivery extends StatelessWidget {
               ],
             ),
             Text(
-              mealDelivery.orderedReservedDateTimeString(),
+            //7월 3일 수요일 - 점심
+            mealDelivery.getReservedDate(SeparatorType.KOREAN, true, true, true),
               style: TextStyles.getTextStyle(TextType.BODY_1, BLACK_COLOR),
             ),
             const SizedBox(height: 2),
               Text(
-                '${mealDelivery.getOrderTypeString} - 메뉴명', //Todo: 반영하기
+                '${mealDelivery.getOrderTypeString} - ${mealDelivery.meal.mealName}', //Todo: 반영하기
                 style: TextStyles.getTextStyle(TextType.BODY_1, BLACK_COLOR),
               ),
             const SizedBox(height: 4),

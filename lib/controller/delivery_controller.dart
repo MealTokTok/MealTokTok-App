@@ -30,10 +30,11 @@ class DeliveryController extends GetxController {
     //최근 배송된 배송정보 가져오기
     await initDeliveredMealDelivery();
     //요청 수거된 다회용기 횟수 가져오기
-    initFullDiningCount();
+    await initFullDiningCount();
     super.onInit();
   }
 
+  // 주문정보 가져오기
   Future<void> initOrder() async {
     Map<String, dynamic> query = {
       "page": "1",
@@ -65,6 +66,7 @@ class DeliveryController extends GetxController {
 
 
     nextMealDelivery = await networkGetDelivery(query, DeliveryRequestMode.NEXT_DELIVERY);
+    await nextMealDelivery?.setMeal();
 
     update();
   }
@@ -74,6 +76,7 @@ class DeliveryController extends GetxController {
     debugPrint("delivering");
 
     deliveringMealDelivery = await networkGetDelivery(null, DeliveryRequestMode.DELVERING_DELIVERY);
+    await deliveringMealDelivery?.setMeal();
     update();
   }
 
@@ -81,6 +84,7 @@ class DeliveryController extends GetxController {
   Future<void> initDeliveredMealDelivery() async {
     debugPrint("delivered");
     recentDeliveredMealDelivery = await networkGetDelivery(null, DeliveryRequestMode.RECENT_DELIVERED_DELIVERY);
+    await recentDeliveredMealDelivery?.setMeal();
     update();
   }
 

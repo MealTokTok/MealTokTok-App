@@ -82,9 +82,9 @@ int _requestIdCounter = 1;
 List<Meal> mealMenuList = [
   Meal.init(
     mealId: _mealIdCounter++,
-    name: '아침 콤보',
-    price: 6000,
-    dishList: [
+    mealName: '아침 콤보',
+    mealPrice: 6000,
+    dishes: [
       Dish.init(dishId: _dishIdCounter++, dishName: '팬케이크', imgUrl: 'https://picsum.photos/80/80'),
       Dish.init(dishId: _dishIdCounter++, dishName: '베이컨', imgUrl: 'https://picsum.photos/80/80'),
       Dish.init(dishId: _dishIdCounter++, dishName: '계란', imgUrl: 'https://picsum.photos/80/80'),
@@ -93,9 +93,9 @@ List<Meal> mealMenuList = [
   ),
   Meal.init(
     mealId: _mealIdCounter++,
-    name: '점심 스페셜',
-    price: 6000,
-    dishList: [
+    mealName: '점심 스페셜',
+    mealPrice: 6000,
+    dishes: [
       Dish.init(dishId: _dishIdCounter++, dishName: '버거', imgUrl: 'https://picsum.photos/80/80'),
       Dish.init(dishId: _dishIdCounter++, dishName: '감자튀김', imgUrl: 'https://picsum.photos/80/80'),
       Dish.init(dishId: _dishIdCounter++, dishName: '샐러드', imgUrl: 'https://picsum.photos/80/80'),
@@ -104,9 +104,9 @@ List<Meal> mealMenuList = [
   ),
   Meal.init(
     mealId: _mealIdCounter++,
-    name: '저녁 특선',
-    price: 6000,
-    dishList: [
+    mealName: '저녁 특선',
+    mealPrice: 6000,
+    dishes: [
       Dish.init(dishId: _dishIdCounter++, dishName: '스테이크', imgUrl: 'https://picsum.photos/80/80'),
       Dish.init(dishId: _dishIdCounter++, dishName: '매쉬드 포테이토', imgUrl: 'https://picsum.photos/80/80'),
       Dish.init(dishId: _dishIdCounter++, dishName: '구운 야채', imgUrl: 'https://picsum.photos/80/80'),
@@ -115,9 +115,9 @@ List<Meal> mealMenuList = [
   ),
   Meal.init(
     mealId: _mealIdCounter++,
-    name: '채식주의자 잔치',
-    price: 6000,
-    dishList: [
+    mealName: '채식주의자 잔치',
+    mealPrice: 6000,
+    dishes: [
       Dish.init(dishId: _dishIdCounter++, dishName: '샐러드', imgUrl: 'https://picsum.photos/80/80'),
       Dish.init(dishId: _dishIdCounter++, dishName: '야채 수프', imgUrl: 'https://picsum.photos/80/80'),
       Dish.init(dishId: _dishIdCounter++, dishName: '구운 두부', imgUrl: 'https://picsum.photos/80/80'),

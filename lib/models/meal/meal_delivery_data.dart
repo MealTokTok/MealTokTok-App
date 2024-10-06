@@ -96,7 +96,8 @@ Future<MealDelivery?> networkGetDelivery(Map<String,dynamic>? query, DeliveryReq
       uriString = '$BASE_URL/api/v1/meal-deliveries/next-delivery';
       break;
     case DeliveryRequestMode.RECENT_DELIVERED_DELIVERY:
-      uriString = '$BASE_URL/api/v1/meal-deliveries/recent-delivered';
+      uriString = '$BASE_URL/api/v1/meal-deliveries/delivered';
+      uriString = '$BASE_URL/api/v1/meal-deliveries/delivering';
       break;
     case DeliveryRequestMode.DELVERING_DELIVERY:
       uriString = '$BASE_URL/api/v1/meal-deliveries/delivering';
@@ -106,7 +107,6 @@ Future<MealDelivery?> networkGetDelivery(Map<String,dynamic>? query, DeliveryReq
       break;
   }
 
-  print(uriString);
   Uri uri = Uri.parse(uriString);
 
 
@@ -141,8 +141,8 @@ Future<MealDelivery?> networkGetDelivery(Map<String,dynamic>? query, DeliveryReq
     if(response.statusCode == 200){
 
       var responseBody = jsonDecode(utf8.decode(response.bodyBytes));
+      print("mode: ${mode}, $responseBody}");
       MealDelivery result = MealDelivery.init();
-      print(responseBody['result']);
       result = result.fromMap(responseBody['result']);
       // await prefs.setString("access_token", responseBody['access']); //Todo: 데이터 보고 교체
       // await prefs.setString("refresh_token", responseBody['refresh']); //Todo: 데이터 보고 교체

@@ -332,12 +332,12 @@ class _PayAggrementScreenState extends State<PayAggrementScreen> {
                 widget.orderPost.specialInstruction += widget.checkDisposable == true ? '(일회용품 o)' : '(일회용품 x)';
                 //Todo: 결제 -> 결제완료 콜백 -> 주문완료 처리?
                 debugPrint(widget.orderPost.toJson().toString());
-                String id = await orderPost(widget.orderPost.toJson());
+                //String id = await orderPost(widget.orderPost.toJson());
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => AfterOrderScreen(orderId: id))
-                    // builder: (context) => PayTest(id: id))
+                        //builder: (context) => AfterOrderScreen(orderId: id))
+                    builder: (context) => PayTest(id: '1'))
                 );
               }
             },

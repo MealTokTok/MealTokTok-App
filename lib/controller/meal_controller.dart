@@ -17,8 +17,7 @@ class MealController extends GetxController {
   }
 
   void setMeals() async {
-    //_meals = await networkGetListRequest(Meal.init(), "detail_url", {});
-    _meals = mealMenuList;
+    _meals = await networkGetListRequest(Meal.init(), 'api/v1/meals', null);
     update();
   }
 

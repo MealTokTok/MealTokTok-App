@@ -27,7 +27,6 @@ class AddressCardOff extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       child: InkWell(
         onTap:()async{
-          print(1);
           await addressController.setConfiguredAddress(address.deliveryAddressId);
         },
         child: Row(
