@@ -187,7 +187,7 @@ class MyApp extends StatelessWidget {
         // 스크린 지정
         GetPage(
           name: '/',
-          page: () => Home(),
+          page: () => Home(selectedIndex: 0,),
         ),
         GetPage(
           name: '/order',

@@ -8,22 +8,21 @@ import '3_menu_choice/2_order_screen.dart';
 import '4_my_page/0_my_page_home.dart';
 
 class TestScreen extends StatelessWidget {
-  const TestScreen({super.key});
+
+  const TestScreen({
+    super.key
+  });
 
   @override
   Widget build(BuildContext context) {
     return Center(
         child: Column(
             children: [
-              _buildButton("home", context, Home()),
-              _buildButton("home_status2", context, HomeScreen(testStatus: 2)),
-              _buildButton("home_status3", context, HomeScreen(testStatus: 3)),
-              _buildButton("home_status4", context, HomeScreen(testStatus: 4)),
-
+              _buildButton("home", context, Home(selectedIndex: 0,)),
               _buildButton("order_screen", context, OrderScreen()),
               _buildButton("order_histories", context, OrderHistoriesScreen()),
               _buildButton("my_page", context, MyPageHome()),
-              _buildButton("pay", context, PayTest(id: "1"))
+              _buildButton("pay", context, PayTest(orderId: "1", price: 1000)),
             ]
         )
     );

@@ -6,12 +6,14 @@ class Meal extends BaseModel {
   int mealId;
   String mealName;
   int mealPrice;
+  //bool isDeleted;
   List<Dish> dishes;
 
   Meal.init({
     this.mealId = 0,
     this.mealName = '',
     this.mealPrice = 0,
+    //this.isDeleted = false,
     this.dishes = const [],
   });
 
@@ -20,7 +22,8 @@ class Meal extends BaseModel {
     return Meal.init(
       mealId: map['meal']['mealId'] ?? 0,
       mealName: map['meal']['mealName'] ?? '',
-      mealPrice: map['meal']['mealPrice']['amount'] ?? 0,
+      mealPrice: map['meal']['mealPrice']['amount'].toInt() ?? 0,
+      //isDeleted: map['meal']['isDeleted'] ?? false,
       dishes: (map['dishes'] as List).map((dishMap) => Dish.init().fromMap(dishMap)).toList(),
     );
   }

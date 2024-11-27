@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hankkitoktok/functions/httpRequest.dart';
 
+import '../../mode.dart';
+
 enum RequestType { POST, PATCH, DELETE }
 
 
@@ -17,10 +19,15 @@ Future<List<Address>> addressGetList() async {
   http.Response? response;
   Map<String, String> header = {
     'Content-Type': 'application/json',
-    //'Authorization': 'Bearer $accessToken',
-    'Access-token': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzIzNDYyOTM5LCJleHAiOjE3NDkzODI5Mzl9.rmDSuxTSfjJplWLm-v1AxKrz_-9jt8u5RJeC4q2JW38'
+    'Authorization': 'Bearer $accessToken',
   };
 
+  if(APP_MODE == AppMode.DEBUG){
+    header = {
+      'Content-Type': 'application/json',
+      'Access-token': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzIzNDYyOTM5LCJleHAiOjE3NDkzODI5Mzl9.rmDSuxTSfjJplWLm-v1AxKrz_-9jt8u5RJeC4q2JW38'
+    };
+  }
   try {
     response = await http.get(uri, headers: header);
     if (response == null) {
@@ -64,11 +71,17 @@ Future<Address> networkGetAddress(int addressId) async {
 
 
   http.Response? response;
-  Map<String, String> header = {
+    Map<String, String> header = {
     'Content-Type': 'application/json',
-    //'Authorization': 'Bearer $accessToken',
-    'Access-token': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzIzNDYyOTM5LCJleHAiOjE3NDkzODI5Mzl9.rmDSuxTSfjJplWLm-v1AxKrz_-9jt8u5RJeC4q2JW38'
+    'Authorization': 'Bearer $accessToken',
   };
+
+  if(APP_MODE == AppMode.DEBUG){
+    header = {
+      'Content-Type': 'application/json',
+      'Access-token': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzIzNDYyOTM5LCJleHAiOjE3NDkzODI5Mzl9.rmDSuxTSfjJplWLm-v1AxKrz_-9jt8u5RJeC4q2JW38'
+    };
+  }
 
   try {
     response = await http.get(uri, headers: header);
@@ -108,11 +121,17 @@ Future<bool> networkDeleteAddress(int addressId) async {
 
 
   http.Response? response;
-  Map<String, String> header = {
+    Map<String, String> header = {
     'Content-Type': 'application/json',
-    //'Authorization': 'Bearer $accessToken',
-    'Access-token': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzIzNDYyOTM5LCJleHAiOjE3NDkzODI5Mzl9.rmDSuxTSfjJplWLm-v1AxKrz_-9jt8u5RJeC4q2JW38'
+    'Authorization': 'Bearer $accessToken',
   };
+
+  if(APP_MODE == AppMode.DEBUG){
+    header = {
+      'Content-Type': 'application/json',
+      'Access-token': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzIzNDYyOTM5LCJleHAiOjE3NDkzODI5Mzl9.rmDSuxTSfjJplWLm-v1AxKrz_-9jt8u5RJeC4q2JW38'
+    };
+  }
 
   try {
     response = await http.delete(uri, headers: header);
@@ -154,11 +173,17 @@ Future<bool> networkPatchAddress(int addressId) async {
 
 
   http.Response? response;
-  Map<String, String> header = {
+    Map<String, String> header = {
     'Content-Type': 'application/json',
-    //'Authorization': 'Bearer $accessToken',
-    'Access-token': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzIzNDYyOTM5LCJleHAiOjE3NDkzODI5Mzl9.rmDSuxTSfjJplWLm-v1AxKrz_-9jt8u5RJeC4q2JW38'
+    'Authorization': 'Bearer $accessToken',
   };
+
+  if(APP_MODE == AppMode.DEBUG){
+    header = {
+      'Content-Type': 'application/json',
+      'Access-token': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzIzNDYyOTM5LCJleHAiOjE3NDkzODI5Mzl9.rmDSuxTSfjJplWLm-v1AxKrz_-9jt8u5RJeC4q2JW38'
+    };
+  }
 
   try {
     response = await http.patch(uri, headers: header);

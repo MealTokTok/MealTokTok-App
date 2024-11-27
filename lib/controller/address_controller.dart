@@ -23,7 +23,6 @@ class AddressController extends GetxController{
   }
 
   Future<void> initAddresses()async {
-    debugPrint('initAddresses');
     addresses = await addressGetList();
     orgAddressList();
     update();

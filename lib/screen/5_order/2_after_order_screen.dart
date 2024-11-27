@@ -49,7 +49,7 @@ class AfterOrderScreen extends StatelessWidget {
             Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                builder: (context) => HomeScreen(testStatus: 2)
+                builder: (context) => HomeScreen()
                     //Todo: HomeScreen status 변경
               ), (route)=>false
             );
@@ -87,7 +87,7 @@ class AfterOrderScreen extends StatelessWidget {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => HomeScreen(testStatus: 2)
+                    builder: (context) => HomeScreen()
                 )
             );
           },

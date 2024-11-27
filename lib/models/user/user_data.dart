@@ -5,6 +5,7 @@ import 'package:hankkitoktok/models/user/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import '../../const/strings.dart';
+import '../../mode.dart';
 
 Future<User?> networkGetUser(int userId) async {
   SharedPreferences prefs = await SharedPreferences.getInstance(); // 저장소
@@ -12,11 +13,17 @@ Future<User?> networkGetUser(int userId) async {
   Uri uri = Uri.parse('$BASE_URL/api/v1/user/$userId');
 
   http.Response? response;
-  Map<String, String> header = {
+    Map<String, String> header = {
     'Content-Type': 'application/json',
-    //'Authorization': 'Bearer $accessToken',
-    'Access-token': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzIzNDYyOTM5LCJleHAiOjE3NDkzODI5Mzl9.rmDSuxTSfjJplWLm-v1AxKrz_-9jt8u5RJeC4q2JW38'
+    'Authorization': 'Bearer $accessToken',
   };
+
+  if(APP_MODE == AppMode.DEBUG){
+    header = {
+      'Content-Type': 'application/json',
+      'Access-token': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzIzNDYyOTM5LCJleHAiOjE3NDkzODI5Mzl9.rmDSuxTSfjJplWLm-v1AxKrz_-9jt8u5RJeC4q2JW38'
+    };
+  }
 
   try {
     response = await http.get(uri, headers: header);

@@ -26,7 +26,7 @@ class Dish extends BaseModel{
     return Dish.init(
       dishId: map['dishId'] ?? 0,
       dishName: map['dishName'] ?? '',
-      dishPrice: map['dishPrice']['amount'] ?? 0,
+      dishPrice: map['dishPrice']['amount'].toInt() ?? 0,
       imgUrl: map['imgUrl']?? '',
       dishQuantity: map['dishQuantity'] ?? 0,
       dishState: _getDishState(map['dishState']) ?? DishState.ON_SALE,

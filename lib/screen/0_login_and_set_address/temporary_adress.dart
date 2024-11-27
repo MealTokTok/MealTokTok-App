@@ -89,7 +89,7 @@ class _TemporaryAdressState extends State<TemporaryAddress> {
                   context,
                   MaterialPageRoute(
                     builder: (context) {
-                      return  Home();
+                      return  Home(selectedIndex: 0,);
                     },
                   ),
                       (route) => false,
@@ -107,7 +107,7 @@ class _TemporaryAdressState extends State<TemporaryAddress> {
                   context,
                   MaterialPageRoute(
                     builder: (context) {
-                      return Home();
+                      return Home(selectedIndex: 0,);
                     },
                   ),
                       (route) => false,

@@ -13,8 +13,11 @@ import 'package:hankkitoktok/controller/user_controller.dart';
 import 'package:hankkitoktok/models/meal/meal_delivery.dart';
 import 'package:hankkitoktok/models/meal/meal.dart';
 import 'package:hankkitoktok/screen/0_login_and_set_address/3_view_address_screen.dart';
+import 'package:hankkitoktok/screen/1_my_page/3_delivery_history_detali_screen.dart';
 
 import 'package:hankkitoktok/screen/2_home/2_notification_screen.dart';
+import 'package:hankkitoktok/screen/3_menu_choice/1_choice_menu_screen.dart';
+import 'package:hankkitoktok/screen/3_menu_choice/2_order_screen.dart';
 import '../../mode.dart';
 import '../../models/address/address.dart';
 import '../../models/enums.dart';
@@ -32,9 +35,9 @@ enum ScreenStatus {
 }
 
 class HomeScreen extends StatefulWidget {
-  int testStatus = 1;
 
-  HomeScreen({required this.testStatus, super.key});
+
+  HomeScreen({super.key});
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -61,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _checkMenu1(AppMode appMode){
     if(appMode == AppMode.DEBUG){
-      int type = 2;
+      int type = 6;
       //0: 주소 없음 1: 메뉴 선택, 2: 배송 완료(점심), 3: 배송완료(저녁), 4: 배송중(점심), 5. 배송중(저녁) 6: 메뉴 없음
       switch(type)
       {
@@ -134,7 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _checkMenu2(){
     switch(screenStatus){
       case ScreenStatus.ADDRESS_EMPTY:
-        //_showAddressDialog();
+        _showAddressDialog();
         break;
       case ScreenStatus.MENU_SELECTED:
         _mainTitle = '반찬도시락을\n주문해볼까요?';
@@ -341,7 +344,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
           onPressed: () {
-            // Todo: 첫번째 버튼 눌렀을 때 로직
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -517,18 +519,48 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildSelectedMenuButton(ScreenStatus screenStatus) {
     void selectMenu() {
-      debugPrint("메뉴 담기 버튼 클릭");
       //Todo: 메뉴 선택 페이지로 이동
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ChoiceMenuScreen(),
+        ),
+      );
     }
 
     void order() {
-      debugPrint("주문하기 버튼 클릭");
-      //Todo: 주문하기 페이지로 이동
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => OrderScreen(),
+        ),
+      );
     }
 
     void delivery() {
-      debugPrint("배송조회 버튼 클릭");
-      //Todo: 배송조회 페이지로 이동
+      if(_deliveryController.deliveringMealDelivery == null){
+        debugPrint("배송 중인 도시락 없음");
+        return;
+      }
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DeliveryHistoryDetailScreen(deliveryId: _deliveryController.deliveringMealDelivery!.mealDeliveryId),
+        ),
+      );
+    }
+
+    void delivered() {
+      if(_deliveryController.recentDeliveredMealDelivery == null){
+        debugPrint("배송 완료된 도시락 없음");
+        return;
+      }
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DeliveryHistoryDetailScreen(deliveryId: _deliveryController.recentDeliveredMealDelivery!.mealDeliveryId),
+        ),
+      );
     }
 
     return ElevatedButton(
@@ -540,13 +572,22 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         onPressed: () {
-          if (screenStatus == ScreenStatus.ON_DELIVERY) {
-            delivery();
-          } else if (screenStatus == ScreenStatus.AFTER_DELIVERY) {
-          } else if (screenStatus == ScreenStatus.MENU_EMPTY) {
-            selectMenu();
-          } else {
-            order();
+          switch(screenStatus){
+            case ScreenStatus.ADDRESS_EMPTY:
+              _showAddressDialog();
+              break;
+            case ScreenStatus.MENU_SELECTED:
+              order();
+              break;
+            case ScreenStatus.AFTER_DELIVERY:
+              delivered();
+              break;
+            case ScreenStatus.ON_DELIVERY:
+              delivery();
+              break;
+            case ScreenStatus.MENU_EMPTY:
+              selectMenu();
+              break;
           }
         },
         child: Center(

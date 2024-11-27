@@ -12,12 +12,12 @@ List<Dish> listSideDish = [];
 
 List<Dish> sampleSideDishes = [];
 
-class SelectMenuScreen extends StatefulWidget {
+class ChoiceMenuScreen extends StatefulWidget {
   @override
-  State<SelectMenuScreen> createState() => _SelectMenuState();
+  State<ChoiceMenuScreen> createState() => _ChoiceMenuScreenState();
 }
 
-class _SelectMenuState extends State<SelectMenuScreen> {
+class _ChoiceMenuScreenState extends State<ChoiceMenuScreen> {
   // String obentoName = ''; // 도시락 이름
   // String sideDishType = '';
   // List<Dish> selectedSideDish = []; // 선택된 사이드디쉬 리스트
@@ -84,18 +84,10 @@ class _SelectMenuState extends State<SelectMenuScreen> {
             style: TextStyles.getTextStyle(TextType.BODY_1, Colors.black),
           ),
           centerTitle: true,
-          leading: Container(
-            height: 24,
-            width: 24,
-            padding: EdgeInsets.all(8),
-            child: IconButton(
-              iconSize: 24,
-              onPressed: () {},
-              icon: Image.asset(
-                'assets/images/1_my_page/left_arrow.png',
-              ),
-            ),
-          )),
+          surfaceTintColor: Colors.transparent, // 스크롤이동시 색 바뀌는거 방지
+          leading: const BackButton(),
+          automaticallyImplyLeading: false,
+      ),
       body: Padding(
         padding: EdgeInsets.fromLTRB(20, 16, 20, 64),
         child: Column(
@@ -351,11 +343,14 @@ class _SelectMenuState extends State<SelectMenuScreen> {
                                 }
                               },
                               style: TextButton.styleFrom(
-                                backgroundColor: selectedCategory == category.categoryName
-                                    ? PRIMARY_COLOR
-                                    : GRAY1,
+                                backgroundColor:
+                                    selectedCategory == category.categoryName
+                                        ? PRIMARY_COLOR
+                                        : GRAY1,
                                 foregroundColor:
-                                selectedCategory == category.categoryName ? GRAY0 : GRAY4,
+                                    selectedCategory == category.categoryName
+                                        ? GRAY0
+                                        : GRAY4,
                                 shape: RoundedRectangleBorder(
                                   borderRadius:
                                       BorderRadius.circular(8.0), // 둥근 모서리 적용

@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../mode.dart';
 import '../models/base_model.dart';
 
 String BASE_URL = 'http://mealtoktok.p-e.kr';
@@ -14,12 +15,18 @@ Future<bool> networkRequest(String detailUri,RequestType requestType, Map<String
   String accessToken = prefs.getString('access_token') ?? '';
   Uri uri = Uri.parse('$BASE_URL/$detailUri');
   http.Response? response;
+
   Map<String, String> header = {
     'Content-Type': 'application/json',
-    //'Authorization': 'Bearer $accessToken',
-    'Access-token': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzIzNDYyOTM5LCJleHAiOjE3NDkzODI5Mzl9.rmDSuxTSfjJplWLm-v1AxKrz_-9jt8u5RJeC4q2JW38'
-
+    'Authorization': 'Bearer $accessToken',
   };
+
+  if(APP_MODE == AppMode.DEBUG){
+    header = {
+      'Content-Type': 'application/json',
+      'Access-token': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzIzNDYyOTM5LCJleHAiOjE3NDkzODI5Mzl9.rmDSuxTSfjJplWLm-v1AxKrz_-9jt8u5RJeC4q2JW38'
+    };
+  }
   try{
     response = await httpResponse(uri, header, requestType, data);
 
@@ -47,8 +54,11 @@ Future<bool> networkRequest(String detailUri,RequestType requestType, Map<String
         throw Exception('토큰이 없습니다.');
       }
 
-      await prefs.setString("access_token", responseBody['access']);
-      await prefs.setString("refresh_token", responseBody['refresh']);
+      if(responseBody['access'] != null && responseBody['refresh'] != null){
+        debugPrint("토큰 갱신");
+        await prefs.setString("access_token", responseBody['access']);
+        await prefs.setString("refresh_token", responseBody['refresh']);
+      }
 
 
       return true;
@@ -87,11 +97,17 @@ Future<T> networkGetRequest<T extends BaseModel>(T model, String detailUri, Map<
   }
 
   http.Response? response;
-  Map<String, String> header = {
+    Map<String, String> header = {
     'Content-Type': 'application/json',
-    //'Authorization': 'Bearer $accessToken',
-    'Access-token': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzIzNDYyOTM5LCJleHAiOjE3NDkzODI5Mzl9.rmDSuxTSfjJplWLm-v1AxKrz_-9jt8u5RJeC4q2JW38'
+    'Authorization': 'Bearer $accessToken',
   };
+
+  if(APP_MODE == AppMode.DEBUG){
+    header = {
+      'Content-Type': 'application/json',
+      'Access-token': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzIzNDYyOTM5LCJleHAiOjE3NDkzODI5Mzl9.rmDSuxTSfjJplWLm-v1AxKrz_-9jt8u5RJeC4q2JW38'
+    };
+  }
 
   try {
     response = await http.get(uri, headers: header);
@@ -139,11 +155,17 @@ Future<List<T>> networkGetListRequest<T extends BaseModel>(T model,String detail
   }
 
   http.Response? response;
-  Map<String, String> header = {
+    Map<String, String> header = {
     'Content-Type': 'application/json',
-    //'Authorization': 'Bearer $accessToken',
-    'Access-token': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzIzNDYyOTM5LCJleHAiOjE3NDkzODI5Mzl9.rmDSuxTSfjJplWLm-v1AxKrz_-9jt8u5RJeC4q2JW38'
+    'Authorization': 'Bearer $accessToken',
   };
+
+  if(APP_MODE == AppMode.DEBUG){
+    header = {
+      'Content-Type': 'application/json',
+      'Access-token': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzIzNDYyOTM5LCJleHAiOjE3NDkzODI5Mzl9.rmDSuxTSfjJplWLm-v1AxKrz_-9jt8u5RJeC4q2JW38'
+    };
+  }
 
   try {
     response = await http.get(uri, headers: header);
@@ -164,13 +186,11 @@ Future<List<T>> networkGetListRequest<T extends BaseModel>(T model,String detail
     if(response.statusCode == 200){
       var responseBody = jsonDecode(utf8.decode(response.bodyBytes));
       List<T> result = [];
+      print(responseBody['result']);
       for (var data in responseBody['result']) {
         // 매번 새로운 인스턴스를 생성하여 사용
         T newInstance = model.fromMap(data) as T;
         result.add(newInstance);
-      }
-      for(T data in result){
-        print(data.toJson());
       }
 
       // await prefs.setString("access_token", responseBody['access']); //Todo: 데이터 보고 교체
@@ -229,11 +249,17 @@ Future<List<T>> networkGetListRequest111<T extends BaseModel>(T model,String det
   }
 
   http.Response? response;
-  Map<String, String> header = {
+    Map<String, String> header = {
     'Content-Type': 'application/json',
-    //'Authorization': 'Bearer $accessToken',
-    'Access-token': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzIzNDYyOTM5LCJleHAiOjE3NDkzODI5Mzl9.rmDSuxTSfjJplWLm-v1AxKrz_-9jt8u5RJeC4q2JW38'
+    'Authorization': 'Bearer $accessToken',
   };
+
+  if(APP_MODE == AppMode.DEBUG){
+    header = {
+      'Content-Type': 'application/json',
+      'Access-token': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzIzNDYyOTM5LCJleHAiOjE3NDkzODI5Mzl9.rmDSuxTSfjJplWLm-v1AxKrz_-9jt8u5RJeC4q2JW38'
+    };
+  }
 
   try {
     response = await http.get(uri, headers: header);
@@ -259,9 +285,7 @@ Future<List<T>> networkGetListRequest111<T extends BaseModel>(T model,String det
         T newInstance = model.fromMap(data) as T;
         result.add(newInstance);
       }
-      for(T data in result){
-        print(data.toJson());
-      }
+
 
       // await prefs.setString("access_token", responseBody['access']); //Todo: 데이터 보고 교체
       // await prefs.setString("refresh_token", responseBody['refresh']); //Todo: 데이터 보고 교체
@@ -321,10 +345,8 @@ Future<T> networkGetRequest111<T extends BaseModel>(T model, String detailUri, M
       // }
       // await prefs.setString("access_token", responseHeader['access-token']!); // Todo: 데이터 보고 교체
       // await prefs.setString("refresh_token", responseHeader['refresh-token']!); // Todo: 데이터 보고 교체
-      debugPrint('Raw Response Body: $jsonBody');
 
       // 파싱된 JSON 데이터를 디버그 프린트로 출력
-      debugPrint('Parsed JSON Body: $responseBody');
       return model.fromMap(responseBody['result']) as T;
     } else {
       throw Exception(response.statusCode.toString());
@@ -382,10 +404,8 @@ Future<int> networkGetRequest222(String detailUri, Map<String, dynamic>? query, 
       // }
       // await prefs.setString("access_token", responseHeader['access-token']!); // Todo: 데이터 보고 교체
       // await prefs.setString("refresh_token", responseHeader['refresh-token']!); // Todo: 데이터 보고 교체
-      debugPrint('Raw Response Body: $jsonBody');
 
       // 파싱된 JSON 데이터를 디버그 프린트로 출력
-      debugPrint('Parsed JSON Body: $responseBody');
       return responseBody['result'];
     } else {
       throw Exception(response.statusCode.toString());

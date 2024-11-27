@@ -46,7 +46,6 @@ class DeliveryController extends GetxController {
         }
       ]
     };
-    debugPrint("initOrder");
     List<Order> tmp = await orderGetList(query);
     if(tmp.isNotEmpty) {
       recentOrder = tmp.first;
@@ -73,7 +72,6 @@ class DeliveryController extends GetxController {
 
   //현재 배송 중인 정보 가져오기
   Future<void> initDeliveringMealDelivery() async {
-    debugPrint("delivering");
 
     deliveringMealDelivery = await networkGetDelivery(null, DeliveryRequestMode.DELVERING_DELIVERY);
     await deliveringMealDelivery?.setMeal();
@@ -82,7 +80,6 @@ class DeliveryController extends GetxController {
 
   //최근 배송 완료된 배송 정보 가져오기
   Future<void> initDeliveredMealDelivery() async {
-    debugPrint("delivered");
     recentDeliveredMealDelivery = await networkGetDelivery(null, DeliveryRequestMode.RECENT_DELIVERED_DELIVERY);
     await recentDeliveredMealDelivery?.setMeal();
     update();

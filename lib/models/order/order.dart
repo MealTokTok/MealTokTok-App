@@ -52,10 +52,10 @@ class Order extends BaseModel{
       orderState: _getOrderState(map['orderState']),
       specialInstruction: map['specialInstruction'] ?? '',  // null 처리
       userId: map['orderer']?['userId'] ?? 0,  // null 처리
-      mealPrice: map['orderPrice']?['mealPrice']?['amount'] ?? 0,
-      deliveryPrice: map['orderPrice']?['deliveryPrice']?['amount'] ?? 0,
-      fullServicePrice: map['orderPrice']?['fullServicePrice']?['amount'] ?? 0,
-      totalPrice: map['orderPrice']?['totalPrice']?['amount'] ?? 0,
+      mealPrice: map['orderPrice']?['mealPrice']?['amount'].toInt() ?? 0,
+      deliveryPrice: map['orderPrice']?['deliveryPrice']?['amount'].toInt() ?? 0,
+      fullServicePrice: map['orderPrice']?['fullServicePrice']?['amount'] .toInt()?? 0,
+      totalPrice: map['orderPrice']?['totalPrice']?['amount'].toInt() ?? 0,
       totalMealDeliveryCount: map['totalMealDeliveryCount'] ?? 0,
       remainingMealDeliveryCount: map['remainingMealDeliveryCount'] ?? 0,
       orderTime: map['orderTime'] != null ? DateTime.parse(map['orderTime']) : null,
