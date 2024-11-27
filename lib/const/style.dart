@@ -30,11 +30,11 @@ TextStyle buttonTextStyle = const TextStyle(
   fontWeight: FontWeight.w500,
   color: WHITE_COLOR,
 );
-TextStyle badgeStyle = const TextStyle(
-  fontSize: 8,
-  fontWeight: FontWeight.w500,
-  color: WHITE_COLOR,
-);
+// TextStyle badgeStyle = const TextStyle(
+//   fontSize: 8,
+//   fontWeight: FontWeight.w500,
+//   color: WHITE_COLOR,
+// );
 
 //------------------------------- 공통 --------------------------------
 

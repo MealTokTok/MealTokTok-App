@@ -80,37 +80,39 @@ class _OrderScreenState extends State<OrderScreen> {
       scrolledUnderElevation: 0,
       title: Text('반찬 도시락 주문',
           style: TextStyles.getTextStyle(TextType.BODY_2, BLACK_COLOR_3)),
+      leading: const BackButton(),
+      automaticallyImplyLeading: false,
     );
   }
 
   Widget _buildOrderButtons() {
-    Widget orderButton2(OrderType buttonOrderType) {
-      return OutlinedButton(
-        style: _orderType == buttonOrderType
-            ? OutlinedButton.styleFrom(
-            maximumSize: const Size(double.infinity, 48),
-            backgroundColor: PRIMARY_COLOR,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            side: const BorderSide(color: PRIMARY_COLOR, width: 1))
-            : OutlinedButton.styleFrom(
-            maximumSize: const Size(double.infinity, 48),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            side: const BorderSide(color: GREY_COLOR_5, width: 1)),
-        onPressed: () {
-          setState(() {
-            _orderType = buttonOrderType;
-          });
-        },
-        child: Text(buttonOrderType == OrderType.IMMEDIATE ? '일 결제' : '주간 결제',
-            style: _orderType == buttonOrderType
-                ? TextStyles.getTextStyle(TextType.BUTTON, WHITE_COLOR)
-                : TextStyles.getTextStyle(TextType.BUTTON, GREY_COLOR_3)),
-      );
-    }
+    // Widget orderButton2(OrderType buttonOrderType) {
+    //   return OutlinedButton(
+    //     style: _orderType == buttonOrderType
+    //         ? OutlinedButton.styleFrom(
+    //         maximumSize: const Size(double.infinity, 48),
+    //         backgroundColor: PRIMARY_COLOR,
+    //         shape: RoundedRectangleBorder(
+    //           borderRadius: BorderRadius.circular(8),
+    //         ),
+    //         side: const BorderSide(color: PRIMARY_COLOR, width: 1))
+    //         : OutlinedButton.styleFrom(
+    //         maximumSize: const Size(double.infinity, 48),
+    //         shape: RoundedRectangleBorder(
+    //           borderRadius: BorderRadius.circular(8),
+    //         ),
+    //         side: const BorderSide(color: GREY_COLOR_5, width: 1)),
+    //     onPressed: () {
+    //       setState(() {
+    //         _orderType = buttonOrderType;
+    //       });
+    //     },
+    //     child: Text(buttonOrderType == OrderType.IMMEDIATE ? '일 결제' : '주간 결제',
+    //         style: _orderType == buttonOrderType
+    //             ? TextStyles.getTextStyle(TextType.BUTTON, WHITE_COLOR)
+    //             : TextStyles.getTextStyle(TextType.BUTTON, GREY_COLOR_3)),
+    //   );
+    // }
 
     Widget orderButton(OrderType buttonOrderType) {
       return InkWell(
@@ -587,7 +589,12 @@ class _OrderScreenState extends State<OrderScreen> {
                                   flex: 1,
                                   child: ElevatedButton(
                                       onPressed: () {
-                                        //TODO: 장바구니 보기
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => PayAggrementScreen(orderPost: _orderedMealController.getOrderedMealsSelected(_orderType))
+                                            )
+                                        );
                                       },
                                       style: ElevatedButton.styleFrom(
                                         minimumSize: const Size(0, 48),

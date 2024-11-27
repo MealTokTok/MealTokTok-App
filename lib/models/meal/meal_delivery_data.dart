@@ -6,6 +6,7 @@ import 'package:hankkitoktok/functions/httpRequest.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
+import '../../mode.dart';
 import 'meal_delivery_order.dart';
 
 enum DeliveryRequestMode {
@@ -27,11 +28,17 @@ Future<List<MealDelivery>> networkGetDeliveryList(Map<String,dynamic> query, Del
   uri = uri.replace(queryParameters: query.map((key, value) => MapEntry(key, value.toString())));
 
   http.Response? response;
-  Map<String, String> header = {
+    Map<String, String> header = {
     'Content-Type': 'application/json',
-    //'Authorization': 'Bearer $accessToken',
-    'Access-token': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzIzNDYyOTM5LCJleHAiOjE3NDkzODI5Mzl9.rmDSuxTSfjJplWLm-v1AxKrz_-9jt8u5RJeC4q2JW38'
+    'Authorization': 'Bearer $accessToken',
   };
+
+  if(APP_MODE == AppMode.DEBUG){
+    header = {
+      'Content-Type': 'application/json',
+      'Access-token': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzIzNDYyOTM5LCJleHAiOjE3NDkzODI5Mzl9.rmDSuxTSfjJplWLm-v1AxKrz_-9jt8u5RJeC4q2JW38'
+    };
+  }
 
   try {
     response = await http.get(uri, headers: header);
@@ -115,11 +122,17 @@ Future<MealDelivery?> networkGetDelivery(Map<String,dynamic>? query, DeliveryReq
   }
 
   http.Response? response;
-  Map<String, String> header = {
+    Map<String, String> header = {
     'Content-Type': 'application/json',
-    //'Authorization': 'Bearer $accessToken',
-    'Access-token': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzIzNDYyOTM5LCJleHAiOjE3NDkzODI5Mzl9.rmDSuxTSfjJplWLm-v1AxKrz_-9jt8u5RJeC4q2JW38'
+    'Authorization': 'Bearer $accessToken',
   };
+
+  if(APP_MODE == AppMode.DEBUG){
+    header = {
+      'Content-Type': 'application/json',
+      'Access-token': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzIzNDYyOTM5LCJleHAiOjE3NDkzODI5Mzl9.rmDSuxTSfjJplWLm-v1AxKrz_-9jt8u5RJeC4q2JW38'
+    };
+  }
 
   try {
 
@@ -141,7 +154,6 @@ Future<MealDelivery?> networkGetDelivery(Map<String,dynamic>? query, DeliveryReq
     if(response.statusCode == 200){
 
       var responseBody = jsonDecode(utf8.decode(response.bodyBytes));
-      print("mode: ${mode}, $responseBody}");
       MealDelivery result = MealDelivery.init();
       result = result.fromMap(responseBody['result']);
       // await prefs.setString("access_token", responseBody['access']); //Todo: 데이터 보고 교체

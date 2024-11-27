@@ -6,6 +6,8 @@ import 'package:hankkitoktok/functions/httpRequest.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
+import '../../mode.dart';
+
 Future<List<Order>> orderGetList(Map<String,dynamic> query) async {
   SharedPreferences prefs = await SharedPreferences.getInstance(); // 저장소
   String accessToken = prefs.getString('access_token') ?? '';
@@ -16,11 +18,17 @@ Future<List<Order>> orderGetList(Map<String,dynamic> query) async {
   }
 
   http.Response? response;
-  Map<String, String> header = {
+    Map<String, String> header = {
     'Content-Type': 'application/json',
-    //'Authorization': 'Bearer $accessToken',
-    'Access-token': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzIzNDYyOTM5LCJleHAiOjE3NDkzODI5Mzl9.rmDSuxTSfjJplWLm-v1AxKrz_-9jt8u5RJeC4q2JW38'
+    'Authorization': 'Bearer $accessToken',
   };
+
+  if(APP_MODE == AppMode.DEBUG){
+    header = {
+      'Content-Type': 'application/json',
+      'Access-token': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzIzNDYyOTM5LCJleHAiOjE3NDkzODI5Mzl9.rmDSuxTSfjJplWLm-v1AxKrz_-9jt8u5RJeC4q2JW38'
+    };
+  }
 
   try {
     response = await http.get(uri, headers: header);
@@ -63,11 +71,17 @@ Future<String> orderPost(Map<String,dynamic> body) async {
   Uri uri = Uri.parse('$BASE_URL/api/v1/orders');
 
   http.Response? response;
-  Map<String, String> header = {
+    Map<String, String> header = {
     'Content-Type': 'application/json',
-    //'Authorization': 'Bearer $accessToken',
-    'Access-token': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzIzNDYyOTM5LCJleHAiOjE3NDkzODI5Mzl9.rmDSuxTSfjJplWLm-v1AxKrz_-9jt8u5RJeC4q2JW38'
+    'Authorization': 'Bearer $accessToken',
   };
+
+  if(APP_MODE == AppMode.DEBUG){
+    header = {
+      'Content-Type': 'application/json',
+      'Access-token': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzIzNDYyOTM5LCJleHAiOjE3NDkzODI5Mzl9.rmDSuxTSfjJplWLm-v1AxKrz_-9jt8u5RJeC4q2JW38'
+    };
+  }
 
   try {
     response = await http.post(uri, headers: header, body: jsonEncode(body));
@@ -109,11 +123,17 @@ Future<Order> networkGetOrder(String orderId) async
   print("$BASE_URL/api/v1/orders/$orderId");
 
   http.Response? response;
-  Map<String, String> header = {
+    Map<String, String> header = {
     'Content-Type': 'application/json',
-    //'Authorization': 'Bearer $accessToken',
-    'Access-token': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzIzNDYyOTM5LCJleHAiOjE3NDkzODI5Mzl9.rmDSuxTSfjJplWLm-v1AxKrz_-9jt8u5RJeC4q2JW38'
+    'Authorization': 'Bearer $accessToken',
   };
+
+  if(APP_MODE == AppMode.DEBUG){
+    header = {
+      'Content-Type': 'application/json',
+      'Access-token': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzIzNDYyOTM5LCJleHAiOjE3NDkzODI5Mzl9.rmDSuxTSfjJplWLm-v1AxKrz_-9jt8u5RJeC4q2JW38'
+    };
+  }
   try {
     response = await http.get(uri, headers: header);
     if (response == null) {

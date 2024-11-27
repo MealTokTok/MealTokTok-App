@@ -10,6 +10,9 @@ import "package:hankkitoktok/models/user/user.dart";
 import "package:hankkitoktok/models/user/auth_data.dart";
 import "package:hankkitoktok/screen/4_my_page/1_my_information_editing.dart";
 import 'package:get/get.dart';
+import "../1_my_page/1_order_histories_screen.dart";
+import "../2_home/2_notification_screen.dart";
+import "../3_menu_choice/0_meal_menu_screen.dart";
 
 class MyPageHome extends StatefulWidget {
   const MyPageHome({super.key});
@@ -26,6 +29,9 @@ class _MyPageHomeState extends State<MyPageHome> {
   int? _delivered;
   int? _fulldining;
   UserController _userController = Get.find();
+
+  int cartCount = 0;
+  int alarmCount = 0;
 
   //UserController _userController = Get.put(UserController());
 
@@ -78,42 +84,93 @@ class _MyPageHomeState extends State<MyPageHome> {
         backgroundColor: GRAY0,
         elevation: 0,
         // 그림자 없앰
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            // "My" 텍스트
-            Text('My',
-                style: TextStyles.getTextStyle(TextType.TITLE_2, Colors.black)),
-            // 아이콘들
-            Row(
+        title: Text('My',
+            style: TextStyles.getTextStyle(TextType.TITLE_2, Colors.black)),
+        centerTitle: false, // 왼쪽 정렬
+        actions: [
+          IconButton(
+            icon: Stack(
               children: [
-                // 쇼핑카트 아이콘
-                IconButton(
-                    onPressed: () {
-                      // 장바구니 버튼 동작
-                    },
-                    icon: Image.asset(
-                      'assets/images/2_home/app_bar_cart.png',
-                      // Add your image asset here
-                      height: 32,
-                      fit: BoxFit.cover,
-                    )),
-                // 알림 아이콘
-                IconButton(
-                  onPressed: () {
-                    // 알림 버튼 동작
-                  },
-                  icon: Image.asset(
-                    'assets/images/2_home/app_bar_alarm.png',
-                    height: 32,
-                    fit: BoxFit.cover,
-                  ),
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Image.asset('assets/images/2_home/app_bar_cart.png'),
                 ),
+                (cartCount > 0)
+                    ? Positioned(
+                  right: 3,
+                  top: 3,
+                  child: Container(
+                    padding: (cartCount > 9)
+                        ? const EdgeInsets.symmetric(
+                        horizontal: 4, vertical: 1)
+                        : const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      shape: (cartCount > 9)
+                          ? BoxShape.rectangle
+                          : BoxShape.circle,
+                      borderRadius: (cartCount > 9)
+                          ? BorderRadius.circular(50)
+                          : null,
+                    ),
+                    child: Text(
+                      cartCount.toString(),
+                      style: badgeStyle,
+                    ),
+                  ),
+                )
+                    : const SizedBox(),
               ],
             ),
-          ],
-        ),
-        centerTitle: false, // 왼쪽 정렬
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const MealMenuScreen(),
+                ),
+              );
+            },
+          ),
+          IconButton(
+            icon: Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Image.asset('assets/images/2_home/app_bar_alarm.png'),
+                ),
+                (alarmCount > 9)
+                    ? Positioned(
+                  right: 3,
+                  top: 3,
+                  child: Container(
+                    padding: (alarmCount > 9)
+                        ? const EdgeInsets.symmetric(
+                        horizontal: 4, vertical: 1)
+                        : const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      shape: (alarmCount > 9)
+                          ? BoxShape.rectangle
+                          : BoxShape.circle,
+                      borderRadius: (alarmCount > 9)
+                          ? BorderRadius.circular(50)
+                          : null,
+                    ),
+                    child: Text(
+                      alarmCount.toString(),
+                      style: badgeStyle,
+                    ),
+                  ),
+                )
+                    : const SizedBox(),
+              ],
+            ),
+            onPressed: () {
+              // Todo: 두번째 버튼 눌렀을 때 로직
+              Get.to(() => NotificationScreen());
+            },
+          ),
+        ],
       ),
       body: SafeArea(
         child: Padding(
@@ -201,7 +258,15 @@ class _MyPageHomeState extends State<MyPageHome> {
                                     elevation: 0.0,
                                     shadowColor: Colors.transparent,
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            OrderHistoriesScreen(),
+                                      ),
+                                    );
+                                  },
                                   child: Row(
                                     children: [
                                       Text(

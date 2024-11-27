@@ -62,7 +62,7 @@ class _MealMenuScreenState extends State<MealMenuScreen> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(48.0),
         child: AppBar(
-          automaticallyImplyLeading: false,
+
           backgroundColor: GRAY0,
           title: const Text('반찬 구성',
               style: TextStyle(
@@ -73,6 +73,7 @@ class _MealMenuScreenState extends State<MealMenuScreen> {
                 height: 0.07,
                 // letterSpacing: -0.40,
               )),
+
           actions: [
             Padding(
               padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
@@ -84,7 +85,7 @@ class _MealMenuScreenState extends State<MealMenuScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => SelectMenuScreen()),
+                          builder: (context) => ChoiceMenuScreen()),
                     );
                   },
                   style: ElevatedButton.styleFrom(

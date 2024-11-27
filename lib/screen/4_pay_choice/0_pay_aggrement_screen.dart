@@ -67,6 +67,8 @@ class _PayAggrementScreenState extends State<PayAggrementScreen> {
           style: TextStyles.getTextStyle(TextType.BUTTON, BLACK_COLOR_2)),
       backgroundColor: Colors.transparent,
       surfaceTintColor: Colors.transparent,
+      leading: const BackButton(),
+      automaticallyImplyLeading: false,
     );
   }
 
@@ -332,12 +334,14 @@ class _PayAggrementScreenState extends State<PayAggrementScreen> {
                 widget.orderPost.specialInstruction += widget.checkDisposable == true ? '(일회용품 o)' : '(일회용품 x)';
                 //Todo: 결제 -> 결제완료 콜백 -> 주문완료 처리?
                 debugPrint(widget.orderPost.toJson().toString());
-                //String id = await orderPost(widget.orderPost.toJson());
+
+                String id = await orderPost(widget.orderPost.toJson()); // 주문 후 주문ID 가져오기
+
                 Navigator.push(
                     context,
                     MaterialPageRoute(
                         //builder: (context) => AfterOrderScreen(orderId: id))
-                    builder: (context) => PayTest(id: '1'))
+                    builder: (context) => PayTest(orderId: widget.orderPost.orderId.toString(), price: widget.orderPost.totalPrice.toInt()))
                 );
               }
             },
