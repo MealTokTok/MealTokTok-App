@@ -4,18 +4,20 @@ import 'package:flutter/widgets.dart';
 import 'package:hankkitoktok/component/show_warning_dialog.dart';
 import 'package:hankkitoktok/const/color.dart';
 import 'package:hankkitoktok/const/style2.dart';
+import 'package:hankkitoktok/controller/meal_controller.dart';
 import 'package:hankkitoktok/functions/httpRequest.dart';
 import 'package:hankkitoktok/models/meal/dish.dart';
 import 'package:hankkitoktok/models/meal/dish_category.dart';
 import 'package:hankkitoktok/models/meal/meal.dart';
 import 'package:hankkitoktok/screen/3_menu_choice/0_meal_menu_screen.dart';
+import 'package:get/get.dart';
 
 List<Dish> listSideDish = [];
 
 List<Dish> sampleSideDishes = [];
 
 class SelectMenuScreen1 extends StatefulWidget {
-  Meal1 meal;
+  Meal meal;
   SelectMenuScreen1({required this.meal, super.key});
 
   @override
@@ -49,6 +51,8 @@ class _SelectMenuState extends State<SelectMenuScreen1> {
 
   TextEditingController dishSearch = TextEditingController();
   TextEditingController dishName = TextEditingController();
+  MealController _mealController = Get.find();
+
   int mealPrice = 0;
   List<int> dishIds = [];
   String textValue = "";
@@ -97,7 +101,11 @@ class _SelectMenuState extends State<SelectMenuScreen1> {
           padding: EdgeInsets.all(8),
           child: IconButton(
             iconSize: 24,
-            onPressed: () {},
+            onPressed: () {
+
+              Navigator.of(context).pop();
+
+            },
             icon: Image.asset(
               'assets/images/1_my_page/left_arrow.png',
             ),
@@ -516,11 +524,12 @@ class _SelectMenuState extends State<SelectMenuScreen1> {
 
   }
   void _Delete() async {
-    await networkRequest('api/v1/meals/${widget.meal.mealId}', RequestType.DELETE, {
-
-      "mealId": widget.meal.mealId,
-
-    });
+    // await networkRequest('api/v1/meals/${widget.meal.mealId}', RequestType.DELETE, {
+    //
+    //   "mealId": widget.meal.mealId,
+    //
+    // });
+    await _mealController.deleteMeal(widget.meal.mealId);
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => MealMenuScreen()),

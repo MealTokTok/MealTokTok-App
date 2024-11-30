@@ -34,8 +34,7 @@ class _FullDiningExplanationState extends State<FullDiningExplanation> {
             child: IconButton(
               iconSize: 24,
               onPressed: () {
-
-                showWarningDialog(context, '풀대접 서비스를\n받지 않으실 건가요?', '돌아가기를 누르시면 풀대접 서비스는\n장바구니에 담기지 않아요.', '돌아가기','그만두기',null,null);
+                Navigator.of(context).pop();
               },
               icon: Image.asset(
                 'assets/images/1_my_page/left_arrow.png',

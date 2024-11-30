@@ -10,13 +10,13 @@ class MealController extends GetxController {
   List<Meal> get getMeals => _meals;
 
   @override
-  void onInit() {
+  void onInit() async {
     // TODO: 네트워크요청 -> _meals에 데이터 추가
-    setMeals();
+    await setMeals();
     super.onInit();
   }
 
-  void setMeals() async {
+  Future<void> setMeals() async {
     _meals = await networkGetListRequest(Meal.init(), 'api/v1/meals', null);
     update();
   }
@@ -30,17 +30,17 @@ class MealController extends GetxController {
       'mealId': mealId
     };
     await networkRequest('api/v1/meals', RequestType.DELETE, data);
-    setMeals();
+    await setMeals();
   }
 
-  Future<void> addMeal(String mealName, int mealPrice, List<String> dishIds)async{
+  Future<void> addMeal(String mealName, int mealPrice, List<int> dishIds)async{
     var data = {
       'mealName': mealName,
       'mealPrice': mealPrice,
       'dishIds': dishIds
     };
     await networkRequest('api/v1/meals', RequestType.POST, data);
-    setMeals();
+    await setMeals();
   }
 
 }

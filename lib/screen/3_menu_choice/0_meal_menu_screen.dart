@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hankkitoktok/const/color.dart';
 import 'package:hankkitoktok/const/style2.dart';
+import 'package:hankkitoktok/controller/meal_controller.dart';
 import 'package:hankkitoktok/functions/httpRequest.dart';
 import 'package:hankkitoktok/models/meal/meal.dart';
 import 'package:hankkitoktok/screen/3_menu_choice/1_choice_menu_screen_ver2.dart';
@@ -18,8 +19,8 @@ class MealMenuScreen extends StatefulWidget {
 
 class _MealMenuScreenState extends State<MealMenuScreen> {
   //List mealList = [0, 1, 2, 3, 4, 5, 6, 7];
-  List<Meal1> mealList = [];
-  List<Meal1> unavailableList = []; // 품절된 도시락을 담는 리스트
+  MealController _mealController = Get.find();
+  List<Meal> unavailableList = []; // 품절된 도시락을 담는 리스트
 
   @override
   void initState() {
@@ -28,10 +29,8 @@ class _MealMenuScreenState extends State<MealMenuScreen> {
   }
 
   Future<void> fetchData() async {
-    mealList =
-        await networkGetListRequest111(Meal1.init(), 'api/v1/meals', null);
 
-    for (var meal in mealList) {
+    for (var meal in _mealController.getMeals) {
       bool hasUnavailableDish = false;
 
       // meal의 dishes 중 ON_SALE 상태가 아닌 dish가 있는지 확인
@@ -147,7 +146,7 @@ class _MealMenuScreenState extends State<MealMenuScreen> {
             ),
             Expanded(
               child: ListView.builder(
-                  itemCount: mealList.length,
+                  itemCount: _mealController.getMeals.length,
                   itemBuilder: (context, index) {
                     return Column(
                       children: [
@@ -171,7 +170,7 @@ class _MealMenuScreenState extends State<MealMenuScreen> {
                               children: [
                                 Row(
                                   children: [
-                                    ...mealList[index].dishes.map((dish) {
+                                    ..._mealController.getMeals[index].dishes.map((dish) {
                                       return Padding(
                                         padding:
                                             const EdgeInsets.only(right: 4.0),
@@ -313,7 +312,7 @@ class _MealMenuScreenState extends State<MealMenuScreen> {
 
                                       children: [
                                         Text(
-                                          '${mealList[index].mealName}',
+                                          '${_mealController.getMeals[index].mealName}',
                                           style: TextStyle(
                                             color: Colors.black,
                                             fontSize: 16,
@@ -324,7 +323,7 @@ class _MealMenuScreenState extends State<MealMenuScreen> {
                                           ),
                                         ),
                                         Text(
-                                          '${mealList[index].mealPrice}원',
+                                          '${_mealController.getMeals[index].mealPrice}원',
                                           style: TextStyle(
                                             color: Colors.black,
                                             fontSize: 14,
@@ -346,7 +345,7 @@ class _MealMenuScreenState extends State<MealMenuScreen> {
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                       SelectMenuScreen1(
-                                                        meal: mealList[index],
+                                                        meal: _mealController.getMeals[index],
                                                       )));
                                         },
                                         style: OutlinedButton.styleFrom(

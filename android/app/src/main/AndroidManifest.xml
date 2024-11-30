@@ -18,7 +18,7 @@
         android:usesCleartextTraffic="true">
         <meta-data
             android:name="com.kakao.sdk.AppKey"
-            android:value="Native app key" /> <!-- 카카오 네이티브 앱 키 등록-->
+            android:value="c1eda5ec75bb843acef283b8b4a297f1"/> <!-- 카카오 네이티브 앱 키 등록-->
         <activity
             android:name="com.kakao.sdk.flutter.AuthCodeCustomTabsActivity"
             android:exported="true">

@@ -67,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
       int type = 6;
       //0: 주소 없음 1: 메뉴 선택, 2: 배송 완료(점심), 3: 배송완료(저녁), 4: 배송중(점심), 5. 배송중(저녁) 6: 메뉴 없음
       switch(type)
-      {
+          {
         case 0:
           screenStatus = ScreenStatus.ADDRESS_EMPTY;
           break;
@@ -273,39 +273,39 @@ class _HomeScreenState extends State<HomeScreen> {
           );
 
 
-            // DropdownButton(
-            //   underline: Container(),
-            //   value: controller.getAddressList.isNotEmpty
-            //       ? controller.getAddressList[controller.selectedAddressIndex]
-            //       : '배달 주소를 설정해주세요',
-            //   items: controller.getAddressList.map((String value) {
-            //     return DropdownMenuItem(
-            //         value: value,
-            //         child: Row(
-            //           children: [
-            //             Image.asset('assets/images/2_home/app_bar_place.png',
-            //                 width: 24, height: 24),
-            //             const SizedBox(width: 8),
-            //             controller.getAddressList.isNotEmpty
-            //                 ? Text(
-            //               value,
-            //               style: TextStyles.getTextStyle(
-            //                   TextType.SUBTITLE_1, BLACK_COLOR),
-            //             )
-            //                 : const Text(''),
-            //           ],
-            //         ));
-            //   }).toList(),
-            //   onChanged: (String? value) async {
-            //
-            //     for (Address address in controller.addresses) {
-            //       if (address.getAddressString == value) {
-            //         await controller.setConfiguredAddress(address.deliveryAddressId);
-            //       }
-            //     }
-            //
-            //     setState(() {});
-            //   });
+          // DropdownButton(
+          //   underline: Container(),
+          //   value: controller.getAddressList.isNotEmpty
+          //       ? controller.getAddressList[controller.selectedAddressIndex]
+          //       : '배달 주소를 설정해주세요',
+          //   items: controller.getAddressList.map((String value) {
+          //     return DropdownMenuItem(
+          //         value: value,
+          //         child: Row(
+          //           children: [
+          //             Image.asset('assets/images/2_home/app_bar_place.png',
+          //                 width: 24, height: 24),
+          //             const SizedBox(width: 8),
+          //             controller.getAddressList.isNotEmpty
+          //                 ? Text(
+          //               value,
+          //               style: TextStyles.getTextStyle(
+          //                   TextType.SUBTITLE_1, BLACK_COLOR),
+          //             )
+          //                 : const Text(''),
+          //           ],
+          //         ));
+          //   }).toList(),
+          //   onChanged: (String? value) async {
+          //
+          //     for (Address address in controller.addresses) {
+          //       if (address.getAddressString == value) {
+          //         await controller.setConfiguredAddress(address.deliveryAddressId);
+          //       }
+          //     }
+          //
+          //     setState(() {});
+          //   });
         },
       ),
       actions: [

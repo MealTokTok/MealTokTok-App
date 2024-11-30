@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hankkitoktok/const/color.dart';
 import 'package:hankkitoktok/const/style2.dart';
+import 'package:hankkitoktok/controller/meal_controller.dart';
 import 'package:hankkitoktok/functions/httpRequest.dart';
 import 'package:hankkitoktok/models/meal/dish.dart';
 import 'package:hankkitoktok/models/meal/dish_category.dart';
 import 'package:hankkitoktok/screen/3_menu_choice/0_meal_menu_screen.dart';
+import 'package:get/get.dart';
 
 List<Dish> listSideDish = [];
 
@@ -44,6 +46,7 @@ class _ChoiceMenuScreenState extends State<ChoiceMenuScreen> {
 
   TextEditingController dishSearch = TextEditingController();
   TextEditingController dishName = TextEditingController();
+  MealController _mealController = Get.find();
   int mealPrice = 0;
   List<int> dishIds = [];
   String textValue = "";
@@ -88,6 +91,20 @@ class _ChoiceMenuScreenState extends State<ChoiceMenuScreen> {
           leading: const BackButton(),
           automaticallyImplyLeading: false,
       ),
+          leading: Container(
+            height: 24,
+            width: 24,
+            padding: EdgeInsets.all(8),
+            child: IconButton(
+              iconSize: 24,
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              icon: Image.asset(
+                'assets/images/1_my_page/left_arrow.png',
+              ),
+            ),
+          )),
       body: Padding(
         padding: EdgeInsets.fromLTRB(20, 16, 20, 64),
         child: Column(
@@ -437,17 +454,20 @@ class _ChoiceMenuScreenState extends State<ChoiceMenuScreen> {
           width: MediaQuery.of(context).size.width,
           child: ElevatedButton(
             onPressed: () async {
-              for (int i = 0; i < selectedSideDish.length; i++) {
-                mealPrice += selectedSideDish[i].dishPrice;
-                dishIds.add(selectedSideDish[i].dishId);
-              }
-              await networkRequest('api/v1/meals', RequestType.POST, {
-                "mealName": dishName.text,
-                "mealPrice": mealPrice,
-                "dishIds": dishIds
-              });
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => MealMenuScreen()));
+              if (selectedSideDish.length == 4) {
+                for (int i = 0; i < selectedSideDish.length; i++) {
+                  mealPrice += selectedSideDish[i].dishPrice;
+                  dishIds.add(selectedSideDish[i].dishId);
+                }
+                await _mealController.addMeal(dishName.text, mealPrice, dishIds);
+                // await networkRequest('api/v1/meals', RequestType.POST, {
+                //   "mealName": dishName.text,
+                //   "mealPrice": mealPrice,
+                //   "dishIds": dishIds
+                // });
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => MealMenuScreen()));
+              } else {}
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: PRIMARY_COLOR,
@@ -468,32 +488,6 @@ class _ChoiceMenuScreenState extends State<ChoiceMenuScreen> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      // bottomNavigationBar: Padding(
-      //   padding: const EdgeInsets.all(16.0),
-      //   child: TextButton(
-      //     onPressed: () async {
-      //       for (int i = 0; i < selectedSideDish.length; i++) {
-      //         mealPrice += selectedSideDish[i].dishPrice;
-      //         dishIds.add(selectedSideDish[i].dishId);
-      //       }
-      //       await networkRequest('api/v1/meals', RequestType.POST, {
-      //         "mealName": dishName.text,
-      //         "mealPrice": mealPrice,
-      //         "dishIds": dishIds
-      //       });
-      //       Navigator.push(context,
-      //           MaterialPageRoute(builder: (context) => MealMenuScreen()));
-      //     },
-      //     style: TextButton.styleFrom(
-      //       backgroundColor: Colors.orange,
-      //       foregroundColor: Colors.white,
-      //       shape: RoundedRectangleBorder(
-      //         borderRadius: BorderRadius.circular(8.0), // 둥근 모서리 적용
-      //       ),
-      //     ),
-      //     child: Text('반찬 도시락 추가'),
-      //   ),
-      // ),
     );
   }
 }

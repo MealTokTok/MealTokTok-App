@@ -4,6 +4,7 @@ import 'package:hankkitoktok/controller/ordered_meal_controller.dart';
 import 'package:hankkitoktok/controller/tmpdata.dart';
 import 'package:hankkitoktok/screen/3_menu_choice/tmp_full_service_screen.dart';
 import 'package:hankkitoktok/screen/5_order/1_full_dining_explanation.dart';
+import 'package:hankkitoktok/screen/5_order/2_full_dining_selcet.dart';
 import 'package:intl/intl.dart';
 import '../../const/style2.dart';
 import '../../component/calendar.dart';
@@ -548,7 +549,15 @@ class _OrderScreenState extends State<OrderScreen> {
                                     ),
                                     const SizedBox(height: 12),
                                     InkWell(
-                                      onTap: () {},
+                                      onTap: () {
+
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => FullDiningExplanation(orderType: _orderType)
+                                            )
+                                        );
+                                      },
 
                                       child: Container(
                                           decoration:  BoxDecoration(
@@ -589,6 +598,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                   flex: 1,
                                   child: ElevatedButton(
                                       onPressed: () {
+                                        //TODO: 장바구니 보기
                                         Navigator.push(
                                             context,
                                             MaterialPageRoute(
@@ -627,7 +637,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                  builder: (context) => FullDiningExplanation(orderType: _orderType)
+                                                  builder: (context) => FullDiningSelcet(orderType: _orderType)
                                               )
                                           );
                                         },

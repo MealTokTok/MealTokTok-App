@@ -6,7 +6,7 @@ import 'package:hankkitoktok/const/style2.dart';
 import 'package:hankkitoktok/models/meal/meal.dart';
 
 class OrderStateOrderFail extends StatefulWidget {
-  List<Meal1> unavailableList;
+  List<Meal> unavailableList;
 
   OrderStateOrderFail({
     required this.unavailableList,

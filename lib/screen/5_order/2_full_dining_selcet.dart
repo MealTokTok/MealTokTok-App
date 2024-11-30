@@ -4,10 +4,13 @@ import 'package:hankkitoktok/component/full_dining_calendar.dart';
 import 'package:hankkitoktok/const/color.dart';
 import 'package:hankkitoktok/const/style2.dart';
 import 'package:hankkitoktok/models/enums.dart';
+import 'package:hankkitoktok/screen/4_pay_choice/0_pay_aggrement_screen.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:get/get.dart';
 import 'package:hankkitoktok/controller/ordered_meal_controller.dart';
+import 'package:get/get.dart';
+
 
 class FullDiningSelcet extends StatefulWidget {
   OrderType orderType;
@@ -21,7 +24,7 @@ class FullDiningSelcet extends StatefulWidget {
 class _FullDiningSelcetState extends State<FullDiningSelcet> {
   List<String> day = [];
   final formatter = NumberFormat('#,###');
-
+  OrderedMealController _orderedMealController = Get.find();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -151,7 +154,15 @@ class _FullDiningSelcetState extends State<FullDiningSelcet> {
         child: Container(
           width: MediaQuery.of(context).size.width,
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => PayAggrementScreen(orderPost: _orderedMealController.getOrderedMealsSelected(widget.orderType))
+                  )
+              );
+
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: PRIMARY_COLOR,
               foregroundColor: Colors.white,

@@ -13,6 +13,7 @@ import 'package:get/get.dart';
 import "../1_my_page/1_order_histories_screen.dart";
 import "../2_home/2_notification_screen.dart";
 import "../3_menu_choice/0_meal_menu_screen.dart";
+import "package:hankkitoktok/screen/4_my_page/4_return_full_dining.dart";
 
 class MyPageHome extends StatefulWidget {
   const MyPageHome({super.key});
@@ -390,12 +391,12 @@ class _MyPageHomeState extends State<MyPageHome> {
                           padding: EdgeInsets.symmetric(vertical: 16),
                           child: TextButton(
                             onPressed: () {
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (context) => ,
-                              //   ),
-                              //);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ReturnFullDining(),
+                                ),
+                              );
                             },
                             style: TextButton.styleFrom(
                               padding: EdgeInsets.zero,

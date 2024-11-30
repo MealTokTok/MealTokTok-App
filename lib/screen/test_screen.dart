@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hankkitoktok/screen/0_login_and_set_address/1_address_setting.dart';
 import 'package:hankkitoktok/screen/1_my_page/1_order_histories_screen.dart';
 import 'package:hankkitoktok/screen/2_home/0_home.dart';
 import 'package:hankkitoktok/screen/2_home/1_home_screen.dart';
@@ -22,7 +23,9 @@ class TestScreen extends StatelessWidget {
               _buildButton("order_screen", context, OrderScreen()),
               _buildButton("order_histories", context, OrderHistoriesScreen()),
               _buildButton("my_page", context, MyPageHome()),
-              _buildButton("pay", context, PayTest(orderId: "1", price: 1000)),
+              _buildButton("pay", context, PayTest(id: "1")),
+              _buildButton("map", context, DeliveryAddressSettingScreen())
+
             ]
         )
     );

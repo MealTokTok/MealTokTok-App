@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:hankkitoktok/secrets.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:kakao_map_plugin/kakao_map_plugin.dart';
@@ -39,7 +40,7 @@ class _DeliveryAddressSettingScreenState
   String? _error;
 
   Future<List<addressDocuments?>> searchAddresses(String query) async {
-    final String apiKey = 'Rest api key';
+    final String apiKey = KAKAO_REST_API_KEY; //태영님은 rest api라고 하셨었음
 
     final response = await http.get(
       Uri.parse('https://dapi.kakao.com/v2/local/search/keyword.json?query=$query'),
@@ -244,7 +245,7 @@ class _AddressDetailPageState extends State<AddressDetailPage> {
   }
 
   Future<addressDocuments?> revearseSearchAddresses(double latitude, double longitude) async {
-    final String apiKey = 'Rest api key';
+    final String apiKey = KAKAO_REST_API_KEY; //태영님은 rest api라고 하셨었음
 
     final response = await http.get(
       Uri.parse('https://dapi.kakao.com/v2/local/geo/coord2address.json?x=$longitude&y=$latitude'),
@@ -293,11 +294,14 @@ class _AddressDetailPageState extends State<AddressDetailPage> {
                 SizedBox(
                   height: 245,
                   child: KakaoMap(
+                    //apiKey: KAKAO_JAVASCRIPT_KEY,
                     center: LatLng(flatitude, flongitude),
+                    
                     onMapCreated: ((controller) async {
                       _controller = controller;
                       Marker centerMarker = Marker(
                         markerId: 'centerMarker',
+                        //latLng: LatLng(36.6298968, 127.4534557),
                         latLng: LatLng(flatitude, flongitude),
                         //markerImageSrc: 'images/marker_image.png', // markerImage로 추가해야 되는데 왠지 모르게 안됨.
                       );
@@ -322,26 +326,26 @@ class _AddressDetailPageState extends State<AddressDetailPage> {
                         LocationPermission permission;
                         serviceEnabled = await Geolocator.isLocationServiceEnabled();
                         if (!serviceEnabled) {
-                          return Future.error('Location services are disabled.');
+                        return Future.error('Location services are disabled.');
                         }
                         permission = await Geolocator.checkPermission();
                         if (permission == LocationPermission.denied) {
-                          permission = await Geolocator.requestPermission();
-                          if (permission == LocationPermission.denied) {
-                            return Future.error('Location permissions are denied');
-                          }
+                        permission = await Geolocator.requestPermission();
+                        if (permission == LocationPermission.denied) {
+                        return Future.error('Location permissions are denied');
+                        }
                         }
 
                         if (permission == LocationPermission.deniedForever) {
-                          return Future.error('Location permissions are permanently denied, we cannot request permissions.');
+                        return Future.error('Location permissions are permanently denied, we cannot request permissions.');
                         }
 
                         Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
                         flatitude = position.latitude; flongitude = position.longitude;
                         addressDocuments? adc = await revearseSearchAddresses(flatitude, flongitude);
                         if (adc != null) {
-                          faddressName = adc.addressName;
-                          fplaceName = adc.placeName;
+                        faddressName = adc.addressName;
+                        fplaceName = adc.placeName;
                         }
                       },
                       backgroundColor: Colors.white,

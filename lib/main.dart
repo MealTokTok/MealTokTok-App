@@ -23,6 +23,7 @@ import 'package:hankkitoktok/screen/4_my_page/0_my_page_home.dart';
 import 'package:hankkitoktok/screen/4_my_page/3_delete_id.dart';
 //import 'package:hankkitoktok/screen/4_pay_choice/payment_test.dart';
 import 'package:hankkitoktok/screen/5_order/1_full_dining_explanation.dart';
+import 'package:hankkitoktok/screen/button_page.dart';
 import 'package:hankkitoktok/screen/test_screen.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -140,7 +141,7 @@ void main() async {
   KakaoSdk.init(
     nativeAppKey:'c1eda5ec75bb843acef283b8b4a297f1',
     javaScriptAppKey: 'e0247dc88e43a60751fd39f8fc18459a',
- );
+  );
   _getControllerSetting();
   runApp(const MyApp());
 }
@@ -200,7 +201,7 @@ class MyApp extends StatelessWidget {
         // ),
       ],
 
-      home: TestScreen(),
+      home: ButtonPage(),
 
 
     );

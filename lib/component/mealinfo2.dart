@@ -5,7 +5,7 @@ import 'package:hankkitoktok/const/style2.dart';
 import 'package:hankkitoktok/models/meal/meal.dart';
 
 Widget MealInfo2({
-  required Meal1 meal,
+  required Meal meal,
 }) {
   return Container(
     decoration: BoxDecoration(
