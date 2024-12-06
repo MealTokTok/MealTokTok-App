@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:hankkitoktok/const/strings.dart';
+import 'package:hankkitoktok/functions/httpRequest.dart';
 import 'package:hankkitoktok/screen/2_home/1_home_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -47,7 +48,7 @@ class _TemporaryAdressState extends State<TemporaryAddress> {
   }
   void getUDID() async {
     deviceToken = await FirebaseMessaging.instance.getToken() ?? "";
-    debugPrint(deviceToken ?? 'null');
+    debugPrint('deviceToken: $deviceToken' ?? 'null');
   }
 
   bool isUser=true;
@@ -83,8 +84,17 @@ class _TemporaryAdressState extends State<TemporaryAddress> {
               }
             }, child: Text('유저인지 확인하기')),
             ElevatedButton(onPressed: () async{
-              bool signUpStatus = await signUp(address, latitude, longitude, accessToken, idToken, deviceToken);
+              // bool signUpStatus = await signUp(address, latitude, longitude, accessToken, idToken, deviceToken);
+
+              bool signUpStatus =await networkRequest('api/v1/auth/oauth/sign-up', RequestType.POST, {
+                "oAuthTokens": {
+                  "accessToken": accessToken,
+                  "idToken": idToken,
+                },
+                "deviceToken": deviceToken,
+              });
               if(signUpStatus){
+                debugPrint('회원가입 성공');
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(

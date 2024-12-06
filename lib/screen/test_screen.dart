@@ -23,7 +23,7 @@ class TestScreen extends StatelessWidget {
               _buildButton("order_screen", context, OrderScreen()),
               _buildButton("order_histories", context, OrderHistoriesScreen()),
               _buildButton("my_page", context, MyPageHome()),
-              _buildButton("pay", context, PayTest(id: "1")),
+              //_buildButton("pay", context, PayTest(id: "1")),
               _buildButton("map", context, DeliveryAddressSettingScreen())
 
             ]
