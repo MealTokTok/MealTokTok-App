@@ -88,9 +88,6 @@ class _ChoiceMenuScreenState extends State<ChoiceMenuScreen> {
           ),
           centerTitle: true,
           surfaceTintColor: Colors.transparent, // 스크롤이동시 색 바뀌는거 방지
-          leading: const BackButton(),
-          automaticallyImplyLeading: false,
-      ),
           leading: Container(
             height: 24,
             width: 24,

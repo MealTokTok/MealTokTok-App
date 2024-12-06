@@ -18,7 +18,7 @@ Future<bool> networkRequest(String detailUri,RequestType requestType, Map<String
 
   Map<String, String> header = {
     'Content-Type': 'application/json',
-    'Authorization': 'Bearer $accessToken',
+    'Access-token': 'Bearer $accessToken',
   };
 
   if(APP_MODE == AppMode.DEBUG){
@@ -251,7 +251,7 @@ Future<List<T>> networkGetListRequest111<T extends BaseModel>(T model,String det
   http.Response? response;
     Map<String, String> header = {
     'Content-Type': 'application/json',
-    'Authorization': 'Bearer $accessToken',
+    'Access-token': 'Bearer $accessToken',
   };
 
   if(APP_MODE == AppMode.DEBUG){

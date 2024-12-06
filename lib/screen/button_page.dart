@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:hankkitoktok/models/address/address.dart';
 import 'package:hankkitoktok/models/enums.dart';
+import 'package:hankkitoktok/screen/0_login_and_set_address/0_login_screen.dart';
 import 'package:hankkitoktok/screen/0_login_and_set_address/1_address_setting.dart';
 import 'package:hankkitoktok/screen/0_login_and_set_address/3_view_address_screen.dart';
 import 'package:hankkitoktok/screen/3_menu_choice/0_meal_menu_screen.dart';
@@ -148,6 +149,14 @@ class _ButtonPageState extends State<ButtonPage> {
               );
             },
             child: Text('지도만 뜨도록'),),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => LoginPage()),
+              );
+            },
+            child: Text('로그인'),),
           // ElevatedButton(
           //   onPressed: () {
           //     Navigator.push(

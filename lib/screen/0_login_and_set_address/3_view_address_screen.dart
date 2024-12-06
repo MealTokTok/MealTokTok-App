@@ -5,8 +5,6 @@ import 'package:hankkitoktok/component/address_card.dart';
 import 'package:hankkitoktok/controller/user_controller.dart';
 import 'package:hankkitoktok/const/color.dart';
 import 'package:hankkitoktok/const/style2.dart';
-import 'package:get/get.dart';
-
 import '../../controller/address_controller.dart';
 import '../../models/address/address.dart';
 
