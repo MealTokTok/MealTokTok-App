@@ -72,7 +72,7 @@ class _MyPageHomeState extends State<MyPageHome> {
         'api/v1/meal-deliveries/count', _queryParams('DELIVERED'));
     _fulldining = await networkGetRequest222(
         'api/v1/full-dinings/full-dinings/collect-requested/count', null);
-    debugPrint("User data: ${_userController.user.nickname}");
+    debugPrint("User data: ${_userController.user!.nickname}");
     setState(() {});
   }
 
@@ -182,7 +182,7 @@ class _MyPageHomeState extends State<MyPageHome> {
                 children: [
                   Text(
 
-                    "${_userController.user.nickname} ",
+                    "${_userController.user!.nickname} ",
                     style: TextStyle(
                       color: Color(0xFF131313),
                       fontSize: 18,

@@ -25,6 +25,7 @@ import 'package:hankkitoktok/screen/4_my_page/3_delete_id.dart';
 import 'package:hankkitoktok/screen/5_order/1_full_dining_explanation.dart';
 import 'package:hankkitoktok/screen/button_page.dart';
 import 'package:hankkitoktok/screen/test_screen.dart';
+import 'package:hankkitoktok/secrets.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -41,7 +42,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hankkitoktok/controller/meal_controller.dart';
-// ...
+import 'package:hankkitoktok/mode.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+
+InAppLocalhostServer server = InAppLocalhostServer(port: 8080);
+
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("백그라운드 메시지 처리.. ${message.notification!.body!}");
@@ -89,7 +94,9 @@ Future<void> _initializeNotification()async{
     criticalAlert: true,
     provisional: true,
     sound: true,
-  );
+  ).then((settings) {
+    debugPrint('FCM 요청: ${settings.authorizationStatus}');
+  });
 
 }
 
@@ -120,7 +127,7 @@ void _notificationSetting(){
   });
 }
 
-void _getControllerSetting(){
+Future<void> _getControllerSetting() async {
   Get.put(OrderedMealController());
   Get.put(HistoryController());
   Get.put(UserController());
@@ -129,20 +136,28 @@ void _getControllerSetting(){
 }
 
 void main() async {
+
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await server.start();
+
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting("ar_SA", null);
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  await AuthRepository.initialize(appKey: '<javascript apikey>');
+  AuthRepository.initialize(appKey: KAKAO_JAVASCRIPT_KEY, baseUrl: 'http://localhost:8080/assets/web/kakaomap.htmlassets/web/kakao_map.html');
   await _initializeNotification();
   _notificationSetting();
   // runApp() 호출 전 Flutter SDK 초기화
   KakaoSdk.init(
-    nativeAppKey:'c1eda5ec75bb843acef283b8b4a297f1',
-    javaScriptAppKey: 'e0247dc88e43a60751fd39f8fc18459a',
-  );
+
+    nativeAppKey:KAKAO_NATIVE_APP_KEY,
+    javaScriptAppKey: KAKAO_JAVASCRIPT_KEY,
+ );
   _getControllerSetting();
+  print(await KakaoSdk.origin);
+
   runApp(const MyApp());
 }
 
@@ -171,7 +186,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    MealController mealController = Get.put(MealController());
+
+    UserController userController = Get.find<UserController>();
 
     return GetMaterialApp(
       title: 'Flutter Demo',
@@ -188,7 +204,7 @@ class MyApp extends StatelessWidget {
         // 스크린 지정
         GetPage(
           name: '/',
-          page: () => Home(selectedIndex: 0,),
+          page: () => const Home(),
         ),
         GetPage(
           name: '/order',
@@ -201,7 +217,9 @@ class MyApp extends StatelessWidget {
         // ),
       ],
 
-      home: ButtonPage(),
+
+      home: APP_MODE == AppMode.DEBUG ? const ButtonPage() :
+          userController.user == null ? const LoginPage() : const Home(),
 
 
     );

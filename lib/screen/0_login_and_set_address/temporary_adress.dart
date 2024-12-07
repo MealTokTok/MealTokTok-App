@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:hankkitoktok/const/strings.dart';
 import 'package:hankkitoktok/functions/httpRequest.dart';
 import 'package:hankkitoktok/screen/2_home/1_home_screen.dart';
@@ -47,8 +48,16 @@ class _TemporaryAdressState extends State<TemporaryAddress> {
 
   }
   void getUDID() async {
-    deviceToken = await FirebaseMessaging.instance.getToken() ?? "";
-    debugPrint('deviceToken: $deviceToken' ?? 'null');
+
+
+    if (Platform.isIOS) {
+      String? apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+      deviceToken = apnsToken ?? "";
+
+    } else {
+      deviceToken = await FirebaseMessaging.instance.getToken() ?? "";
+    }
+    debugPrint('deviceToken: $deviceToken');
   }
 
   bool isUser=true;
@@ -99,7 +108,7 @@ class _TemporaryAdressState extends State<TemporaryAddress> {
                   context,
                   MaterialPageRoute(
                     builder: (context) {
-                      return  Home(selectedIndex: 0,);
+                      return  const Home();
                     },
                   ),
                       (route) => false,
@@ -117,7 +126,7 @@ class _TemporaryAdressState extends State<TemporaryAddress> {
                   context,
                   MaterialPageRoute(
                     builder: (context) {
-                      return Home(selectedIndex: 0,);
+                      return const Home();
                     },
                   ),
                       (route) => false,

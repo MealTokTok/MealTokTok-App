@@ -64,33 +64,33 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _checkMenu1(AppMode appMode){
     if(appMode == AppMode.DEBUG){
-      int type = 6;
       //0: 주소 없음 1: 메뉴 선택, 2: 배송 완료(점심), 3: 배송완료(저녁), 4: 배송중(점심), 5. 배송중(저녁) 6: 메뉴 없음
-      switch(type)
-          {
-        case 0:
+
+      switch(HOME_SCREEN_MODE)
+      {
+        case HomeScreenMode.ADDRESS_EMPTY:
           screenStatus = ScreenStatus.ADDRESS_EMPTY;
           break;
-        case 1:
+        case HomeScreenMode.MENU_SELECTED:
           screenStatus = ScreenStatus.MENU_SELECTED;
           break;
-        case 2:
+        case HomeScreenMode.AFTER_DELIVERY_LUNCH:
           screenStatus = ScreenStatus.AFTER_DELIVERY;
           timeStatus = Time.AFTERNOON;
           break;
-        case 3:
+        case HomeScreenMode.AFTER_DELIVERY_DINNER:
           screenStatus = ScreenStatus.AFTER_DELIVERY;
           timeStatus = Time.EVENING;
           break;
-        case 4:
+        case HomeScreenMode.ON_DELIVERY_LUNCH:
           screenStatus = ScreenStatus.ON_DELIVERY;
           timeStatus = Time.AFTERNOON;
           break;
-        case 5:
+        case HomeScreenMode.ON_DELIVERY_DINNER:
           screenStatus = ScreenStatus.ON_DELIVERY;
           timeStatus = Time.EVENING;
           break;
-        case 6:
+        case HomeScreenMode.MENU_EMPTY:
           screenStatus = ScreenStatus.MENU_EMPTY;
           break;
       }
@@ -98,15 +98,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
       return ;
     }
+
+
+
+    //Todo: 1. 주소가 없을 경우 (우선순위 1)
     if(_addressController.getAddressList.isEmpty){
       screenStatus = ScreenStatus.ADDRESS_EMPTY;
       return;
     }
-    //Todo: 1. 메뉴가 있을 경우 (우선순위 3)
+    //Todo: 2. 메뉴가 있을 경우 (우선순위 4)
     if(_mealController.getMeals.isNotEmpty){
       screenStatus = ScreenStatus.MENU_SELECTED;
     }
-    //Todo: 2. 최근 배송 완료된게 있을 경우 (우선순위 2)
+    //Todo: 3. 최근 배송 완료된게 있을 경우 (우선순위 3)
     if(_deliveryController.recentDeliveredMealDelivery != null){
       if(_deliveryController.recentDeliveredMealDelivery!.reservedTime == Time.AFTERNOON){
         screenStatus = ScreenStatus.AFTER_DELIVERY;
@@ -117,7 +121,7 @@ class _HomeScreenState extends State<HomeScreen> {
         timeStatus = Time.EVENING;
       }
     }
-    //Todo: 3. 배송중인게 있을 경우 (우선순위 1)
+    //Todo: 4. 배송중인게 있을 경우 (우선순위 2)
     if(_deliveryController.deliveringMealDelivery != null){
       if(_deliveryController.deliveringMealDelivery!.reservedTime == Time.AFTERNOON){
         screenStatus = ScreenStatus.ON_DELIVERY;
@@ -127,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
         timeStatus = Time.EVENING;
       }
     }
-    //Todo: 4. 메뉴가 없을 경우 (우선순위 4)
+    //Todo: 5. 메뉴가 없을 경우 (우선순위 5)
 
     screenStatus = ScreenStatus.MENU_EMPTY;
     debugPrint("screenStatus: $screenStatus, timeStatus: $timeStatus");

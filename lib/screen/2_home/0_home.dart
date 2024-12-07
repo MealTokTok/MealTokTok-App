@@ -11,9 +11,9 @@ import 'package:hankkitoktok/screen/4_my_page/0_my_page_home.dart';
 import '1_home_screen.dart';
 
 class Home extends StatefulWidget {
-  int selectedIndex = 0;
 
-  Home({required this.selectedIndex, super.key});
+
+  const Home({super.key});
 
   @override
   _HomeState createState() => _HomeState();
@@ -21,7 +21,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   //--------sampleData----------
-
+  int selectedIndex = 0;
   List<Meal> mealMenuListEmpty = [];
 
   List<Widget> pages = [];
@@ -40,7 +40,7 @@ class _HomeState extends State<Home> {
 
   void _onItemTapped(int index) {
     setState(() {
-      widget.selectedIndex = index;
+      selectedIndex = index;
     });
   }
 
@@ -48,9 +48,9 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: pages.elementAt(widget.selectedIndex),
+        child: pages.elementAt(selectedIndex),
       ),
-      bottomNavigationBar: _buildBottomNavigationBar(widget.selectedIndex),
+      bottomNavigationBar: _buildBottomNavigationBar(selectedIndex),
     );
   }
 
