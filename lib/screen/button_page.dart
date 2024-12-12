@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:hankkitoktok/component/kakao_map_component.dart';
+import 'package:hankkitoktok/screen/0_login_and_set_address/address_page.dart';
 import 'package:hankkitoktok/models/address/address.dart';
 import 'package:hankkitoktok/models/enums.dart';
 import 'package:hankkitoktok/screen/0_login_and_set_address/0_login_screen.dart';
@@ -146,7 +146,7 @@ class _ButtonPageState extends State<ButtonPage> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => KakaoMapComponent(address: address)),
+                MaterialPageRoute(builder: (context) => AddressPage()),
               );
             },
             child: Text('지도만 뜨도록'),),

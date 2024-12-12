@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hankkitoktok/component/kakao_map_component.dart';
+import 'package:hankkitoktok/screen/0_login_and_set_address/address_page.dart';
 import 'package:hankkitoktok/screen/0_login_and_set_address/1_address_setting.dart';
 import 'package:hankkitoktok/screen/1_my_page/1_order_histories_screen.dart';
 import 'package:hankkitoktok/screen/2_home/0_home.dart';
@@ -45,7 +45,7 @@ class TestScreen extends StatelessWidget {
                   _buildButton("map1", context, DeliveryAddressSettingScreen()),
                   _buildButton("map2", context, ViewAddressScreen()),
                   _buildButton("webview", context, WebviewTest()),
-                  _buildButton("kakaoMap", context, KakaoMapComponent(address: address)),
+                  _buildButton("kakaoMap", context, AddressPage()),
                 ]
             )
         )
