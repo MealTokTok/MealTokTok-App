@@ -48,7 +48,7 @@ class _PayTestState extends State<PayTest> {
                   PaymentWidgetExamplePage(
                     orderId: widget.orderId,
                     price: widget.price,
-                    userId: _userController.user.userId.toString(),
+                    userId: _userController.user!.userId.toString(),
                   )
               );
             },
